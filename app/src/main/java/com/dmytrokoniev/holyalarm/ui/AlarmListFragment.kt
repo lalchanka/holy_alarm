@@ -1,6 +1,7 @@
 package com.dmytrokoniev.holyalarm.ui
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,15 +10,12 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.dmytrokoniev.holyalarm.BuildConfig
 import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.navigate.FragmentNavigator
 
 class AlarmListFragment : Fragment() {
 
     // TODO add all LC functions with Logs
-
-//    val navigator: FragmentNavigator
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,16 +38,18 @@ class AlarmListFragment : Fragment() {
         rvCustomAdapter.setAlarmList(itemList)
 
         btnAddAlarm.setOnClickListener {
-            (activity as? MainActivity)?.loadAlarmSetFragment()
-//            navigator.someFunction()
-
-            rvCustomAdapter.addAlarm(
-                AlarmItem(
-                    "${(12..24).random()}:${(0..9).random()}${(0..9).random()}",
-                    "PM"
-                )
-            )
-            Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show()
+            if (BuildConfig.RW_PICKER) {
+                (activity as? MainActivity)?.onAddAlarmClick()
+            } else {
+                (activity as? MainActivity)?.onAddAlarmClick()
+//                rvCustomAdapter.addAlarm(
+//                    AlarmItem(
+//                        "${(12..24).random()}:${(0..9).random()}${(0..9).random()}",
+//                        "PM"
+//                    )
+//                )
+//                Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show()
+            }
         }
 
 
@@ -59,11 +59,6 @@ class AlarmListFragment : Fragment() {
 //            },
 //            3000
 //        )
-//        val itemList = mutableListOf<String>("val1", "val2", "val3")
-//        val arrAdapter = ArrayAdapter(requireContext(), R.layout.item_alarm, R.id.view_1, itemList)
-//        val rvAlarmsList = view.findViewById<ListView>(R.id.rv_alarms_list)
-//
-//        rvAlarmsList.adapter = arrAdapter
 //
 //        Log.d(AlarmListFragment::class.simpleName,"On_VIew_Created")
     }

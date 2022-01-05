@@ -31,7 +31,7 @@ class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
 
     fun addAlarm(inputItem: AlarmItem) {
         alarmsList.add(inputItem)
-        notifyItemInserted(itemCount - 1)
+        notifyItemInserted(alarmsList.lastIndex)
     }
 }
 

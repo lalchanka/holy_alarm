@@ -14,6 +14,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.debug
     }
 
     buildTypes {
@@ -22,6 +23,40 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "holyalarm"
+    productFlavors {
+        standartTimePicker {
+            buildConfigField "boolean", "RW_PICKER", "false"
+            dimension "holyalarm"
+            applicationIdSuffix ".standartTimePicker"
+        }
+        rwTimePicker {
+            buildConfigField "boolean", "RW_PICKER", "true"
+            dimension "holyalarm"
+            applicationIdSuffix ".rwTimePicker"
+        }
+    }
+
+    sourceSets {
+        standartTimePicker {
+            res {
+                srcDirs 'src/standartTimePicker/res'
+            }
+            java {
+                srcDirs 'src/standartTimePicker/java'
+            }
+        }
+        rwTimePicker {
+            res {
+                srcDirs 'src/rwTimePicker/res'
+            }
+            java {
+                srcDirs 'src/rwTimePicker/java'
+            }
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
