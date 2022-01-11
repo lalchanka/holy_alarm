@@ -1,11 +1,14 @@
 package com.dmytrokoniev.holyalarm.ui
 
 import android.media.Image
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TimePicker
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.BuildConfig
 import com.dmytrokoniev.holyalarm.R
@@ -18,6 +21,7 @@ class AlarmSetFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_set_alarm, container, false)
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -25,11 +29,19 @@ class AlarmSetFragment: Fragment() {
         val btnConfirm = view.findViewById<ImageButton>(R.id.btn_confirm)
 
         btnCancel.setOnClickListener {
-            TODO("return action to the prev. fragment")
+            (activity as? MainActivity)?.onCancelClick()
         }
 
         btnConfirm.setOnClickListener {
-            TODO("set alarm (add it to the db, and refresh rwAlarmList)")
+            // 05.01.2022 dmytrokoniev@gmail.com TODO: <text of todo>
+            val timePicker = view.findViewById<TimePicker>(R.id.tp_alarm_time)
+            val newAlarm = AlarmItem(
+                timePicker.hour,
+                timePicker.minute,
+                timePicker.is24HourView
+            )
+
+            (activity as? MainActivity)?.onConfirmClick(newAlarm)
         }
     }
 }

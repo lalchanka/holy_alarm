@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
+import java.io.Serializable
 
 
 class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
@@ -36,6 +37,8 @@ class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
 }
 
 data class AlarmItem(
-    val time: String,
-    val dayPart: String
-)
+    val hour: Int = 7,
+    val minute: Int = 15,
+    val is24HourView: Boolean = true,
+    val text: String = "Берегитесь лжепророков, которые приходят к вам в овечьей одежде, а внутри суть волки хищные"
+): Serializable

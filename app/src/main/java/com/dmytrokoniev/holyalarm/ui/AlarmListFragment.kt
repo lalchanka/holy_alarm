@@ -27,39 +27,20 @@ class AlarmListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val itemList = listOf(
-            AlarmItem("10:00", "AM"),
-            AlarmItem("08:00", "AM"),
-            AlarmItem("03:00", "PM")
+            AlarmItem(8, 15, true),
+            AlarmItem(14, 20, true),
+            AlarmItem(3, 0, true)
         )
+        val newAlarm = arguments?.get("alarmModel") as AlarmItem
         val rvCustomAdapter = AlarmListAdapter()
         val rvAlarmList = view.findViewById<RecyclerView>(R.id.rv_alarms_list)
         val btnAddAlarm = view.findViewById<Button>(R.id.btn_add_alarm)
         rvAlarmList.adapter = rvCustomAdapter
         rvCustomAdapter.setAlarmList(itemList)
+        rvCustomAdapter.addAlarm(newAlarm)
 
         btnAddAlarm.setOnClickListener {
-            if (BuildConfig.RW_PICKER) {
-                (activity as? MainActivity)?.onAddAlarmClick()
-            } else {
-                (activity as? MainActivity)?.onAddAlarmClick()
-//                rvCustomAdapter.addAlarm(
-//                    AlarmItem(
-//                        "${(12..24).random()}:${(0..9).random()}${(0..9).random()}",
-//                        "PM"
-//                    )
-//                )
-//                Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show()
-            }
+            (activity as? MainActivity)?.onAddAlarmClick()
         }
-
-
-//        Handler().postDelayed(
-//            {
-//                rvCustomAdapter.setAlarmList(itemList)
-//            },
-//            3000
-//        )
-//
-//        Log.d(AlarmListFragment::class.simpleName,"On_VIew_Created")
     }
 }

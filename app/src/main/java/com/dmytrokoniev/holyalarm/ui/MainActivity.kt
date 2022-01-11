@@ -13,13 +13,10 @@ class MainActivity : AppCompatActivity(){
 
         val alarmListFragment = AlarmListFragment()
 
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.container_view, alarmListFragment)
         loadFragment(alarmListFragment)
-
-//        supportFragmentManager
-//            .beginTransaction()
-//            .add(R.id.container_view, fragment)
-//            .commit()
-
     }
 
     private fun loadFragment(fragment: Fragment) = supportFragmentManager
@@ -28,14 +25,17 @@ class MainActivity : AppCompatActivity(){
         .disallowAddToBackStack()
         .commit()
 
-    fun onAddAlarmClick() {
-        val alarmSetFragment = AlarmSetFragment()
+    fun onAddAlarmClick() = loadFragment(AlarmSetFragment())
 
-        loadFragment(alarmSetFragment)
-    }
+    fun onCancelClick() = loadFragment(AlarmListFragment())
 
-    fun loadAlarmListFragment() {
+    fun onConfirmClick(newAlarm: AlarmItem) {
+        //
+        val args = Bundle()
         val alarmListFragment = AlarmListFragment()
+
+        args.putSerializable("newAlarmItem", newAlarm)
+        alarmListFragment.arguments = args
 
         loadFragment(alarmListFragment)
     }

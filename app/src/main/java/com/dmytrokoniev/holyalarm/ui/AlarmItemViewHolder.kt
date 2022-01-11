@@ -12,7 +12,7 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val dayPart = itemView.findViewById<TextView>(R.id.tv_day_part)
 
     fun bind(alarmItem: AlarmItem) {
-        alarmTime.text = alarmItem.time
-        dayPart.text = alarmItem.dayPart
+        alarmTime.text = "${alarmItem.hour}:${alarmItem.minute}"
+        dayPart.text = if (alarmItem.is24HourView) "AM" else "PM"
     }
 }

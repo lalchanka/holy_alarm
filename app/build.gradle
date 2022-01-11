@@ -18,23 +18,21 @@ android {
     }
 
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
         }
     }
 
     flavorDimensions "holyalarm"
     productFlavors {
         standartTimePicker {
-            buildConfigField "boolean", "RW_PICKER", "false"
             dimension "holyalarm"
-            applicationIdSuffix ".standartTimePicker"
         }
         rwTimePicker {
-            buildConfigField "boolean", "RW_PICKER", "true"
             dimension "holyalarm"
-            applicationIdSuffix ".rwTimePicker"
         }
     }
 
