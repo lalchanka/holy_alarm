@@ -31,13 +31,15 @@ class AlarmListFragment : Fragment() {
             AlarmItem(14, 20, true),
             AlarmItem(3, 0, true)
         )
-        val newAlarm = arguments?.get("alarmModel") as AlarmItem
+        val newAlarm = arguments?.getSerializable("newAlarmItem") as? AlarmItem
         val rvCustomAdapter = AlarmListAdapter()
         val rvAlarmList = view.findViewById<RecyclerView>(R.id.rv_alarms_list)
         val btnAddAlarm = view.findViewById<Button>(R.id.btn_add_alarm)
         rvAlarmList.adapter = rvCustomAdapter
         rvCustomAdapter.setAlarmList(itemList)
-        rvCustomAdapter.addAlarm(newAlarm)
+        // І отут теж не впевнений
+        // Також
+        newAlarm?.let { rvCustomAdapter.addAlarm(it) }
 
         btnAddAlarm.setOnClickListener {
             (activity as? MainActivity)?.onAddAlarmClick()

@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity(){
     fun onCancelClick() = loadFragment(AlarmListFragment())
 
     fun onConfirmClick(newAlarm: AlarmItem) {
-        //
+        // Тут не завадить пояснити чи норм так робити, бо наче норм
         val args = Bundle()
         val alarmListFragment = AlarmListFragment()
 
