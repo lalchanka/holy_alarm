@@ -7,7 +7,7 @@ import com.dmytrokoniev.holyalarm.R
 import java.io.Serializable
 
 
-class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
+class AlarmListAdapter: RecyclerView.Adapter<AlarmItemViewHolder>() {
     private var alarmsList: MutableList<AlarmItem> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmItemViewHolder {
@@ -37,8 +37,9 @@ class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
 }
 
 data class AlarmItem(
+    val id: Int = 0,
     val hour: Int = 7,
     val minute: Int = 15,
     val is24HourView: Boolean = true,
-    val text: String = "Берегитесь лжепророков, которые приходят к вам в овечьей одежде, а внутри суть волки хищные"
+    val isEnabled: Boolean = true
 ): Serializable

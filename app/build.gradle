@@ -75,4 +75,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation 'com.github.ifr0z:timepickercompact:1.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }

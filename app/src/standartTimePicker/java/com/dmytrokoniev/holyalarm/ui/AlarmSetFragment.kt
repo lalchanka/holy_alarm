@@ -33,12 +33,12 @@ class AlarmSetFragment: Fragment() {
         }
 
         btnConfirm.setOnClickListener {
-            // 05.01.2022 dmytrokoniev@gmail.com TODO: <text of todo>
             val timePicker = view.findViewById<TimePicker>(R.id.tp_alarm_time)
             val newAlarm = AlarmItem(
-                timePicker.hour,
-                timePicker.minute,
-                timePicker.is24HourView
+                id = 1,
+                hour = timePicker.hour,
+                minute = timePicker.minute,
+                is24HourView = timePicker.is24HourView
             )
 
             (activity as? MainActivity)?.onConfirmClick(newAlarm)
