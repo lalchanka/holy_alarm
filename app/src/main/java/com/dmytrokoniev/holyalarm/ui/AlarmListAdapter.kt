@@ -20,6 +20,9 @@ class AlarmListAdapter: RecyclerView.Adapter<AlarmItemViewHolder>() {
 
     override fun onBindViewHolder(holder: AlarmItemViewHolder, position: Int) {
         holder.bind(alarmsList[position])
+        holder.enabled.setOnCheckedChangeListener { buttonView, isChecked ->
+            // 05.01.2022 dmytrokoniev@gmail.com TODO: <text of todo>
+        }
     }
 
     override fun getItemCount(): Int = alarmsList.size

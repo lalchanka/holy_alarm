@@ -38,7 +38,8 @@ class AlarmSetFragment: Fragment() {
                 id = 1,
                 hour = timePicker.hour,
                 minute = timePicker.minute,
-                is24HourView = timePicker.is24HourView
+                is24HourView = timePicker.is24HourView,
+                isEnabled = true
             )
 
             (activity as? MainActivity)?.onConfirmClick(newAlarm)
