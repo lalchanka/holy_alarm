@@ -8,23 +8,21 @@ import com.dmytrokoniev.holyalarm.storage.InMemoryAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.IAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.addItem
+import kotlin.Exception
 
 // 05.01.2022 dmytrokoniev@gmail.com TODO: <text of todo>
 
 class MainActivity : AppCompatActivity(){
 
     val alarmStorage: IAlarmStorage = InMemoryAlarmStorage()
-    private val alarmStorageSP: IAlarmStorage
-        get() {
-           return SharedPreferencesAlarmStorage(this.baseContext)
-        }
-    //val alarmStorageSP: IAlarmStorage = SharedPreferencesAlarmStorage(this.baseContext)
+    var alarmStorageSP: IAlarmStorage? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        alarmStorage.addItems(alarmStorageSP.getItems())
+        alarmStorageSP = SharedPreferencesAlarmStorage(this)
+        alarmStorage.addItems(requireAlarmStorageSP().getItems())
 
         val alarmListFragment = AlarmListFragment()
 
@@ -36,8 +34,12 @@ class MainActivity : AppCompatActivity(){
 
     override fun onStop() {
         super.onStop()
+        requireAlarmStorageSP().addItems(alarmStorage.getItems())
+    }
 
-        alarmStorageSP.addItems(alarmStorage.getItems())
+    override fun onDestroy() {
+        super.onDestroy()
+        alarmStorageSP = null
     }
 
     private fun loadFragment(fragment: Fragment) = supportFragmentManager
@@ -60,4 +62,7 @@ class MainActivity : AppCompatActivity(){
 
         loadFragment(alarmListFragment)
     }
+
+    private fun requireAlarmStorageSP(): IAlarmStorage =
+        alarmStorageSP ?: throw Exception("Out of LifeCycle.")
 }

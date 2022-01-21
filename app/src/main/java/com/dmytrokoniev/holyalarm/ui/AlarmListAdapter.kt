@@ -2,6 +2,7 @@ package com.dmytrokoniev.holyalarm.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
 import java.io.Serializable
@@ -22,6 +23,20 @@ class AlarmListAdapter: RecyclerView.Adapter<AlarmItemViewHolder>() {
         holder.bind(alarmsList[position])
         holder.enabled.setOnCheckedChangeListener { buttonView, isChecked ->
             // 05.01.2022 dmytrokoniev@gmail.com TODO: <text of todo>
+            if (isChecked) {
+
+                Toast.makeText(
+                    buttonView.context,
+                    "Checked time ${alarmsList[position].hour}:${alarmsList[position].minute}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    buttonView.context,
+                    "UNChecked time ${alarmsList[position].hour}:${alarmsList[position].minute}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
