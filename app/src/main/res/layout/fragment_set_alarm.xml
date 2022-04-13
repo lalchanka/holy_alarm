@@ -12,7 +12,6 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent">
 
-
         <ImageButton
             android:id="@+id/btn_cancel"
             android:layout_width="@dimen/size_64"
@@ -38,13 +37,13 @@
         android:id="@+id/tp_alarm_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/container_navigation"/>
+        app:layout_constraintTop_toBottomOf="@+id/container_navigation" />
 
-<!--    <TimePicker-->
-<!--        android:id="@+id/tp_alarm_time"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/container_navigation" />-->
+    <!--    <TimePicker-->
+    <!--        android:id="@+id/tp_alarm_time"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/container_navigation" />-->
 
     <TextView
         android:id="@+id/tv_holy_text"
