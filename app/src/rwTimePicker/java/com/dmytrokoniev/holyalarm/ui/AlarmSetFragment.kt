@@ -1,5 +1,6 @@
 package com.dmytrokoniev.holyalarm.ui
 
+import android.media.Image
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -10,7 +11,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
+import com.dmytrokoniev.holyalarm.BuildConfig
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.util.AlarmReceiver
 import ru.ifr0z.timepickercompact.TimePickerCompact
@@ -30,6 +33,8 @@ class AlarmSetFragment : Fragment() {
     @SuppressLint("UnspecifiedImmutableFlag")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Change declaration of btnCancel as Dan made it
+        val btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
         btnConfirm = view.findViewById(R.id.btn_confirm)
         tpAlarmTime = view.findViewById(R.id.tp_alarm_time)
 
@@ -71,6 +76,10 @@ class AlarmSetFragment : Fragment() {
             alarmManager.setAlarmClock(alarmClockInfo, pendingIntentBroadcast)
 
             (requireActivity() as MainActivity).loadAlarmListFragment()
+        }
+
+        btnCancel.setOnClickListener {
+            (activity as? MainActivity)?.loadAlarmListFragment()
         }
     }
 }

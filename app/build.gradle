@@ -14,14 +14,47 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.debug
     }
 
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
         }
     }
+
+    flavorDimensions "holyalarm"
+    productFlavors {
+        standartTimePicker {
+            dimension "holyalarm"
+        }
+        rwTimePicker {
+            dimension "holyalarm"
+        }
+    }
+
+    sourceSets {
+        standartTimePicker {
+            res {
+                srcDirs 'src/standartTimePicker/res'
+            }
+            java {
+                srcDirs 'src/standartTimePicker/java'
+            }
+        }
+        rwTimePicker {
+            res {
+                srcDirs 'src/rwTimePicker/res'
+            }
+            java {
+                srcDirs 'src/rwTimePicker/java'
+            }
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -42,4 +75,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     implementation 'com.github.ifr0z:timepickercompact:1.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
