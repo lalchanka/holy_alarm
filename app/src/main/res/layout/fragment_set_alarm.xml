@@ -9,7 +9,7 @@
         layout="@layout/navigation_set_alarm"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TimePicker
+    <ru.ifr0z.timepickercompact.TimePickerCompact
         android:id="@+id/tp_alarm_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

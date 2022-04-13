@@ -1,10 +1,8 @@
 package com.dmytrokoniev.holyalarm.ui
 
-import android.media.Image
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
-import com.dmytrokoniev.holyalarm.BuildConfig
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.util.AlarmReceiver
 import ru.ifr0z.timepickercompact.TimePickerCompact
@@ -41,7 +38,8 @@ class AlarmSetFragment : Fragment() {
         tpAlarmTime.run {
             val hoursInMillis = (hour * 60 * 60 * 1000).toLong()
             val minutesInMillis = (minute * 60 * 1000).toLong()
-            alarmTime = System.currentTimeMillis() + hoursInMillis + minutesInMillis
+            val roundedCurrentTime = (System.currentTimeMillis() / 60000) * 60000
+            alarmTime = roundedCurrentTime + hoursInMillis + minutesInMillis
         }
 
         val alarmManager = view.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -75,11 +73,19 @@ class AlarmSetFragment : Fragment() {
 
             alarmManager.setAlarmClock(alarmClockInfo, pendingIntentBroadcast)
 
-            (requireActivity() as MainActivity).loadAlarmListFragment()
+            val newAlarm = AlarmItem(
+                id = 1,
+                hour = tpAlarmTime.hour,
+                minute = tpAlarmTime.minute,
+                is24HourView = tpAlarmTime.is24HourView,
+                isEnabled = true
+            )
+
+            (requireActivity() as MainActivity).onConfirmClick(newAlarm)
         }
 
         btnCancel.setOnClickListener {
-            (activity as? MainActivity)?.loadAlarmListFragment()
+            (activity as? MainActivity)?.onCancelClick()
         }
     }
 }
