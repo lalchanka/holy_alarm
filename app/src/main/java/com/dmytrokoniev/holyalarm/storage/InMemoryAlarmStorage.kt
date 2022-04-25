@@ -11,6 +11,18 @@ class InMemoryAlarmStorage: IAlarmStorage {
     }
 
     override fun getItems(): List<AlarmItem> = alarmItems
+
+    override fun updateItems(itemsList: List<AlarmItem>): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun deleteItems(itemsList: List<Int>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun clear() {
+        TODO("Not yet implemented")
+    }
 }
 
 

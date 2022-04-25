@@ -8,11 +8,11 @@ interface IAlarmStorage {
 
     fun getItems(): List<AlarmItem>
 
-//    fun updateItems(itemsList: List<AlarmItem>)
-//
-//    fun deleteItems(itemsList: List<Int>)
-//
-//    fun clear()
+    fun updateItems(itemsList: List<AlarmItem>): Boolean
+
+    fun deleteItems(itemsList: List<Int>)
+
+    fun clear()
 }
 
 fun IAlarmStorage.addItem(newItem: AlarmItem) = addItems(listOf(newItem))

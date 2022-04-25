@@ -30,40 +30,62 @@ class SharedPreferencesAlarmStorage(
         }
     }
 
-//    override fun updateItems(itemsList: List<AlarmItem>) {
-//        val mutableList = getItems().toMutableList()
-//        val idList = mutableList.map { it.id }.toList()
-//        val resultList = emptyList<AlarmItem>().toMutableList()
-//        for (item in mutableList) {
-//            if (idList.contains(item.id)) {
-//                val updatedItem = itemsList.find { it.id == item.id }
-//                updatedItem?.let {
-//                    resultList.add(updatedItem)
-//                }
-//            } else {
-//                resultList.add(item)
-//            }
-//        }
+    override fun updateItems(itemsList: List<AlarmItem>): Boolean {
+        val mutableList = getItems().toMutableList()
+        val idList = mutableList.map { it.id }.toList()
+        val resultList = emptyList<AlarmItem>().toMutableList()
+        for (item in mutableList) {
+            if (idList.contains(item.id)) {
+                val updatedItem = itemsList.find { it.id == item.id }
+                updatedItem?.let {
+                    resultList.add(updatedItem)
+                }
+            } else {
+                resultList.add(item)
+            }
+        }
+
+        addItems(resultList.toList())
+
+        return true
+    }
+
+//    override fun updateItems(itemsList: List<AlarmItem>): Boolean {
+//        val currentItems = getItems()
+//        currentItems.containsAllIdsFrom(itemsList)
+//        val updatedItems = currentItems.map { currentItem ->
+//            itemsList.find { it.id == currentItem.id } ?: currentItem
+//        }.toList()
 //
-//        addItems(resultList.toList())
+//        addItems(updatedItems)
+//
+//        return true
 //    }
 
-//    override fun deleteItems(itemsList: List<Int>) {
-//        val mutableList = getItems().toMutableList()
-//        val resultList = emptyList<AlarmItem>().toMutableList()
-//        for (item in mutableList) {
-//            if (!itemsList.contains(item.id)) resultList.add(item)
-//        }
-//
-//        addItems(resultList.toList())
-//    }
+    private fun List<AlarmItem>.containsAllIdsFrom(inputItems: List<AlarmItem>): Boolean {
+        inputItems.forEach { inputItem ->
+            this.find { currentItem -> currentItem.id == inputItem.id } ?: return false
+        }
 
-//    override fun clear() {
-//        sharedPreference
-//            .edit()
-//            .remove(SP_ALARM_STRING_ID)
-//            .apply()
-//    }
+        return true
+    }
+
+    override fun deleteItems(itemsList: List<Int>) {
+        val mutableList = getItems().toMutableList()
+        val resultList = emptyList<AlarmItem>().toMutableList()
+        for (item in mutableList) {
+            if (!itemsList.contains(item.id)) resultList.add(item)
+        }
+
+        addItems(resultList.toList())
+    }
+
+    override fun clear() {
+        sharedPreference
+            .edit()
+            .remove(SP_ALARM_STRING_ID)
+            .apply()
+    }
 
     fun getIdList(): List<Int> = getItems().map { it.id }.toList()
 

@@ -15,9 +15,8 @@ import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.util.AlarmReceiver
 import ru.ifr0z.timepickercompact.TimePickerCompact
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
+import android.text.format.DateUtils as DateUtils1
 
 class AlarmSetFragment : Fragment() {
 
@@ -44,21 +43,17 @@ class AlarmSetFragment : Fragment() {
         val alarmManager = view.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         btnConfirm.setOnClickListener {
             tpAlarmTime.run {
-//                val hoursInMillis = (hour * 60 * 60 * 1000).toLong()
-//                val minutesInMillis = (minute * 60 * 1000).toLong()
-//                val roundedCurrentTime = (System.currentTimeMillis() / 60000) * 60000
-//                alarmTime = 1649915400000 // It was 8:50 AM by current time = 5:50
-                alarmTime = 1649916540000 // It was 8:50 AM by current time = 5:50
-//                alarmTime = roundedCurrentTime + hoursInMillis + minutesInMillis
+                val date: Date = Date()
+                val calendar = Calendar.getInstance()
+                calendar.time = date
+                Log.d("AlarmSetFragment", "date CalendarBefore ${calendar.time}")
 
-//                Log.d("AlarmSetFragment", "hour $hour")
-//                Log.d("AlarmSetFragment", "minute $minute")
-//
-//                Log.d("AlarmSetFragment", "System.currentTimeMillis() + ${millisToDate(System.currentTimeMillis())}")
-//                Log.d("AlarmSetFragment", "hoursInMillis + ${millisToDate(hoursInMillis)}")
-//                Log.d("AlarmSetFragment", "minutesInMillis + ${millisToDate(minutesInMillis)}")
-//                Log.d("AlarmSetFragment", "roundedCurrentTime + ${millisToDate(roundedCurrentTime)}")
-//                Log.d("AlarmSetFragment", "alarmTime + ${millisToDate(alarmTime)}")
+                calendar.set(Calendar.HOUR_OF_DAY, hour)
+                calendar.set(Calendar.MINUTE, minute)
+                calendar.set(Calendar.SECOND, 0)
+                alarmTime = calendar.timeInMillis
+
+                btnConfirmLogs(hour, minute, calendar)
             }
             val intent = Intent(
                 view.context,
@@ -93,6 +88,15 @@ class AlarmSetFragment : Fragment() {
         }
     }
 
+    private fun btnConfirmLogs(hour: Int, minute: Int, calendar: Calendar) {
+        Log.d("AlarmSetFragment", "hour $hour")
+        Log.d("AlarmSetFragment", "minute $minute")
+        Log.d("AlarmSetFragment", "calendar.time ${calendar.time}")
+        Log.d("AlarmSetFragment", "calendar.timeInMillis ${calendar.timeInMillis}")
+        Log.d("AlarmSetFragment", "alarmTime + $alarmTime")
+
+    }
+
     private fun millisToDate(millis: Long): String {
         val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS", Locale.getDefault())
         val timeZone = TimeZone.getDefault()
@@ -106,4 +110,6 @@ class AlarmSetFragment : Fragment() {
         calendar.timeInMillis = millis
         return formatter.format(calendar.time)
     }
+
+
 }
