@@ -1,93 +1,51 @@
 package com.dmytrokoniev.holyalarm.storage
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import com.dmytrokoniev.holyalarm.ui.AlarmItem
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 class SharedPreferencesAlarmStorage(
     context: Context
-): IAlarmStorage {
+) : IAlarmStorage {
 
-    private val sharedPreference = context.getSharedPreferences(SP_FILE_NAME, Context.MODE_PRIVATE)
+    private val sharedPreference = context.getSharedPreferences(SP_FILE_NAME, MODE_PRIVATE)
     private val gson = Gson()
 
-    override fun addItems(itemsList: List<AlarmItem>) {
-        val string = gson.toJson(itemsList)
-        sharedPreference
-            .edit()
-            .putString(SP_ALARM_STRING_ID, string)
+    override fun addItem(item: AlarmItem) {
+        val serializedItem = gson.toJson(item)
+        sharedPreference.edit()
+            .putString(item.id, serializedItem)
             .apply()
     }
 
     override fun getItems(): List<AlarmItem> {
-        val string = sharedPreference.getString(SP_ALARM_STRING_ID, "")
-        return if (string != null && string.isNotEmpty()) {
-            val itemType = object : TypeToken<List<AlarmItem>>() {}.type
-            gson.fromJson(string, itemType)
-        } else {
-            emptyList()
+        val strings = sharedPreference.all.toMap() as? Map<String, String> ?: emptyMap()
+        return strings.map {
+            gson.fromJson(it.value, AlarmItem::class.java)
         }
     }
 
-    override fun updateItems(itemsList: List<AlarmItem>): Boolean {
-        val mutableList = getItems().toMutableList()
-        val idList = mutableList.map { it.id }.toList()
-        val resultList = emptyList<AlarmItem>().toMutableList()
-        for (item in mutableList) {
-            if (idList.contains(item.id)) {
-                val updatedItem = itemsList.find { it.id == item.id }
-                updatedItem?.let {
-                    resultList.add(updatedItem)
-                }
-            } else {
-                resultList.add(item)
-            }
-        }
-
-        addItems(resultList.toList())
-
+    override fun updateItem(item: AlarmItem): Boolean {
+        getItems().find { it.id == item.id } ?: return false
+        deleteItem(item.id)
+        addItem(item)
         return true
     }
 
-//    override fun updateItems(itemsList: List<AlarmItem>): Boolean {
-//        val currentItems = getItems()
-//        currentItems.containsAllIdsFrom(itemsList)
-//        val updatedItems = currentItems.map { currentItem ->
-//            itemsList.find { it.id == currentItem.id } ?: currentItem
-//        }.toList()
-//
-//        addItems(updatedItems)
-//
-//        return true
-//    }
-
-    private fun List<AlarmItem>.containsAllIdsFrom(inputItems: List<AlarmItem>): Boolean {
-        inputItems.forEach { inputItem ->
-            this.find { currentItem -> currentItem.id == inputItem.id } ?: return false
-        }
-
+    override fun deleteItem(idToDelete: String): Boolean {
+        getItems().find { it.id == idToDelete } ?: return false
+        sharedPreference.edit()
+            .remove(idToDelete)
+            .apply()
         return true
-    }
-
-    override fun deleteItems(itemsList: List<Int>) {
-        val mutableList = getItems().toMutableList()
-        val resultList = emptyList<AlarmItem>().toMutableList()
-        for (item in mutableList) {
-            if (!itemsList.contains(item.id)) resultList.add(item)
-        }
-
-        addItems(resultList.toList())
     }
 
     override fun clear() {
-        sharedPreference
-            .edit()
-            .remove(SP_ALARM_STRING_ID)
+        sharedPreference.edit()
+            .clear()
             .apply()
     }
-
-    fun getIdList(): List<Int> = getItems().map { it.id }.toList()
 
     companion object SPConstants {
         private const val SP_FILE_NAME = "alarms_data"

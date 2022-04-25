@@ -4,19 +4,27 @@ import com.dmytrokoniev.holyalarm.ui.AlarmItem
 
 interface IAlarmStorage {
 
-    fun addItems(itemsList: List<AlarmItem>)
+    fun addItem(item: AlarmItem)
 
     fun getItems(): List<AlarmItem>
 
-    fun updateItems(itemsList: List<AlarmItem>): Boolean
+    fun updateItem(item: AlarmItem): Boolean
 
-    fun deleteItems(itemsList: List<Int>)
+    fun deleteItem(idToDelete: String): Boolean
 
     fun clear()
 }
 
-fun IAlarmStorage.addItem(newItem: AlarmItem) = addItems(listOf(newItem))
+fun IAlarmStorage.addItems(items: List<AlarmItem>) = items.forEach { addItem(it) }
 
-fun IAlarmStorage.getItem(index: Int) = getItems()[index]
+//fun getIdList(): List<Int> = getItems().map { it.id }.toList()
+//
+//private fun List<AlarmItem>.containsAllIdsFrom(inputItems: List<AlarmItem>): Boolean {
+//    inputItems.forEach { inputItem ->
+//        this.find { currentItem -> currentItem.id == inputItem.id } ?: return false
+//    }
+//
+//    return true
+//}
 
 //fun IAlarmStorage.updateItem(updatedItem: AlarmItem) = updateItems(listOf(updatedItem))
