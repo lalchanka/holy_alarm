@@ -38,7 +38,6 @@ class AlarmSetFragment : Fragment() {
         tpAlarmTime = view.findViewById(R.id.tp_alarm_time)
 
         val twentyMinutes = 20L * 60L * 1000L
-//        Log.d("AlarmSetFragment", "twentyMinutes + ${millisToDate(twentyMinutes)}")
 
         val alarmManager = view.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         btnConfirm.setOnClickListener {
@@ -73,7 +72,7 @@ class AlarmSetFragment : Fragment() {
             alarmManager.setAlarmClock(alarmClockInfo, pendingIntent)
 
             val newAlarm = AlarmItem(
-                id = 1,
+                id = UUID.randomUUID().toString(),
                 hour = tpAlarmTime.hour,
                 minute = tpAlarmTime.minute,
                 is24HourView = tpAlarmTime.is24HourView,
@@ -94,22 +93,5 @@ class AlarmSetFragment : Fragment() {
         Log.d("AlarmSetFragment", "calendar.time ${calendar.time}")
         Log.d("AlarmSetFragment", "calendar.timeInMillis ${calendar.timeInMillis}")
         Log.d("AlarmSetFragment", "alarmTime + $alarmTime")
-
     }
-
-    private fun millisToDate(millis: Long): String {
-        val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS", Locale.getDefault())
-        val timeZone = TimeZone.getDefault()
-        timeZone.rawOffset
-        formatter.timeZone = TimeZone.getDefault()
-//        Log.d("AlarmSetFragment", "TimeZone: ${TimeZone.getDefault().displayName}")
-//        Log.d("AlarmSetFragment", "TimeZone offset: ${timeZone.rawOffset}")
-
-        val calendar: Calendar = Calendar.getInstance()
-//        val calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-        calendar.timeInMillis = millis
-        return formatter.format(calendar.time)
-    }
-
-
 }

@@ -8,7 +8,7 @@
     android:paddingEnd="@dimen/size_32">
 
     <TextView
-        android:id="@+id/tv_time"
+        android:id="@+id/tv_alarm_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_48"
@@ -28,11 +28,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/swch_enabled"
         app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toEndOf="@+id/tv_time"
+        app:layout_constraintStart_toEndOf="@+id/tv_alarm_time"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="AM" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/swch_enabled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

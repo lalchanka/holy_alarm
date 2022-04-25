@@ -9,9 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
 
+// TODO add all LC functions with Logs
 class AlarmListFragment : Fragment() {
-
-    // TODO add all LC functions with Logs
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -22,20 +21,16 @@ class AlarmListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val alarmInMemoryStorage = (activity as? MainActivity)?.alarmStorage
-        //val newAlarm = arguments?.getSerializable("newAlarmItem") as? AlarmItem
-        val rvCustomAdapter = AlarmListAdapter()
         val rvAlarmList = view.findViewById<RecyclerView>(R.id.rv_alarms_list)
         val btnAddAlarm = view.findViewById<Button>(R.id.btn_add_alarm)
+
+        val alarmInMemoryStorage = (activity as? MainActivity)?.alarmStorage
+        val rvCustomAdapter = AlarmListAdapter()
 
         rvAlarmList.adapter = rvCustomAdapter
         alarmInMemoryStorage?.let {
             rvCustomAdapter.setAlarmList(it.getItems())
         }
-//        newAlarm?.let {
-//            rvCustomAdapter.addAlarm(it)
-//        }
-
         btnAddAlarm.setOnClickListener {
             (activity as? MainActivity)?.onAddAlarmClick()
         }

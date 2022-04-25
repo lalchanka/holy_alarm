@@ -1,10 +1,14 @@
 package com.dmytrokoniev.holyalarm.ui
 
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.IntRange
 import androidx.recyclerview.widget.RecyclerView
+import androidx.versionedparcelable.ParcelField
 import com.dmytrokoniev.holyalarm.R
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
 
@@ -21,23 +25,6 @@ class AlarmListAdapter: RecyclerView.Adapter<AlarmItemViewHolder>() {
 
     override fun onBindViewHolder(holder: AlarmItemViewHolder, position: Int) {
         holder.bind(alarmsList[position])
-        holder.enabled.setOnCheckedChangeListener { buttonView, isChecked ->
-            // 05.01.2022 dmytrokoniev@gmail.com TODO: <text of todo>
-            if (isChecked) {
-
-                Toast.makeText(
-                    buttonView.context,
-                    "Checked time ${alarmsList[position].hour}:${alarmsList[position].minute}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                Toast.makeText(
-                    buttonView.context,
-                    "UNChecked time ${alarmsList[position].hour}:${alarmsList[position].minute}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
     }
 
     override fun getItemCount(): Int = alarmsList.size
@@ -54,10 +41,11 @@ class AlarmListAdapter: RecyclerView.Adapter<AlarmItemViewHolder>() {
     }
 }
 
+@Parcelize
 data class AlarmItem(
-    val id: Int = 0,
-    val hour: Int = 7,
-    val minute: Int = 15,
+    val id: String,
+    @IntRange(from = 0, to = 23) val hour: Int,
+    @IntRange(from = 0, to = 59) val minute: Int,
     val is24HourView: Boolean = true,
     val isEnabled: Boolean = true
-): Serializable
+): Parcelable

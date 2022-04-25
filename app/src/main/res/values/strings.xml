@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Holy Alarm</string>
     <string name="add">Add</string>
+    <string name="alarm_time">%s:%s</string>
 </resources>
