@@ -18,7 +18,7 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
         val btnStop = view.findViewById<View>(R.id.btn_stop)
         val tvAlarmTime = view.findViewById<TextView>(R.id.tv_alarm_time)
 
-        val alarmTime = arguments?.getString(ALARM_TRIGGER_TIME) ?: ERROR_TRIGGER_TIME
+        val alarmTime = arguments?.getString(ALARM_TRIGGER_ARGUMENT) ?: ERROR_TRIGGER_TIME
         tvAlarmTime.text = alarmTime
 
         btnStop.setOnClickListener {
@@ -39,7 +39,6 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
     }
 
     companion object {
-        const val ALARM_TRIGGER_TIME = "ALARM_TRIGGER_TIME"
         const val ERROR_TRIGGER_TIME = "(((((:"
     }
 }

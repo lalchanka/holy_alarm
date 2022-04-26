@@ -8,6 +8,8 @@ import com.dmytrokoniev.holyalarm.storage.IAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.InMemoryAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.addItems
+import com.dmytrokoniev.holyalarm.util.AlarmReceiver
+import com.dmytrokoniev.holyalarm.util.AlarmReceiver.Companion.ACTION_TRIGGER_ALARM
 
 // 05.01.2022 dmytrokoniev@gmail.com TODO: <text of todo>
 
@@ -25,10 +27,20 @@ class MainActivity : AppCompatActivity() {
 
         val alarmListFragment = AlarmListFragment()
 
-        supportFragmentManager
-            .beginTransaction()
-            .add(R.id.container_view, alarmListFragment)
-        loadFragment(alarmListFragment)
+        val alarmTriggerAction = intent?.action == ACTION_TRIGGER_ALARM
+
+        if (!alarmTriggerAction) {
+            supportFragmentManager
+                .beginTransaction()
+                .add(R.id.container_view, alarmListFragment)
+            loadFragment(alarmListFragment)
+        } else {
+            val stopAlarmFragment = StopAlarmFragment()
+            val arguments = Bundle()
+            arguments.putString(ACTION_TRIGGER_ALARM, "")
+            stopAlarmFragment.arguments =
+            loadFragment(stopAlarmFragment)
+        }
     }
 
     override fun onStop() {
@@ -41,11 +53,13 @@ class MainActivity : AppCompatActivity() {
         alarmStorageSP = null
     }
 
-    private fun loadFragment(fragment: Fragment) = supportFragmentManager
-        .beginTransaction()
-        .replace(R.id.container_view, fragment)
-        .disallowAddToBackStack()
-        .commit()
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container_view, fragment)
+            .disallowAddToBackStack()
+            .commit()
+    }
 
     fun onAddAlarmClick() = loadFragment(AlarmSetFragment())
 
