@@ -13,10 +13,11 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.util.AlarmReceiver
+import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 import ru.ifr0z.timepickercompact.TimePickerCompact
-import java.text.SimpleDateFormat
-import java.util.*
-import android.text.format.DateUtils as DateUtils1
+import java.util.Calendar
+import java.util.Date
+import java.util.UUID
 
 class AlarmSetFragment : Fragment() {
 
@@ -57,6 +58,9 @@ class AlarmSetFragment : Fragment() {
                 view.context,
                 AlarmReceiver::class.java
             )
+            val formattedHour = tpAlarmTime.hour.timeHumanFormat()
+            val formattedMinute = tpAlarmTime.minute.timeHumanFormat()
+            intent.putExtra(TRIGGER_ALARM_TIME_KEY, "$formattedHour:$formattedMinute")
             val pendingIntent = PendingIntent.getBroadcast(
                 view.context,
                 12,
@@ -92,5 +96,9 @@ class AlarmSetFragment : Fragment() {
         Log.d("AlarmSetFragment", "calendar.time ${calendar.time}")
         Log.d("AlarmSetFragment", "calendar.timeInMillis ${calendar.timeInMillis}")
         Log.d("AlarmSetFragment", "alarmTime + $alarmTime")
+    }
+
+    companion object {
+        const val TRIGGER_ALARM_TIME_KEY = "TRIGGER_ALARM_TIME_KEY"
     }
 }

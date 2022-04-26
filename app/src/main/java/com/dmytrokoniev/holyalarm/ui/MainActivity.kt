@@ -8,7 +8,7 @@ import com.dmytrokoniev.holyalarm.storage.IAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.InMemoryAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.addItems
-import com.dmytrokoniev.holyalarm.util.AlarmReceiver
+import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.TRIGGER_ALARM_TIME_KEY
 import com.dmytrokoniev.holyalarm.util.AlarmReceiver.Companion.ACTION_TRIGGER_ALARM
 
 // 05.01.2022 dmytrokoniev@gmail.com TODO: <text of todo>
@@ -27,9 +27,9 @@ class MainActivity : AppCompatActivity() {
 
         val alarmListFragment = AlarmListFragment()
 
-        val alarmTriggerAction = intent?.action == ACTION_TRIGGER_ALARM
+        val isAlarmTriggered = intent?.action == ACTION_TRIGGER_ALARM
 
-        if (!alarmTriggerAction) {
+        if (!isAlarmTriggered) {
             supportFragmentManager
                 .beginTransaction()
                 .add(R.id.container_view, alarmListFragment)
@@ -38,7 +38,9 @@ class MainActivity : AppCompatActivity() {
             val stopAlarmFragment = StopAlarmFragment()
             val arguments = Bundle()
             arguments.putString(ACTION_TRIGGER_ALARM, "")
-            stopAlarmFragment.arguments =
+            val alarmTriggerTime = intent?.getStringExtra(TRIGGER_ALARM_TIME_KEY)
+            arguments.putString(TRIGGER_ALARM_TIME_KEY, alarmTriggerTime)
+            stopAlarmFragment.arguments = arguments
             loadFragment(stopAlarmFragment)
         }
     }
@@ -67,6 +69,12 @@ class MainActivity : AppCompatActivity() {
 
     fun onConfirmClick(newAlarm: AlarmItem) {
         alarmStorage.addItem(newAlarm)
+        loadFragment(AlarmListFragment())
+    }
+
+    fun onStopClick() {
+        // TODO: danylo.oliinyk@pluto.tv 26.04.2022 create mechanism to easily update 1 item by id or smth
+        // Turn off switch of a triggered alarm
         loadFragment(AlarmListFragment())
     }
 

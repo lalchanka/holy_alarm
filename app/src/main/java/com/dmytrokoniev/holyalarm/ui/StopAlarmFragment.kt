@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
+import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.TRIGGER_ALARM_TIME_KEY
 import com.dmytrokoniev.holyalarm.util.AlarmReceiver
 
 class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
@@ -18,7 +19,7 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
         val btnStop = view.findViewById<View>(R.id.btn_stop)
         val tvAlarmTime = view.findViewById<TextView>(R.id.tv_alarm_time)
 
-        val alarmTime = arguments?.getString(ALARM_TRIGGER_ARGUMENT) ?: ERROR_TRIGGER_TIME
+        val alarmTime = arguments?.getString(TRIGGER_ALARM_TIME_KEY) ?: ERROR_TRIGGER_TIME
         tvAlarmTime.text = alarmTime
 
         btnStop.setOnClickListener {
@@ -35,6 +36,7 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
             )
             alarmManager.cancel(pendingIntent)
+            (requireActivity() as MainActivity).onStopClick()
         }
     }
 

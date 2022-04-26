@@ -16,4 +16,8 @@ object TimeUtils {
         calendar.timeInMillis = millis
         return formatter.format(calendar.time)
     }
+
+    fun Int.timeHumanFormat() = toString().let {
+        ("0$it").takeLast(2)
+    }
 }
