@@ -21,6 +21,7 @@ import android.text.format.DateUtils as DateUtils1
 class AlarmSetFragment : Fragment() {
 
     private lateinit var btnConfirm: View
+    private lateinit var btnCancel: View
     private lateinit var tpAlarmTime: TimePickerCompact
     private var alarmTime: Long = 0
 
@@ -32,14 +33,12 @@ class AlarmSetFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Change declaration of btnCancel as Dan made it
-        val btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
+
+        btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
         btnConfirm = view.findViewById(R.id.btn_confirm)
         tpAlarmTime = view.findViewById(R.id.tp_alarm_time)
-
-        val twentyMinutes = 20L * 60L * 1000L
-
         val alarmManager = view.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
         btnConfirm.setOnClickListener {
             tpAlarmTime.run {
                 val date: Date = Date()

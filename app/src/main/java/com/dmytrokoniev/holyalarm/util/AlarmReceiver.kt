@@ -12,6 +12,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         val intentToStart = Intent(context, MainActivity::class.java)
+        intentToStart.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context?.startActivity(intentToStart)
     }
 }

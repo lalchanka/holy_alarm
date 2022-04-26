@@ -7,7 +7,7 @@ import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.storage.IAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.InMemoryAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
-import com.dmytrokoniev.holyalarm.storage.addItem
+import com.dmytrokoniev.holyalarm.storage.addItems
 
 // 05.01.2022 dmytrokoniev@gmail.com TODO: <text of todo>
 

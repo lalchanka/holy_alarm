@@ -6,17 +6,17 @@ class InMemoryAlarmStorage: IAlarmStorage {
 
     private val alarmItems: MutableList<AlarmItem> = mutableListOf()
 
-    override fun addItems(itemsList: List<AlarmItem>) {
-        alarmItems.addAll(itemsList)
+    override fun addItem(item: AlarmItem) {
+        alarmItems.add(item)
     }
 
     override fun getItems(): List<AlarmItem> = alarmItems
 
-    override fun updateItems(itemsList: List<AlarmItem>): Boolean {
+    override fun updateItem(item: AlarmItem): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun deleteItems(itemsList: List<Int>) {
+    override fun deleteItem(idToDelete: String): Boolean {
         TODO("Not yet implemented")
     }
 
