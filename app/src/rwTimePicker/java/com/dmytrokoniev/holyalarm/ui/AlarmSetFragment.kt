@@ -56,13 +56,18 @@ class AlarmSetFragment : Fragment() {
 
                 btnConfirmLogs(hour, minute, calendar)
             }
+            val newAlarm = AlarmItem(
+                id = UUID.randomUUID().toString(),
+                hour = tpAlarmTime.hour,
+                minute = tpAlarmTime.minute,
+                is24HourView = tpAlarmTime.is24HourView,
+                isEnabled = true
+            )
             val intent = Intent(
                 view.context,
                 AlarmReceiver::class.java
             )
-            val formattedHour = tpAlarmTime.hour.timeHumanFormat()
-            val formattedMinute = tpAlarmTime.minute.timeHumanFormat()
-            intent.putExtra(TRIGGER_ALARM_TIME_KEY, "$formattedHour:$formattedMinute")
+            intent.putExtra(KEY_ALARM, newAlarm)
             val pendingIntent = PendingIntent.getBroadcast(
                 view.context,
                 12,
@@ -75,14 +80,6 @@ class AlarmSetFragment : Fragment() {
             )
 
             alarmManager.setAlarmClock(alarmClockInfo, pendingIntent)
-
-            val newAlarm = AlarmItem(
-                id = UUID.randomUUID().toString(),
-                hour = tpAlarmTime.hour,
-                minute = tpAlarmTime.minute,
-                is24HourView = tpAlarmTime.is24HourView,
-                isEnabled = true
-            )
 
             (requireActivity() as MainActivity).onConfirmClick(newAlarm)
         }
@@ -101,6 +98,6 @@ class AlarmSetFragment : Fragment() {
     }
 
     companion object {
-        const val TRIGGER_ALARM_TIME_KEY = "TRIGGER_ALARM_TIME_KEY"
+        const val KEY_ALARM = "TRIGGER_ALARM_TIME_KEY"
     }
 }

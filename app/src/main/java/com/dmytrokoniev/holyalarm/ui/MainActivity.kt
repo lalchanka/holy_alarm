@@ -1,7 +1,6 @@
 package com.dmytrokoniev.holyalarm.ui
 
 import android.os.Bundle
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
@@ -9,8 +8,7 @@ import com.dmytrokoniev.holyalarm.storage.IAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.InMemoryAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.addItems
-import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.TRIGGER_ALARM_TIME_KEY
-import com.dmytrokoniev.holyalarm.util.AlarmReceiver.Companion.ACTION_TRIGGER_ALARM
+import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM
 import com.dmytrokoniev.holyalarm.util.IToolbar
 
 class MainActivity : AppCompatActivity(), IToolbar {
@@ -27,7 +25,8 @@ class MainActivity : AppCompatActivity(), IToolbar {
 
         val alarmListFragment = AlarmListFragment()
 
-        val isAlarmTriggered = intent?.action == ACTION_TRIGGER_ALARM
+        val alarmTriggered = intent?.getParcelableExtra<AlarmItem>(KEY_ALARM)
+        val isAlarmTriggered = alarmTriggered != null
 
         val actionBar = supportActionBar
         actionBar?.show()
@@ -40,9 +39,7 @@ class MainActivity : AppCompatActivity(), IToolbar {
         } else {
             val stopAlarmFragment = StopAlarmFragment()
             val arguments = Bundle()
-            arguments.putString(ACTION_TRIGGER_ALARM, "")
-            val alarmTriggerTime = intent?.getStringExtra(TRIGGER_ALARM_TIME_KEY)
-            arguments.putString(TRIGGER_ALARM_TIME_KEY, alarmTriggerTime)
+            arguments.putParcelable(KEY_ALARM, alarmTriggered)
             stopAlarmFragment.arguments = arguments
             loadFragment(stopAlarmFragment)
         }

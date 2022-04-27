@@ -9,8 +9,9 @@ import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.TRIGGER_ALARM_TIME_KEY
+import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM
 import com.dmytrokoniev.holyalarm.util.AlarmReceiver
+import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 
 class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
 
@@ -19,8 +20,14 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
         val btnStop = view.findViewById<View>(R.id.btn_stop)
         val tvAlarmTime = view.findViewById<TextView>(R.id.tv_alarm_time)
 
-        val alarmTime = arguments?.getString(TRIGGER_ALARM_TIME_KEY) ?: ERROR_TRIGGER_TIME
-        tvAlarmTime.text = alarmTime
+        val alarm = arguments?.getParcelable<AlarmItem>(KEY_ALARM)
+        val formattedHours = alarm?.hour?.timeHumanFormat() ?: "Time"
+        val formattedMinutes = alarm?.minute?.timeHumanFormat() ?: "Error"
+        tvAlarmTime.text = view.context.getString(
+            R.string.alarm_time,
+            formattedHours,
+            formattedMinutes
+        )
 
         btnStop.setOnClickListener {
             // TODO: danylo.oliinyk@pluto.tv 26.04.2022 move to a AlarmHelper class
