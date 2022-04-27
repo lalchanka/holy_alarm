@@ -1,6 +1,7 @@
 package com.dmytrokoniev.holyalarm.ui
 
 import android.os.Bundle
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
@@ -10,8 +11,6 @@ import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.addItems
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.TRIGGER_ALARM_TIME_KEY
 import com.dmytrokoniev.holyalarm.util.AlarmReceiver.Companion.ACTION_TRIGGER_ALARM
-
-// 05.01.2022 dmytrokoniev@gmail.com TODO: <text of todo>
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +27,9 @@ class MainActivity : AppCompatActivity() {
         val alarmListFragment = AlarmListFragment()
 
         val isAlarmTriggered = intent?.action == ACTION_TRIGGER_ALARM
+
+        val actionBar = supportActionBar
+        actionBar?.show()
 
         if (!isAlarmTriggered) {
             supportFragmentManager
