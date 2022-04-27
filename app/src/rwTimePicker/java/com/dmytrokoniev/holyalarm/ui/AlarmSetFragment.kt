@@ -13,6 +13,7 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.util.AlarmReceiver
+import com.dmytrokoniev.holyalarm.util.IToolbar
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 import ru.ifr0z.timepickercompact.TimePickerCompact
 import java.util.Calendar
@@ -34,11 +35,12 @@ class AlarmSetFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
         btnConfirm = view.findViewById(R.id.btn_confirm)
         tpAlarmTime = view.findViewById(R.id.tp_alarm_time)
         val alarmManager = view.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val toolbar = activity as IToolbar
+
 
         btnConfirm.setOnClickListener {
             tpAlarmTime.run {

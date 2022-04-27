@@ -11,8 +11,9 @@ import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.addItems
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.TRIGGER_ALARM_TIME_KEY
 import com.dmytrokoniev.holyalarm.util.AlarmReceiver.Companion.ACTION_TRIGGER_ALARM
+import com.dmytrokoniev.holyalarm.util.IToolbar
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), IToolbar {
 
     val alarmStorage: IAlarmStorage = InMemoryAlarmStorage()
     var alarmStorageSP: IAlarmStorage? = null
@@ -67,7 +68,12 @@ class MainActivity : AppCompatActivity() {
 
     fun onAddAlarmClick() = loadFragment(AlarmSetFragment())
 
-    fun onCancelClick() = loadFragment(AlarmListFragment())
+    override fun onConfirmClick() {
+        TODO("Not yet implemented")
+
+    }
+
+    override fun onCancelClick() = loadFragment(AlarmListFragment())
 
     fun onConfirmClick(newAlarm: AlarmItem) {
         alarmStorage.addItem(newAlarm)
