@@ -1,9 +1,5 @@
 package com.dmytrokoniev.holyalarm.ui
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,19 +8,15 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.util.AlarmReceiver
+import com.dmytrokoniev.holyalarm.util.AlarmHelper
 import com.dmytrokoniev.holyalarm.util.IToolbar
-import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 import ru.ifr0z.timepickercompact.TimePickerCompact
 import java.util.Calendar
 import java.util.Date
-import java.util.UUID
+import kotlin.random.Random
 
 class AlarmSetFragment : Fragment() {
 
-    private lateinit var btnConfirm: View
-    private lateinit var btnCancel: View
-    private lateinit var tpAlarmTime: TimePickerCompact
     private var alarmTime: Long = 0
 
     override fun onCreateView(
@@ -35,16 +27,14 @@ class AlarmSetFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
-        btnConfirm = view.findViewById(R.id.btn_confirm)
-        tpAlarmTime = view.findViewById(R.id.tp_alarm_time)
-        val alarmManager = view.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
+        val btnConfirm = view.findViewById<View>(R.id.btn_confirm)
+        val tpAlarmTime = view.findViewById<TimePickerCompact>(R.id.tp_alarm_time)
         val toolbar = activity as IToolbar
-
 
         btnConfirm.setOnClickListener {
             tpAlarmTime.run {
-                val date: Date = Date()
+                val date = Date()
                 val calendar = Calendar.getInstance()
                 calendar.time = date
                 Log.d("AlarmSetFragment", "date CalendarBefore ${calendar.time}")
@@ -54,33 +44,17 @@ class AlarmSetFragment : Fragment() {
                 calendar.set(Calendar.SECOND, 0)
                 alarmTime = calendar.timeInMillis
 
-                btnConfirmLogs(hour, minute, calendar)
+                printLogs(hour, minute, calendar)
             }
+            val alarmId = Random.nextInt()
             val newAlarm = AlarmItem(
-                id = UUID.randomUUID().toString(),
+                id = alarmId.toString(),
                 hour = tpAlarmTime.hour,
                 minute = tpAlarmTime.minute,
                 is24HourView = tpAlarmTime.is24HourView,
                 isEnabled = true
             )
-            val intent = Intent(
-                view.context,
-                AlarmReceiver::class.java
-            )
-            intent.putExtra(KEY_ALARM, newAlarm)
-            val pendingIntent = PendingIntent.getBroadcast(
-                view.context,
-                12,
-                intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
-            )
-            val alarmClockInfo = AlarmManager.AlarmClockInfo(
-                alarmTime,
-                pendingIntent
-            )
-
-            alarmManager.setAlarmClock(alarmClockInfo, pendingIntent)
-
+            AlarmHelper.setAlarm(alarmTime, alarmId)
             (requireActivity() as MainActivity).onConfirmClick(newAlarm)
         }
 
@@ -89,7 +63,7 @@ class AlarmSetFragment : Fragment() {
         }
     }
 
-    private fun btnConfirmLogs(hour: Int, minute: Int, calendar: Calendar) {
+    private fun printLogs(hour: Int, minute: Int, calendar: Calendar) {
         Log.d("AlarmSetFragment", "hour $hour")
         Log.d("AlarmSetFragment", "minute $minute")
         Log.d("AlarmSetFragment", "calendar.time ${calendar.time}")
@@ -98,6 +72,6 @@ class AlarmSetFragment : Fragment() {
     }
 
     companion object {
-        const val KEY_ALARM = "TRIGGER_ALARM_TIME_KEY"
+        const val KEY_ALARM_ID = "TRIGGER_ALARM_TIME_KEY"
     }
 }

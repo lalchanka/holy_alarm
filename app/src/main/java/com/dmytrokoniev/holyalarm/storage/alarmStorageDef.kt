@@ -1,10 +1,15 @@
 package com.dmytrokoniev.holyalarm.storage
 
+import android.content.Context
 import com.dmytrokoniev.holyalarm.ui.AlarmItem
 
 interface IAlarmStorage {
 
+    fun initialize(context: Context)
+
     fun addItem(item: AlarmItem)
+
+    fun getItem(id: String): AlarmItem?
 
     fun getItems(): List<AlarmItem>
 
@@ -13,6 +18,8 @@ interface IAlarmStorage {
     fun deleteItem(idToDelete: String): Boolean
 
     fun clear()
+
+    fun dispose()
 }
 
 fun IAlarmStorage.addItems(items: List<AlarmItem>) = items.forEach { addItem(it) }

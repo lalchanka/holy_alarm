@@ -1,19 +1,16 @@
 package com.dmytrokoniev.holyalarm.ui
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.util.AlarmReceiver
+import com.dmytrokoniev.holyalarm.util.AlarmHelper
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
+import com.dmytrokoniev.holyalarm.util.toast
 
 // TODO: 12/28/2021 findView & viewHolder
+// TODO: danylo.oliinyk@pluto.tv 26.04.2022 add swipe to delete or long press
 class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val tvAlarmTime = itemView.findViewById<TextView>(R.id.tv_alarm_time)
@@ -21,8 +18,9 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(alarmItem: AlarmItem) {
         val context = tvAlarmTime.context
-        val formattedHour = alarmItem.hour.timeHumanFormat()
-        val formattedMinute = alarmItem.minute.timeHumanFormat()
+        val (formattedHour, formattedMinute) = alarmItem.run {
+            hour.timeHumanFormat() to minute.timeHumanFormat()
+        }
         val alarmTimeText = context.getString(
             R.string.alarm_time,
             formattedHour,
@@ -31,41 +29,16 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tvAlarmTime.text = alarmTimeText
         swchEnabled.isChecked = alarmItem.isEnabled
 
-        setListeners(formattedHour, formattedMinute)
-        // TODO: danylo.oliinyk@pluto.tv 26.04.2022 add swipe to delete or long press
+        setListeners(formattedHour, formattedMinute, alarmItem.id)
     }
 
-    // TODO: danylo.oliinyk@pluto.tv 26.04.2022 move to AlarmHelper
-    private fun cancelAlarm(context: Context) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(
-            context,
-            AlarmReceiver::class.java
-        )
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            12,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
-        )
-        alarmManager.cancel(pendingIntent)
-    }
-
-    private fun setListeners(formattedHour: String, formattedMinute: String) {
-        swchEnabled.setOnCheckedChangeListener { buttonView, isChecked ->
+    private fun setListeners(formattedHour: String, formattedMinute: String, alarmId: String) {
+        swchEnabled.setOnCheckedChangeListener { btnView, isChecked ->
             if (isChecked) {
-                Toast.makeText(
-                    buttonView.context,
-                    "Alarm set for: $formattedHour:$formattedMinute",
-                    Toast.LENGTH_SHORT
-                ).show()
+                btnView.toast("Alarm set for: $formattedHour:$formattedMinute")
             } else {
-                Toast.makeText(
-                    buttonView.context,
-                    "Cancelled alarm: $formattedHour:$formattedMinute",
-                    Toast.LENGTH_SHORT
-                ).show()
-                cancelAlarm(buttonView.context)
+                btnView.toast("Cancelled alarm: $formattedHour:$formattedMinute")
+                AlarmHelper.cancelAlarm(alarmId.toInt())
             }
         }
     }

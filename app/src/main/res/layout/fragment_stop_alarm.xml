@@ -23,7 +23,7 @@
         android:id="@+id/btn_stop"
         android:layout_width="192dp"
         android:layout_height="80dp"
-        android:background="@drawable/stop_button_rounded"
+        android:background="@drawable/button_rounded"
         android:text="@string/stop"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_24"

@@ -8,6 +8,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
+import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 
 // TODO add all LC functions with Logs
 class AlarmListFragment : Fragment() {
@@ -24,13 +25,10 @@ class AlarmListFragment : Fragment() {
         val rvAlarmList = view.findViewById<RecyclerView>(R.id.rv_alarms_list)
         val btnAddAlarm = view.findViewById<Button>(R.id.btn_add_alarm)
 
-        val alarmInMemoryStorage = (activity as? MainActivity)?.alarmStorage
         val rvCustomAdapter = AlarmListAdapter()
-
         rvAlarmList.adapter = rvCustomAdapter
-        alarmInMemoryStorage?.let {
-            rvCustomAdapter.setAlarmList(it.getItems())
-        }
+        val alarms = SharedPreferencesAlarmStorage.getItems()
+        rvCustomAdapter.setAlarmList(alarms)
         btnAddAlarm.setOnClickListener {
             (activity as? MainActivity)?.onAddAlarmClick()
         }

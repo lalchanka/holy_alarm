@@ -1,16 +1,13 @@
 package com.dmytrokoniev.holyalarm.ui
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM
-import com.dmytrokoniev.holyalarm.util.AlarmReceiver
+import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
+import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
+import com.dmytrokoniev.holyalarm.util.AlarmHelper
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 
 class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
@@ -20,7 +17,8 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
         val btnStop = view.findViewById<View>(R.id.btn_stop)
         val tvAlarmTime = view.findViewById<TextView>(R.id.tv_alarm_time)
 
-        val alarm = arguments?.getParcelable<AlarmItem>(KEY_ALARM)
+        val alarmId = arguments?.getString(KEY_ALARM_ID)
+        val alarm = SharedPreferencesAlarmStorage.getItems().find { it.id == alarmId }
         val formattedHours = alarm?.hour?.timeHumanFormat() ?: "Time"
         val formattedMinutes = alarm?.minute?.timeHumanFormat() ?: "Error"
         tvAlarmTime.text = view.context.getString(
@@ -30,19 +28,9 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
         )
 
         btnStop.setOnClickListener {
-            // TODO: danylo.oliinyk@pluto.tv 26.04.2022 move to a AlarmHelper class
-            val alarmManager = view.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val intent = Intent(
-                view.context,
-                AlarmReceiver::class.java
-            )
-            val pendingIntent = PendingIntent.getBroadcast(
-                view.context,
-                12,
-                intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
-            )
-            alarmManager.cancel(pendingIntent)
+            alarmId?.toInt()?.let { id ->
+                AlarmHelper.cancelAlarm(id)
+            }
             (requireActivity() as MainActivity).onStopClick()
         }
     }
