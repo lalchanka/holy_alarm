@@ -9,9 +9,9 @@ import com.dmytrokoniev.holyalarm.ui.MainActivity
 class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        val alarm = intent?.getStringExtra(KEY_ALARM_ID)
+        val alarmId = intent?.getStringExtra(KEY_ALARM_ID)
         val intentForActivity = Intent(context, MainActivity::class.java)
-        intentForActivity.putExtra(KEY_ALARM_ID, alarm)
+        intentForActivity.putExtra(KEY_ALARM_ID, alarmId)
         intentForActivity.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context?.startActivity(intentForActivity)
     }

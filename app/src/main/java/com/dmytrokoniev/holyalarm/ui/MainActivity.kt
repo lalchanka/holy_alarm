@@ -11,6 +11,7 @@ import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 import com.dmytrokoniev.holyalarm.util.AlarmHelper
 import com.dmytrokoniev.holyalarm.util.IToolbar
 
+// TODO: d.koniev 03.05.2022 alarm at same time functionality
 class MainActivity : AppCompatActivity(), IToolbar {
 
     override fun onCreate(savedInstanceState: Bundle?) {
