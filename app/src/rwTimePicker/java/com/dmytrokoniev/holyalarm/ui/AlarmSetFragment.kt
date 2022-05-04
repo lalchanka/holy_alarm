@@ -1,74 +1,33 @@
 package com.dmytrokoniev.holyalarm.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.TimePicker
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.util.AlarmHelper
-import com.dmytrokoniev.holyalarm.util.IToolbar
-import ru.ifr0z.timepickercompact.TimePickerCompact
-import java.util.Calendar
-import java.util.Date
+import com.dmytrokoniev.holyalarm.util.AlarmTimeBus
 import kotlin.random.Random
 
-class AlarmSetFragment : Fragment() {
-
-    private var alarmTime: Long = 0
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_set_alarm, container, false)
+class AlarmSetFragment : Fragment(R.layout.fragment_set_alarm) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val btnCancel = view.findViewById<ImageButton>(R.id.btn_cancel)
-        val btnConfirm = view.findViewById<View>(R.id.btn_confirm)
-        val tpAlarmTime = view.findViewById<TimePickerCompact>(R.id.tp_alarm_time)
-        val toolbar = activity as IToolbar
+        val tpAlarmTime = view.findViewById<TimePicker>(R.id.tp_alarm_time)
+        val alarmId = Random.nextInt()
 
-        btnConfirm.setOnClickListener {
-            tpAlarmTime.run {
-                val date = Date()
-                val calendar = Calendar.getInstance()
-                calendar.time = date
-                Log.d("AlarmSetFragment", "date CalendarBefore ${calendar.time}")
-
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
-                calendar.set(Calendar.SECOND, 0)
-                alarmTime = calendar.timeInMillis
-
-                printLogs(hour, minute, calendar)
-            }
-            val alarmId = Random.nextInt()
+        tpAlarmTime.setOnTimeChangedListener { _, hourOfDay, minute ->
             val newAlarm = AlarmItem(
                 id = alarmId.toString(),
-                hour = tpAlarmTime.hour,
-                minute = tpAlarmTime.minute,
+                hour = hourOfDay,
+                minute = minute,
                 is24HourView = tpAlarmTime.is24HourView,
                 isEnabled = true
             )
-            AlarmHelper.setAlarm(alarmTime, alarmId)
-            (requireActivity() as MainActivity).onConfirmClick(newAlarm)
-        }
 
-        btnCancel.setOnClickListener {
-            (activity as? MainActivity)?.onCancelClick()
+            AlarmTimeBus.lastAlarmTimeSet = newAlarm
         }
-    }
-
-    private fun printLogs(hour: Int, minute: Int, calendar: Calendar) {
-        Log.d("AlarmSetFragment", "hour $hour")
-        Log.d("AlarmSetFragment", "minute $minute")
-        Log.d("AlarmSetFragment", "calendar.time ${calendar.time}")
-        Log.d("AlarmSetFragment", "calendar.timeInMillis ${calendar.timeInMillis}")
-        Log.d("AlarmSetFragment", "alarmTime + $alarmTime")
     }
 
     companion object {

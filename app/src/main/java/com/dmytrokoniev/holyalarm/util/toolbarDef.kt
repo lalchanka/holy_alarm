@@ -5,26 +5,18 @@ import android.widget.Toolbar
 import androidx.core.view.isVisible
 import com.dmytrokoniev.holyalarm.R
 
-interface IToolbar {
-
-    fun onConfirmClick()
-
-    fun onCancelClick()
-}
-
 enum class ToolbarState {
     ICON_CLEAN,
     CONFIRM_CANCEL
 }
 
-object AlarmStateManager {
+object ToolbarStateManager {
 
     fun onStateChanged(toolbar: View, state: ToolbarState) {
         cleanState(toolbar)
         when (state) {
-            ToolbarState.ICON_CLEAN -> onConfirmCancelState(toolbar)
+            ToolbarState.ICON_CLEAN -> onIconCleanState(toolbar)
             ToolbarState.CONFIRM_CANCEL -> onConfirmCancelState(toolbar)
-            else -> cleanState(toolbar)
         }
     }
 

@@ -38,7 +38,7 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 btnView.toast("Alarm set for: $formattedHour:$formattedMinute")
             } else {
                 btnView.toast("Cancelled alarm: $formattedHour:$formattedMinute")
-                AlarmHelper.cancelAlarm(alarmId.toInt())
+                AlarmHelper.cancelAlarm(alarmId)
             }
         }
     }

@@ -28,7 +28,7 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
         )
 
         btnStop.setOnClickListener {
-            alarmId?.toInt()?.let { id ->
+            alarmId?.let { id ->
                 AlarmHelper.cancelAlarm(id)
             }
             (requireActivity() as MainActivity).onStopClick()

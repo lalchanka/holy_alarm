@@ -27,12 +27,12 @@ object AlarmHelper {
         this.alarmManager = context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
     }
 
-    fun setAlarm(time: Long, id: Int) {
+    fun setAlarm(time: Long, id: String) {
         val intent = Intent(context, AlarmReceiver::class.java)
-        intent.putExtra(KEY_ALARM_ID, id.toString())
+        intent.putExtra(KEY_ALARM_ID, id)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            id,
+            id.toInt(),
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
         )
@@ -43,11 +43,11 @@ object AlarmHelper {
         alarmManager?.setAlarmClock(alarmClockInfo, pendingIntent)
     }
 
-    fun cancelAlarm(id: Int) {
+    fun cancelAlarm(id: String) {
         val intent = Intent(context, AlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            id,
+            id.toInt(),
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_ONE_SHOT
         )

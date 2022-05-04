@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ru.ifr0z.timepickercompact.TimePickerCompact
+    <TimePicker
         android:id="@+id/tp_alarm_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
