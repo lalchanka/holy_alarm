@@ -17,6 +17,8 @@ class AlarmSetFragment : Fragment(R.layout.fragment_set_alarm) {
         val tpAlarmTime = view.findViewById<TimePicker>(R.id.tp_alarm_time)
         val alarmId = Random.nextInt()
 
+        tpAlarmTime.setIs24HourView(true)
+
         tpAlarmTime.setOnTimeChangedListener { _, hourOfDay, minute ->
             val newAlarm = AlarmItem(
                 id = alarmId.toString(),

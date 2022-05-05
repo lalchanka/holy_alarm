@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         val btnCancel = findViewById<View>(R.id.btn_cancel)
         val btnConfirm = findViewById<View>(R.id.btn_confirm)
+        toolbar = findViewById<View>(R.id.toolbar)
         AlarmHelper.initialize(this)
         SharedPreferencesAlarmStorage.initialize(this)
 
@@ -72,26 +73,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showStopAlarmFragment(alarmTriggeredId: String?) {
-        val stopAlarmFragment = StopAlarmFragment()
-        val arguments = Bundle()
-        arguments.putString(KEY_ALARM_ID, alarmTriggeredId)
-        stopAlarmFragment.arguments = arguments
-        ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
-        loadFragment(stopAlarmFragment)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
+        toolbar = null
         AlarmHelper.dispose()
         SharedPreferencesAlarmStorage.dispose()
-    }
-
-    private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.container_view, fragment)
-            .commit()
     }
 
     fun onAddAlarmClick() {
@@ -104,6 +90,22 @@ class MainActivity : AppCompatActivity() {
         // Turn off switch of a triggered alarm
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
         loadFragment(AlarmListFragment())
+    }
+
+    private fun showStopAlarmFragment(alarmTriggeredId: String?) {
+        val stopAlarmFragment = StopAlarmFragment()
+        val arguments = Bundle()
+        arguments.putString(KEY_ALARM_ID, alarmTriggeredId)
+        stopAlarmFragment.arguments = arguments
+        ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
+        loadFragment(stopAlarmFragment)
+    }
+
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container_view, fragment)
+            .commit()
     }
 
     companion object {
