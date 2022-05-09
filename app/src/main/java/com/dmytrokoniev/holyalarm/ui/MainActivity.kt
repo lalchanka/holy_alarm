@@ -2,18 +2,18 @@ package com.dmytrokoniev.holyalarm.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
+import com.dmytrokoniev.holyalarm.storage.updateItemIsEnabled
+import com.dmytrokoniev.holyalarm.ui.AlarmItem.Companion.toMillis
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 import com.dmytrokoniev.holyalarm.util.AlarmHelper
 import com.dmytrokoniev.holyalarm.util.AlarmTimeBus
 import com.dmytrokoniev.holyalarm.util.ToolbarState
 import com.dmytrokoniev.holyalarm.util.ToolbarStateManager
-import java.util.*
 
 // TODO: d.koniev 03.05.2022 alarm at same time functionality
 class MainActivity : AppCompatActivity() {
@@ -41,16 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         btnConfirm.setOnClickListener {
             AlarmTimeBus.lastAlarmTimeSet?.let {
-                val date = Date()
-                val calendar = Calendar.getInstance()
-                calendar.time = date
-                Log.d("AlarmSetFragment", "date CalendarBefore ${calendar.time}")
-
-                calendar.set(Calendar.HOUR_OF_DAY, it.hour)
-                calendar.set(Calendar.MINUTE, it.minute)
-                calendar.set(Calendar.SECOND, 0)
-                val alarmTime = calendar.timeInMillis
-
+                val alarmTime = it.toMillis()
                 AlarmHelper.setAlarm(alarmTime, it.id)
                 SharedPreferencesAlarmStorage.addItem(it)
                 ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
@@ -85,9 +76,11 @@ class MainActivity : AppCompatActivity() {
         loadFragment(AlarmSetFragment())
     }
 
-    fun onStopClick() {
+    fun onStopClick(alarmId: String) {
         // TODO: danylo.oliinyk@pluto.tv 26.04.2022 create mechanism to easily update 1 item by id or smth
         // Turn off switch of a triggered alarm
+        AlarmHelper.cancelAlarm(alarmId)
+        SharedPreferencesAlarmStorage.updateItemIsEnabled(alarmId, isEnabled = false)
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
         loadFragment(AlarmListFragment())
     }

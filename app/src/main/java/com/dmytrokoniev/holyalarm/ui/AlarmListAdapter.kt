@@ -3,16 +3,14 @@ package com.dmytrokoniev.holyalarm.ui
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.IntRange
 import androidx.recyclerview.widget.RecyclerView
-import androidx.versionedparcelable.ParcelField
 import com.dmytrokoniev.holyalarm.R
 import kotlinx.parcelize.Parcelize
-import java.io.Serializable
+import java.util.*
 
 
-class AlarmListAdapter: RecyclerView.Adapter<AlarmItemViewHolder>() {
+class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
     private var alarmsList: MutableList<AlarmItem> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmItemViewHolder {
@@ -48,4 +46,18 @@ data class AlarmItem(
     @IntRange(from = 0, to = 59) val minute: Int,
     val is24HourView: Boolean = true,
     val isEnabled: Boolean = true
-): Parcelable
+) : Parcelable {
+
+    companion object {
+        fun AlarmItem.toMillis(): Long {
+            val date = Date()
+            val calendar = Calendar.getInstance()
+            calendar.time = date
+
+            calendar.set(Calendar.HOUR_OF_DAY, hour)
+            calendar.set(Calendar.MINUTE, minute)
+            calendar.set(Calendar.SECOND, 0)
+            return calendar.timeInMillis
+        }
+    }
+}

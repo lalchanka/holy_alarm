@@ -5,6 +5,9 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
+import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
+import com.dmytrokoniev.holyalarm.storage.updateItemIsEnabled
+import com.dmytrokoniev.holyalarm.ui.AlarmItem.Companion.toMillis
 import com.dmytrokoniev.holyalarm.util.AlarmHelper
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 import com.dmytrokoniev.holyalarm.util.toast
@@ -35,10 +38,15 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private fun setListeners(formattedHour: String, formattedMinute: String, alarmId: String) {
         swchEnabled.setOnCheckedChangeListener { btnView, isChecked ->
             if (isChecked) {
+                val alarmItem = SharedPreferencesAlarmStorage.getItem(alarmId)
+                    ?: return@setOnCheckedChangeListener
+                AlarmHelper.setAlarm(alarmItem.toMillis(), alarmId)
+                SharedPreferencesAlarmStorage.updateItemIsEnabled(alarmId, isEnabled = true)
                 btnView.toast("Alarm set for: $formattedHour:$formattedMinute")
             } else {
-                btnView.toast("Cancelled alarm: $formattedHour:$formattedMinute")
                 AlarmHelper.cancelAlarm(alarmId)
+                SharedPreferencesAlarmStorage.updateItemIsEnabled(alarmId, isEnabled = false)
+                btnView.toast("Cancelled alarm: $formattedHour:$formattedMinute")
             }
         }
     }

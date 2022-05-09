@@ -24,6 +24,11 @@ interface IAlarmStorage {
 
 fun IAlarmStorage.addItems(items: List<AlarmItem>) = items.forEach { addItem(it) }
 
+fun IAlarmStorage.updateItemIsEnabled(id: String, isEnabled: Boolean) {
+    val alarmItem = getItem(id) ?: return
+    updateItem(alarmItem.copy(isEnabled = isEnabled))
+}
+
 //fun getIdList(): List<Int> = getItems().map { it.id }.toList()
 //
 //private fun List<AlarmItem>.containsAllIdsFrom(inputItems: List<AlarmItem>): Boolean {

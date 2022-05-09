@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
-import com.dmytrokoniev.holyalarm.util.AlarmHelper
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 
 class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
@@ -29,9 +28,8 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
 
         btnStop.setOnClickListener {
             alarmId?.let { id ->
-                AlarmHelper.cancelAlarm(id)
+                (requireActivity() as MainActivity).onStopClick(alarmId)
             }
-            (requireActivity() as MainActivity).onStopClick()
         }
     }
 

@@ -49,7 +49,7 @@ object AlarmHelper {
             context,
             id.toInt(),
             intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_ONE_SHOT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
         )
         alarmManager?.cancel(pendingIntent)
     }
