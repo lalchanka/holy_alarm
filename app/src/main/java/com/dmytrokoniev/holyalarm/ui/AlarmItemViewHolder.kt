@@ -1,6 +1,7 @@
 package com.dmytrokoniev.holyalarm.ui
 
 import android.view.View
+import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +20,7 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val tvAlarmTime = itemView.findViewById<TextView>(R.id.tv_alarm_time)
     private val swchEnabled = itemView.findViewById<SwitchCompat>(R.id.swch_enabled)
 
-    fun bind(alarmItem: AlarmItem) {
+    fun bind(alarmItem: AlarmItem, checkedChangeListener: (Boolean, String) -> Unit) {
         val context = tvAlarmTime.context
         val (formattedHour, formattedMinute) = alarmItem.run {
             hour.timeHumanFormat() to minute.timeHumanFormat()
@@ -32,10 +33,13 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tvAlarmTime.text = alarmTimeText
         swchEnabled.isChecked = alarmItem.isEnabled
 
-        setListeners(formattedHour, formattedMinute, alarmItem.id)
+//        setListeners(formattedHour, formattedMinute, alarmItem.id, checkedChangeListener)
+        swchEnabled.setOnCheckedChangeListener { btnView, isChecked ->
+            checkedChangeListener(isChecked, alarmItem.id)
+        }
     }
 
-    private fun setListeners(formattedHour: String, formattedMinute: String, alarmId: String) {
+    private fun setListeners(formattedHour: String, formattedMinute: String, alarmId: String, checkedChangeListener: () -> Unit) {
         swchEnabled.setOnCheckedChangeListener { btnView, isChecked ->
             if (isChecked) {
                 val alarmItem = SharedPreferencesAlarmStorage.getItem(alarmId)

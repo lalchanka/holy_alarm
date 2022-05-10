@@ -10,10 +10,7 @@ import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.updateItemIsEnabled
 import com.dmytrokoniev.holyalarm.ui.AlarmItem.Companion.toMillis
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
-import com.dmytrokoniev.holyalarm.util.AlarmHelper
-import com.dmytrokoniev.holyalarm.util.AlarmTimeBus
-import com.dmytrokoniev.holyalarm.util.ToolbarState
-import com.dmytrokoniev.holyalarm.util.ToolbarStateManager
+import com.dmytrokoniev.holyalarm.util.*
 
 // TODO: d.koniev 03.05.2022 alarm at same time functionality
 class MainActivity : AppCompatActivity() {
@@ -26,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         val btnCancel = findViewById<View>(R.id.btn_cancel)
         val btnConfirm = findViewById<View>(R.id.btn_confirm)
-        toolbar = findViewById<View>(R.id.toolbar)
+        toolbar = findViewById(R.id.toolbar)
         AlarmHelper.initialize(this)
         SharedPreferencesAlarmStorage.initialize(this)
 
@@ -83,6 +80,20 @@ class MainActivity : AppCompatActivity() {
         SharedPreferencesAlarmStorage.updateItemIsEnabled(alarmId, isEnabled = false)
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
         loadFragment(AlarmListFragment())
+    }
+
+    fun onCheckedChangeListener(isChecked: Boolean, alarmId: String) {
+        if (isChecked) {
+            val alarmItem = SharedPreferencesAlarmStorage.getItem(alarmId)
+                ?: return
+            AlarmHelper.setAlarm(alarmItem.toMillis(), alarmId)
+            SharedPreferencesAlarmStorage.updateItemIsEnabled(alarmId, isEnabled = true)
+//            btnView.toast("Alarm set for: $formattedHour:$formattedMinute")
+        } else {
+            AlarmHelper.cancelAlarm(alarmId)
+            SharedPreferencesAlarmStorage.updateItemIsEnabled(alarmId, isEnabled = false)
+//            btnView.toast("Cancelled alarm: $formattedHour:$formattedMinute")
+        }
     }
 
     private fun showStopAlarmFragment(alarmTriggeredId: String?) {

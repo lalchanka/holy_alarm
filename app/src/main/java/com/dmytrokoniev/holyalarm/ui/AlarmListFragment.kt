@@ -25,7 +25,9 @@ class AlarmListFragment : Fragment() {
         val rvAlarmList = view.findViewById<RecyclerView>(R.id.rv_alarms_list)
         val btnAddAlarm = view.findViewById<Button>(R.id.btn_add_alarm)
 
-        val rvCustomAdapter = AlarmListAdapter()
+        val rvCustomAdapter = AlarmListAdapter { isChecked: Boolean, alarmId: String ->
+            (activity as? MainActivity)?.onCheckedChangeListener(isChecked, alarmId)
+        }
         rvAlarmList.adapter = rvCustomAdapter
         val alarms = SharedPreferencesAlarmStorage.getItems()
         rvCustomAdapter.setAlarmList(alarms)
