@@ -82,13 +82,12 @@ class MainActivity : AppCompatActivity() {
         loadFragment(AlarmListFragment())
     }
 
-    fun onCheckedChangeListener(isChecked: Boolean, alarmId: String) {
+    fun onCheckedChangeListener(isChecked: Boolean, alarmItem: AlarmItem) {
+        val alarmId = alarmItem.id
         if (isChecked) {
-            val alarmItem = SharedPreferencesAlarmStorage.getItem(alarmId)
-                ?: return
-            AlarmHelper.setAlarm(alarmItem.toMillis(), alarmId)
+            AlarmHelper.setAlarm(alarmItem)
             SharedPreferencesAlarmStorage.updateItemIsEnabled(alarmId, isEnabled = true)
-//            btnView.toast("Alarm set for: $formattedHour:$formattedMinute")
+//            toast("Alarm set for: $formattedHour:$formattedMinute")
         } else {
             AlarmHelper.cancelAlarm(alarmId)
             SharedPreferencesAlarmStorage.updateItemIsEnabled(alarmId, isEnabled = false)

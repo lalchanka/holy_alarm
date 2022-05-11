@@ -10,8 +10,10 @@ import kotlinx.parcelize.Parcelize
 import java.util.*
 
 
-class AlarmListAdapter(private val checkedChangeListener: (Boolean, String) -> Unit) : RecyclerView.Adapter<AlarmItemViewHolder>() {
+class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
+
     private var alarmsList: MutableList<AlarmItem> = mutableListOf()
+    private var checkedChangeListener: ((Boolean, AlarmItem) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmItemViewHolder {
         val context = parent.context
@@ -36,6 +38,10 @@ class AlarmListAdapter(private val checkedChangeListener: (Boolean, String) -> U
     fun addAlarm(inputItem: AlarmItem) {
         alarmsList.add(inputItem)
         notifyItemInserted(alarmsList.lastIndex)
+    }
+
+    fun setCheckedChangeListener(checkedChangeListener: (Boolean, AlarmItem) -> Unit) {
+        this.checkedChangeListener = checkedChangeListener
     }
 }
 

@@ -11,6 +11,7 @@ import com.dmytrokoniev.holyalarm.storage.updateItemIsEnabled
 import com.dmytrokoniev.holyalarm.ui.AlarmItem.Companion.toMillis
 import com.dmytrokoniev.holyalarm.util.AlarmHelper
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
+import com.dmytrokoniev.holyalarm.util.setAlarm
 import com.dmytrokoniev.holyalarm.util.toast
 
 // TODO: 12/28/2021 findView & viewHolder
@@ -20,7 +21,7 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val tvAlarmTime = itemView.findViewById<TextView>(R.id.tv_alarm_time)
     private val swchEnabled = itemView.findViewById<SwitchCompat>(R.id.swch_enabled)
 
-    fun bind(alarmItem: AlarmItem, checkedChangeListener: (Boolean, String) -> Unit) {
+    fun bind(alarmItem: AlarmItem, checkedChangeListener: ((Boolean, AlarmItem) -> Unit)?) {
         val context = tvAlarmTime.context
         val (formattedHour, formattedMinute) = alarmItem.run {
             hour.timeHumanFormat() to minute.timeHumanFormat()
@@ -32,26 +33,8 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         )
         tvAlarmTime.text = alarmTimeText
         swchEnabled.isChecked = alarmItem.isEnabled
-
-//        setListeners(formattedHour, formattedMinute, alarmItem.id, checkedChangeListener)
-        swchEnabled.setOnCheckedChangeListener { btnView, isChecked ->
-            checkedChangeListener(isChecked, alarmItem.id)
-        }
-    }
-
-    private fun setListeners(formattedHour: String, formattedMinute: String, alarmId: String, checkedChangeListener: () -> Unit) {
-        swchEnabled.setOnCheckedChangeListener { btnView, isChecked ->
-            if (isChecked) {
-                val alarmItem = SharedPreferencesAlarmStorage.getItem(alarmId)
-                    ?: return@setOnCheckedChangeListener
-                AlarmHelper.setAlarm(alarmItem.toMillis(), alarmId)
-                SharedPreferencesAlarmStorage.updateItemIsEnabled(alarmId, isEnabled = true)
-                btnView.toast("Alarm set for: $formattedHour:$formattedMinute")
-            } else {
-                AlarmHelper.cancelAlarm(alarmId)
-                SharedPreferencesAlarmStorage.updateItemIsEnabled(alarmId, isEnabled = false)
-                btnView.toast("Cancelled alarm: $formattedHour:$formattedMinute")
-            }
+        swchEnabled.setOnCheckedChangeListener { _, isChecked ->
+            checkedChangeListener?.invoke(isChecked, alarmItem)
         }
     }
 }
