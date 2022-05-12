@@ -40,6 +40,13 @@ class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
         notifyItemInserted(alarmsList.lastIndex)
     }
 
+    fun removeAlarm() {
+        recyclerDataArrayList.remove(viewHolder.adapterPosition)
+
+        // below line is to notify our item is removed from adapter.
+        recyclerViewAdapter.notifyItemRemoved(viewHolder.adapterPosition)
+    }
+
     fun setCheckedChangeListener(checkedChangeListener: (Boolean, AlarmItem) -> Unit) {
         this.checkedChangeListener = checkedChangeListener
     }
