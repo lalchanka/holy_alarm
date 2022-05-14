@@ -47,20 +47,18 @@ class AlarmListFragment : Fragment() {
             ): Boolean = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                // this method is called when we swipe our item to right direction.
-                // on below line we are getting the item at a particular position.
-                // TODO: Which POsition to use (bindingPosition or absolutePosition)? or not to use position at all 
-                val itemsList =
-                    rvCustomAdapter.ge .get(viewHolder.bindingAdapterPosition)
 
-                // below line is to get the position
-                // of the item at that position.
-                val position = viewHolder.adapterPosition
+                val removedPosition = viewHolder.bindingAdapterPosition
+                rvCustomAdapter.removeAlarm(removedPosition)
 
-                // this method is called when item is swiped.
-                // below line is to remove item from our array list.
-                rvCustomAdapter.removeAlarm()
+                Snackbar.make(
+                    viewHolder.itemView,
+                    "Alarm removed",
+                    Snackbar.LENGTH_LONG).setAction("UNDO") {
+                    rvCustomAdapter.getAlarm(removedPosition)
+                    rvCustomAdapter.notifyItemInserted(removedPosition)
 
+                }.show()
                 // below line is to display our snackbar with action.
 //                Snackbar.make(courseRV, deletedCourse.getTitle(), Snackbar.LENGTH_LONG)
 //                    .setAction("Undo",
@@ -74,6 +72,6 @@ class AlarmListFragment : Fragment() {
 //                        }).show()
             }
         })
-            touchHelper.attachToRecyclerView(rvAlarmList)
+        touchHelper.attachToRecyclerView(rvAlarmList)
     }
 }

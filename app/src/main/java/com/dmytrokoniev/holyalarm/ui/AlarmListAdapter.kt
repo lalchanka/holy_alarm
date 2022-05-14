@@ -40,11 +40,19 @@ class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
         notifyItemInserted(alarmsList.lastIndex)
     }
 
-    fun removeAlarm() {
-        recyclerDataArrayList.remove(viewHolder.adapterPosition)
+    fun getAlarm(index: Int): AlarmItem = alarmsList[index]
 
-        // below line is to notify our item is removed from adapter.
-        recyclerViewAdapter.notifyItemRemoved(viewHolder.adapterPosition)
+    fun removeAlarm(position: Int/***, viewHolder: RecyclerView.ViewHolder***/) {
+        var  removedItem = alarmsList[position]
+
+        alarmsList.removeAt(position)
+        notifyItemRemoved(position)
+
+//        Snackbar.make(viewHolder.itemView, "${removedItem.name?.get("En")} removed", Snackbar.LENGTH_LONG).setAction("UNDO") {
+//            products.add(removedPosition, removedItem)
+//            notifyItemInserted(removedPosition)
+//
+//        }.show()
     }
 
     fun setCheckedChangeListener(checkedChangeListener: (Boolean, AlarmItem) -> Unit) {
