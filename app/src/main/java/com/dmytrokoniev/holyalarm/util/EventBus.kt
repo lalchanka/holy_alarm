@@ -1,13 +1,15 @@
 package com.dmytrokoniev.holyalarm.util
 
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 
+@kotlinx.coroutines.ObsoleteCoroutinesApi
 object EventBus {
 
-    private var eventsPipeline: Channel<UiEvent>? = null
+    private var eventsPipeline: BroadcastChannel<UiEvent>? = null
 
     fun initialize() {
-        eventsPipeline = Channel()
+        eventsPipeline = BroadcastChannel(CONFLATED)
     }
 
     /**
@@ -31,7 +33,8 @@ object EventBus {
     }
 
     private suspend fun requireReceive(): UiEvent =
-        eventsPipeline?.receive() ?: throw IllegalStateException("Calling onReceiveEvent outside of EventBus lifecycle")
+        eventsPipeline?.openSubscription()?.receive()
+        ?: throw IllegalStateException("Calling onReceiveEvent outside of EventBus lifecycle")
 }
 
 sealed interface UiEvent
