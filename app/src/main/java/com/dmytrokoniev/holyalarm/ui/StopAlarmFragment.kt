@@ -5,9 +5,12 @@ import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
+import com.dmytrokoniev.holyalarm.storage.Storage
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
+import com.dmytrokoniev.holyalarm.util.EventBus
+import com.dmytrokoniev.holyalarm.util.StopAlarmFragmentEvent
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
+import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
 
 class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
 
@@ -17,9 +20,9 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
         val tvAlarmTime = view.findViewById<TextView>(R.id.tv_alarm_time)
 
         val alarmId = arguments?.getString(KEY_ALARM_ID)
-        val alarm = SharedPreferencesAlarmStorage.getItems().find { it.id == alarmId }
+        val alarm = Storage.getItems().find { it.id == alarmId }
         val formattedHours = alarm?.hour?.timeHumanFormat() ?: "Time"
-        val formattedMinutes = alarm?.minute?.timeHumanFormat() ?: "Error"
+        val formattedMinutes = alarm?.minute?.timeHumanFormat() ?: "Error $ERROR_TRIGGER_TIME"
         tvAlarmTime.text = view.context.getString(
             R.string.alarm_time,
             formattedHours,
@@ -28,7 +31,9 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
 
         btnStop.setOnClickListener {
             alarmId?.let { id ->
-                (requireActivity() as MainActivity).onStopClick(alarmId)
+                launchInFragmentScope {
+                    EventBus.onSendEvent(StopAlarmFragmentEvent.StopClicked(id))
+                }
             }
         }
     }

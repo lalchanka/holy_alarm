@@ -7,6 +7,8 @@ import android.content.SharedPreferences
 import com.dmytrokoniev.holyalarm.ui.AlarmItem
 import com.google.gson.Gson
 
+typealias Storage = SharedPreferencesAlarmStorage
+
 @SuppressLint("StaticFieldLeak")
 object SharedPreferencesAlarmStorage : IAlarmStorage {
 

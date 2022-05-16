@@ -1,18 +1,11 @@
 package com.dmytrokoniev.holyalarm.ui
 
 import android.view.View
-import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
-import com.dmytrokoniev.holyalarm.storage.updateItemIsEnabled
-import com.dmytrokoniev.holyalarm.ui.AlarmItem.Companion.toMillis
-import com.dmytrokoniev.holyalarm.util.AlarmHelper
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
-import com.dmytrokoniev.holyalarm.util.setAlarm
-import com.dmytrokoniev.holyalarm.util.toast
 
 // TODO: 12/28/2021 findView & viewHolder
 // TODO: danylo.oliinyk@pluto.tv 26.04.2022 add swipe to delete or long press

@@ -7,7 +7,8 @@ import androidx.annotation.IntRange
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
 import kotlinx.parcelize.Parcelize
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 
 class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {

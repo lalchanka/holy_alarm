@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
+import com.dmytrokoniev.holyalarm.storage.Storage
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -30,7 +30,7 @@ class AlarmListFragment : Fragment() {
 
         val rvCustomAdapter = AlarmListAdapter()
         rvAlarmList.adapter = rvCustomAdapter
-        val alarms = SharedPreferencesAlarmStorage.getItems()
+        val alarms = Storage.getItems()
         rvCustomAdapter.setAlarmList(alarms)
         rvCustomAdapter.setCheckedChangeListener { isChecked: Boolean, alarmItem: AlarmItem ->
             (activity as? MainActivity)?.onCheckedChangeListener(isChecked, alarmItem)
