@@ -3,6 +3,7 @@ package com.dmytrokoniev.holyalarm.util
 import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import androidx.appcompat.app.AppCompatActivity
 import com.dmytrokoniev.holyalarm.ui.AlarmItem
 import com.dmytrokoniev.holyalarm.ui.AlarmItem.Companion.toMillis
 
@@ -14,9 +15,14 @@ fun View.toast(
     duration: Int = LENGTH_SHORT
 ) = Toast.makeText(context, text, duration).show()
 
-//fun Activity.toast(
-//    text: String,
-//    duration: Int = LENGTH_SHORT
-//) = view
+/**
+ * A convenient function to show a [Toast] using any [AppCompatActivity] and it's
+ * [android.R.id.content] if present. Toast will not be shown if the [android.R.id.content]
+ * is `null`.
+ */
+fun AppCompatActivity.toast(
+    text: String,
+    duration: Int = LENGTH_SHORT
+) = findViewById<View>(android.R.id.content)?.run { toast(text, duration) }
 
 fun AlarmHelper.setAlarm(alarmItem: AlarmItem) = setAlarm(alarmItem.toMillis(), alarmItem.id)

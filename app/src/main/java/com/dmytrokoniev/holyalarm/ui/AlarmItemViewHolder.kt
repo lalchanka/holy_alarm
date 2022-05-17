@@ -5,6 +5,9 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
+import com.dmytrokoniev.holyalarm.util.AlarmItemEvent.AlarmOff
+import com.dmytrokoniev.holyalarm.util.AlarmItemEvent.AlarmOn
+import com.dmytrokoniev.holyalarm.util.EventBus
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 
 // TODO: 12/28/2021 findView & viewHolder
@@ -14,7 +17,7 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val tvAlarmTime = itemView.findViewById<TextView>(R.id.tv_alarm_time)
     private val swchEnabled = itemView.findViewById<SwitchCompat>(R.id.swch_enabled)
 
-    fun bind(alarmItem: AlarmItem, checkedChangeListener: ((Boolean, AlarmItem) -> Unit)?) {
+    fun bind(alarmItem: AlarmItem, launchInFragmentScope: (suspend () -> Unit) -> Unit) {
         val context = tvAlarmTime.context
         val (formattedHour, formattedMinute) = alarmItem.run {
             hour.timeHumanFormat() to minute.timeHumanFormat()
@@ -27,7 +30,10 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tvAlarmTime.text = alarmTimeText
         swchEnabled.isChecked = alarmItem.isEnabled
         swchEnabled.setOnCheckedChangeListener { _, isChecked ->
-            checkedChangeListener?.invoke(isChecked, alarmItem)
+            val event = if (isChecked) AlarmOn(alarmItem) else AlarmOff(alarmItem)
+            launchInFragmentScope {
+                EventBus.onSendEvent(event)
+            }
         }
     }
 }

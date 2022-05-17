@@ -1,5 +1,6 @@
 package com.dmytrokoniev.holyalarm.util
 
+import com.dmytrokoniev.holyalarm.ui.AlarmItem
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
 
@@ -44,4 +45,15 @@ sealed interface StopAlarmFragmentEvent : UiEvent {
     data class StopClicked(
         val alarmId: String
     ) : StopAlarmFragmentEvent
+}
+
+sealed interface AlarmItemEvent : UiEvent {
+
+    data class AlarmOn(
+        val alarmItem: AlarmItem
+    ) : UiEvent
+
+    data class AlarmOff(
+        val alarmItem: AlarmItem
+    ) : UiEvent
 }

@@ -10,11 +10,14 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.storage.Storage
+import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
 import com.google.android.material.snackbar.Snackbar
 
 
 // TODO add all LC functions with Logs
 class AlarmListFragment : Fragment() {
+
+    private var rvAdapter: AlarmListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,13 +31,12 @@ class AlarmListFragment : Fragment() {
         val rvAlarmList = view.findViewById<RecyclerView>(R.id.rv_alarms_list)
         val btnAddAlarm = view.findViewById<Button>(R.id.btn_add_alarm)
 
-        val rvCustomAdapter = AlarmListAdapter()
-        rvAlarmList.adapter = rvCustomAdapter
+        rvAdapter = AlarmListAdapter()
         val alarms = Storage.getItems()
-        rvCustomAdapter.setAlarmList(alarms)
-        rvCustomAdapter.setCheckedChangeListener { isChecked: Boolean, alarmItem: AlarmItem ->
-            (activity as? MainActivity)?.onCheckedChangeListener(isChecked, alarmItem)
-        }
+        rvAdapter?.setAlarmList(alarms)
+        rvAdapter?.setLaunchInFragmentScope(::launchInFragmentScope)
+        rvAlarmList.adapter = rvAdapter
+
         btnAddAlarm.setOnClickListener {
             (activity as? MainActivity)?.onAddAlarmClick()
         }
@@ -47,16 +49,15 @@ class AlarmListFragment : Fragment() {
             ): Boolean = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
                 val removedPosition = viewHolder.bindingAdapterPosition
-                rvCustomAdapter.removeAlarm(removedPosition)
+                rvAdapter?.removeAlarm(removedPosition)
 
                 Snackbar.make(
                     viewHolder.itemView,
                     "Alarm removed",
                     Snackbar.LENGTH_LONG).setAction("UNDO") {
-                    rvCustomAdapter.getAlarm(removedPosition)
-                    rvCustomAdapter.notifyItemInserted(removedPosition)
+                    rvAdapter?.getAlarm(removedPosition)
+                    rvAdapter?.notifyItemInserted(removedPosition)
 
                 }.show()
                 // below line is to display our snackbar with action.
@@ -73,5 +74,10 @@ class AlarmListFragment : Fragment() {
             }
         })
         touchHelper.attachToRecyclerView(rvAlarmList)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rvAdapter = null
     }
 }

@@ -7,14 +7,13 @@ import androidx.annotation.IntRange
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
 import kotlinx.parcelize.Parcelize
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 
 
 class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
 
     private var alarmsList: MutableList<AlarmItem> = mutableListOf()
-    private var checkedChangeListener: ((Boolean, AlarmItem) -> Unit)? = null
+    private var launchInFragmentScope: ((suspend () -> Unit) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmItemViewHolder {
         val context = parent.context
@@ -25,7 +24,7 @@ class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: AlarmItemViewHolder, position: Int) {
-        holder.bind(alarmsList[position], checkedChangeListener)
+        holder.bind(alarmsList[position], requireLaunchInFragmentScope())
     }
 
     override fun getItemCount(): Int = alarmsList.size
@@ -56,9 +55,18 @@ class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
 //        }.show()
     }
 
-    fun setCheckedChangeListener(checkedChangeListener: (Boolean, AlarmItem) -> Unit) {
-        this.checkedChangeListener = checkedChangeListener
+    fun setLaunchInFragmentScope(launch: (suspend () -> Unit) -> Unit) {
+        this.launchInFragmentScope = launch
     }
+
+    fun clear() {
+        launchInFragmentScope = null
+    }
+
+    private fun requireLaunchInFragmentScope(): (suspend () -> Unit) -> Unit =
+        launchInFragmentScope ?: throw IllegalStateException(
+            "Accessing launchInFragmentScope outside of Fragment lifecycle"
+        )
 }
 
 @Parcelize

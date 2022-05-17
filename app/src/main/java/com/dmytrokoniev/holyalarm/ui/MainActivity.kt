@@ -11,13 +11,7 @@ import com.dmytrokoniev.holyalarm.storage.Storage
 import com.dmytrokoniev.holyalarm.storage.updateItemIsEnabled
 import com.dmytrokoniev.holyalarm.ui.AlarmItem.Companion.toMillis
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
-import com.dmytrokoniev.holyalarm.util.AlarmHelper
-import com.dmytrokoniev.holyalarm.util.AlarmTimeBus
-import com.dmytrokoniev.holyalarm.util.EventBus
-import com.dmytrokoniev.holyalarm.util.StopAlarmFragmentEvent
-import com.dmytrokoniev.holyalarm.util.ToolbarState
-import com.dmytrokoniev.holyalarm.util.ToolbarStateManager
-import com.dmytrokoniev.holyalarm.util.setAlarm
+import com.dmytrokoniev.holyalarm.util.*
 import kotlinx.coroutines.launch
 
 // TODO: d.koniev 03.05.2022 alarm at same time functionality
@@ -59,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
             loadFragment(AlarmListFragment())
         }
-        startListetingForUiEvents()
+        startListeningForUiEvents()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -89,15 +83,15 @@ class MainActivity : AppCompatActivity() {
         if (isChecked) {
             AlarmHelper.setAlarm(alarmItem)
             Storage.updateItemIsEnabled(alarmId, isEnabled = true)
-//            toast("Alarm set for: $formattedHour:$formattedMinute")
+            toast("Alarm set for: ${alarmItem.hour}:${alarmItem.minute}")
         } else {
             AlarmHelper.cancelAlarm(alarmId)
             Storage.updateItemIsEnabled(alarmId, isEnabled = false)
-//            btnView.toast("Cancelled alarm: $formattedHour:$formattedMinute")
+            toast("Cancelled alarm: ${alarmItem.hour}:${alarmItem.minute}")
         }
     }
 
-    private fun startListetingForUiEvents() {
+    private fun startListeningForUiEvents() {
         lifecycleScope.launch {
             when (val receivedEvent = EventBus.onReceiveEvent()) {
                 is StopAlarmFragmentEvent.StopClicked -> onStopClick(receivedEvent.alarmId)
