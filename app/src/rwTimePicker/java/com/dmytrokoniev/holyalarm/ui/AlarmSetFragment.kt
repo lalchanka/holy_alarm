@@ -10,7 +10,7 @@ import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.util.AlarmTimeBus
 import kotlin.random.Random
 
-class AlarmSetFragment : Fragment(R.layout.fragment_set_alarm) {
+open class AlarmSetFragment : Fragment(R.layout.fragment_set_alarm) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

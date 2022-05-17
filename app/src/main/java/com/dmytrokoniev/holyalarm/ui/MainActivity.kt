@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onAddAlarmClick() {
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.CONFIRM_CANCEL)
-        loadFragment(AlarmSetFragment())
+        loadFragment(NewAlarmSetFragment())
     }
 
     private fun showStopAlarmFragment(alarmTriggeredId: String?) {

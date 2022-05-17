@@ -17,15 +17,9 @@ import com.google.android.material.snackbar.Snackbar
 
 
 // TODO add all LC functions with Logs
-class AlarmListFragment : Fragment() {
+class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
 
     private var rvAdapter: AlarmListAdapter? = null
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_alarm_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
