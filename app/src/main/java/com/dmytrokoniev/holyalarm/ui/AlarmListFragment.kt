@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.storage.Storage
+import com.dmytrokoniev.holyalarm.util.AlarmListFragmentEvent
+import com.dmytrokoniev.holyalarm.util.AlarmListFragmentEvent.AddClicked
+import com.dmytrokoniev.holyalarm.util.EventBus
 import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
 import com.google.android.material.snackbar.Snackbar
 
@@ -38,7 +41,9 @@ class AlarmListFragment : Fragment() {
         rvAlarmList.adapter = rvAdapter
 
         btnAddAlarm.setOnClickListener {
-            (activity as? MainActivity)?.onAddAlarmClick()
+            launchInFragmentScope {
+                EventBus.onSendEvent(AddClicked)
+            }
         }
 
         val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {

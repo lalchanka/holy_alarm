@@ -14,6 +14,7 @@ import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 import com.dmytrokoniev.holyalarm.util.*
 import com.dmytrokoniev.holyalarm.util.AlarmItemViewHolderEvent.AlarmOff
 import com.dmytrokoniev.holyalarm.util.AlarmItemViewHolderEvent.AlarmOn
+import com.dmytrokoniev.holyalarm.util.AlarmListFragmentEvent.AddClicked
 import kotlinx.coroutines.launch
 
 // TODO: d.koniev 03.05.2022 alarm at same time functionality
@@ -75,17 +76,13 @@ class MainActivity : AppCompatActivity() {
         EventBus.dispose()
     }
 
-    fun onAddAlarmClick() {
-        ToolbarStateManager.onStateChanged(toolbar, ToolbarState.CONFIRM_CANCEL)
-        loadFragment(AlarmSetFragment())
-    }
-
     private fun startListeningForUiEvents() {
         lifecycleScope.launch {
             when (val receivedEvent = EventBus.onReceiveEvent()) {
                 is StopAlarmFragmentEvent.StopClicked -> onStopClick(receivedEvent.alarmId)
                 is AlarmOn -> onCheckedChangeListener(isChecked = true, receivedEvent.alarmItem)
                 is AlarmOff -> onCheckedChangeListener(isChecked = false, receivedEvent.alarmItem)
+                is AddClicked -> onAddAlarmClick()
             }
         }
     }
@@ -108,6 +105,11 @@ class MainActivity : AppCompatActivity() {
             Storage.updateItemIsEnabled(alarmId, isEnabled = false)
             toast("Cancelled alarm: ${alarmItem.hour}:${alarmItem.minute}")
         }
+    }
+
+    private fun onAddAlarmClick() {
+        ToolbarStateManager.onStateChanged(toolbar, ToolbarState.CONFIRM_CANCEL)
+        loadFragment(AlarmSetFragment())
     }
 
     private fun showStopAlarmFragment(alarmTriggeredId: String?) {

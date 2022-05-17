@@ -49,6 +49,7 @@ sealed interface StopAlarmFragmentEvent : UiEvent {
 
 sealed interface AlarmItemViewHolderEvent : UiEvent {
 
+    // TODO: danylo.oliinyk@gmail.com 17/05/2022 We shouldn't pass non-UI related data in UI events
     data class AlarmOn(
         val alarmItem: AlarmItem
     ) : AlarmItemViewHolderEvent
@@ -56,4 +57,9 @@ sealed interface AlarmItemViewHolderEvent : UiEvent {
     data class AlarmOff(
         val alarmItem: AlarmItem
     ) : AlarmItemViewHolderEvent
+}
+
+sealed interface AlarmListFragmentEvent : UiEvent {
+
+    object AddClicked : AlarmListFragmentEvent
 }
