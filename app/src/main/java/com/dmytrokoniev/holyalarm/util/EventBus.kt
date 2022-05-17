@@ -51,9 +51,9 @@ sealed interface AlarmItemViewHolderEvent : UiEvent {
 
     data class AlarmOn(
         val alarmItem: AlarmItem
-    ) : UiEvent
+    ) : AlarmItemViewHolderEvent
 
     data class AlarmOff(
         val alarmItem: AlarmItem
-    ) : UiEvent
+    ) : AlarmItemViewHolderEvent
 }
