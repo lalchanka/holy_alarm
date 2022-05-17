@@ -5,8 +5,8 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.util.AlarmItemEvent.AlarmOff
-import com.dmytrokoniev.holyalarm.util.AlarmItemEvent.AlarmOn
+import com.dmytrokoniev.holyalarm.util.AlarmItemViewHolderEvent.AlarmOff
+import com.dmytrokoniev.holyalarm.util.AlarmItemViewHolderEvent.AlarmOn
 import com.dmytrokoniev.holyalarm.util.EventBus
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 

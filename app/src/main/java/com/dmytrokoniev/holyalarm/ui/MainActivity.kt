@@ -12,6 +12,8 @@ import com.dmytrokoniev.holyalarm.storage.updateItemIsEnabled
 import com.dmytrokoniev.holyalarm.ui.AlarmItem.Companion.toMillis
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 import com.dmytrokoniev.holyalarm.util.*
+import com.dmytrokoniev.holyalarm.util.AlarmItemViewHolderEvent.AlarmOff
+import com.dmytrokoniev.holyalarm.util.AlarmItemViewHolderEvent.AlarmOn
 import kotlinx.coroutines.launch
 
 // TODO: d.koniev 03.05.2022 alarm at same time functionality
@@ -78,7 +80,24 @@ class MainActivity : AppCompatActivity() {
         loadFragment(AlarmSetFragment())
     }
 
-    fun onCheckedChangeListener(isChecked: Boolean, alarmItem: AlarmItem) {
+    private fun startListeningForUiEvents() {
+        lifecycleScope.launch {
+            when (val receivedEvent = EventBus.onReceiveEvent()) {
+                is StopAlarmFragmentEvent.StopClicked -> onStopClick(receivedEvent.alarmId)
+                is AlarmOn -> onCheckedChangeListener(isChecked = true, receivedEvent.alarmItem)
+                is AlarmOff -> onCheckedChangeListener(isChecked = false, receivedEvent.alarmItem)
+            }
+        }
+    }
+
+    private fun onStopClick(alarmId: String) {
+        AlarmHelper.cancelAlarm(alarmId)
+        Storage.updateItemIsEnabled(alarmId, isEnabled = false)
+        ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
+        loadFragment(AlarmListFragment())
+    }
+
+    private fun onCheckedChangeListener(isChecked: Boolean, alarmItem: AlarmItem) {
         val alarmId = alarmItem.id
         if (isChecked) {
             AlarmHelper.setAlarm(alarmItem)
@@ -89,21 +108,6 @@ class MainActivity : AppCompatActivity() {
             Storage.updateItemIsEnabled(alarmId, isEnabled = false)
             toast("Cancelled alarm: ${alarmItem.hour}:${alarmItem.minute}")
         }
-    }
-
-    private fun startListeningForUiEvents() {
-        lifecycleScope.launch {
-            when (val receivedEvent = EventBus.onReceiveEvent()) {
-                is StopAlarmFragmentEvent.StopClicked -> onStopClick(receivedEvent.alarmId)
-            }
-        }
-    }
-
-    private fun onStopClick(alarmId: String) {
-        AlarmHelper.cancelAlarm(alarmId)
-        Storage.updateItemIsEnabled(alarmId, isEnabled = false)
-        ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
-        loadFragment(AlarmListFragment())
     }
 
     private fun showStopAlarmFragment(alarmTriggeredId: String?) {

@@ -47,7 +47,7 @@ sealed interface StopAlarmFragmentEvent : UiEvent {
     ) : StopAlarmFragmentEvent
 }
 
-sealed interface AlarmItemEvent : UiEvent {
+sealed interface AlarmItemViewHolderEvent : UiEvent {
 
     data class AlarmOn(
         val alarmItem: AlarmItem
