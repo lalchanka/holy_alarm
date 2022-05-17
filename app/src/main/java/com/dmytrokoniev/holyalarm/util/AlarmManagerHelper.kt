@@ -8,19 +8,19 @@ import android.content.Intent
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 
 /**
- * [AlarmHelper] encapsulates tasks related to Alarm and creates a convenient API to simplify
+ * [AlarmManagerHelper] encapsulates tasks related to Alarm and creates a convenient API to simplify
  * work with AlarmManager. It is a singleton, hence initialize it once before the usage and
  * dispose it when you don't need it anymore in scope of the app lifecycle.
  */
 @SuppressLint("StaticFieldLeak")
-object AlarmHelper {
+object AlarmManagerHelper {
 
     private var context: Context? = null
     private var alarmManager: AlarmManager? = null
 
     /**
-     * Initializes the [AlarmHelper] object. Call this function in prior to any other function call
-     * on the [AlarmHelper] object.
+     * Initializes the [AlarmManagerHelper] object. Call this function in prior to any other function call
+     * on the [AlarmManagerHelper] object.
      */
     fun initialize(context: Context) {
         this.context = context
@@ -55,7 +55,7 @@ object AlarmHelper {
     }
 
     /**
-     * Disposes the [AlarmHelper] object. After calling this function the object is not usable
+     * Disposes the [AlarmManagerHelper] object. After calling this function the object is not usable
      * anymore.
      */
     fun dispose() {

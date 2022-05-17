@@ -1,18 +1,21 @@
 package com.dmytrokoniev.holyalarm.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
+import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.AddClicked
+import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.Storage
-import com.dmytrokoniev.holyalarm.util.*
-import com.dmytrokoniev.holyalarm.util.AlarmListFragmentEvent.AddClicked
+import com.dmytrokoniev.holyalarm.util.AlarmManagerHelper
+import com.dmytrokoniev.holyalarm.util.cancelAlarm
+import com.dmytrokoniev.holyalarm.util.deleteItem
+import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
+import com.dmytrokoniev.holyalarm.util.setAlarm
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -54,7 +57,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
                     rvAdapter?.notifyItemRemoved(removedAlarmPosition)
                     if (removedAlarm != null) {
                         SharedPreferencesAlarmStorage.deleteItem(removedAlarm)
-                        AlarmHelper.cancelAlarm(removedAlarm)
+                        AlarmManagerHelper.cancelAlarm(removedAlarm)
                     }
 
                     Snackbar.make(
@@ -66,7 +69,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
                             rvAdapter?.addAlarm(removedAlarmPosition, removedAlarm)
                             rvAdapter?.notifyItemInserted(removedAlarmPosition)
                             SharedPreferencesAlarmStorage.addItem(removedAlarm)
-                            AlarmHelper.setAlarm(removedAlarm)
+                            AlarmManagerHelper.setAlarm(removedAlarm)
                         }
                     }.show()
                 }

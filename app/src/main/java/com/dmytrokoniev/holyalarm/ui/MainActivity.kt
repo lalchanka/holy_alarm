@@ -7,14 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.dmytrokoniev.holyalarm.R
+import com.dmytrokoniev.holyalarm.bus.AlarmItemBus
+import com.dmytrokoniev.holyalarm.bus.AlarmItemViewHolderEvent.*
+import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.*
+import com.dmytrokoniev.holyalarm.bus.EventBus
+import com.dmytrokoniev.holyalarm.bus.StopAlarmFragmentEvent.StopClicked
 import com.dmytrokoniev.holyalarm.storage.Storage
 import com.dmytrokoniev.holyalarm.storage.updateItemIsEnabled
-import com.dmytrokoniev.holyalarm.ui.AlarmItem.Companion.toMillis
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 import com.dmytrokoniev.holyalarm.util.*
-import com.dmytrokoniev.holyalarm.util.AlarmItemViewHolderEvent.AlarmOff
-import com.dmytrokoniev.holyalarm.util.AlarmItemViewHolderEvent.AlarmOn
-import com.dmytrokoniev.holyalarm.util.AlarmListFragmentEvent.AddClicked
 import kotlinx.coroutines.launch
 
 // TODO: d.koniev 03.05.2022 alarm at same time functionality
@@ -29,9 +30,10 @@ class MainActivity : AppCompatActivity() {
         val btnCancel = findViewById<View>(R.id.btn_cancel)
         val btnConfirm = findViewById<View>(R.id.btn_confirm)
         toolbar = findViewById(R.id.toolbar)
-        AlarmHelper.initialize(this)
+        AlarmManagerHelper.initialize(this)
         Storage.initialize(this)
         EventBus.initialize()
+        AlarmItemBus.initialize()
 
         val alarmTriggeredId = intent?.getStringExtra(KEY_ALARM_ID)
         val isAlarmTriggered = alarmTriggeredId != null
@@ -43,10 +45,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnConfirm.setOnClickListener {
-            AlarmTimeBus.lastAlarmTimeSet?.let {
-                val alarmTime = it.toMillis()
-                AlarmHelper.setAlarm(alarmTime, it.id)
-                Storage.addItem(it)
+            launchInActivityScope {
+                val alarmItem = AlarmItemBus.onReceiveAlarmItem()
+                AlarmManagerHelper.setAlarm(alarmItem)
+                Storage.addItem(alarmItem)
                 ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
                 loadFragment(AlarmListFragment())
             }
@@ -71,24 +73,25 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         toolbar = null
-        AlarmHelper.dispose()
+        AlarmManagerHelper.dispose()
         Storage.dispose()
         EventBus.dispose()
     }
 
     private fun startListeningForUiEvents() {
         lifecycleScope.launch {
-            when (val receivedEvent = EventBus.onReceiveEvent()) {
-                is StopAlarmFragmentEvent.StopClicked -> onStopClick(receivedEvent.alarmId)
-                is AlarmOn -> onCheckedChangeListener(isChecked = true, receivedEvent.alarmItem)
-                is AlarmOff -> onCheckedChangeListener(isChecked = false, receivedEvent.alarmItem)
+            val alarmItem = AlarmItemBus.onReceiveAlarmItem()
+            when (EventBus.onReceiveEvent()) {
+                is StopClicked -> onStopClick(alarmItem.id)
+                is AlarmOn -> onCheckedChangeListener(isChecked = true, alarmItem)
+                is AlarmOff -> onCheckedChangeListener(isChecked = false, alarmItem)
                 is AddClicked -> onAddAlarmClick()
             }
         }
     }
 
     private fun onStopClick(alarmId: String) {
-        AlarmHelper.cancelAlarm(alarmId)
+        AlarmManagerHelper.cancelAlarm(alarmId)
         Storage.updateItemIsEnabled(alarmId, isEnabled = false)
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
         loadFragment(AlarmListFragment())
@@ -97,11 +100,11 @@ class MainActivity : AppCompatActivity() {
     private fun onCheckedChangeListener(isChecked: Boolean, alarmItem: AlarmItem) {
         val alarmId = alarmItem.id
         if (isChecked) {
-            AlarmHelper.setAlarm(alarmItem)
+            AlarmManagerHelper.setAlarm(alarmItem)
             Storage.updateItemIsEnabled(alarmId, isEnabled = true)
             toast("Alarm set for: ${alarmItem.hour}:${alarmItem.minute}")
         } else {
-            AlarmHelper.cancelAlarm(alarmId)
+            AlarmManagerHelper.cancelAlarm(alarmId)
             Storage.updateItemIsEnabled(alarmId, isEnabled = false)
             toast("Cancelled alarm: ${alarmItem.hour}:${alarmItem.minute}")
         }

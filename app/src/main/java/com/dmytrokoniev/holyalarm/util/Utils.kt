@@ -26,8 +26,8 @@ fun AppCompatActivity.toast(
     duration: Int = LENGTH_SHORT
 ) = findViewById<View>(android.R.id.content)?.run { toast(text, duration) }
 
-fun AlarmHelper.setAlarm(alarmItem: AlarmItem) = setAlarm(alarmItem.toMillis(), alarmItem.id)
+fun AlarmManagerHelper.setAlarm(alarmItem: AlarmItem) = setAlarm(alarmItem.toMillis(), alarmItem.id)
 
-fun AlarmHelper.cancelAlarm(alarmItem: AlarmItem) = cancelAlarm(alarmItem.id)
+fun AlarmManagerHelper.cancelAlarm(alarmItem: AlarmItem) = cancelAlarm(alarmItem.id)
 
 fun SharedPreferencesAlarmStorage.deleteItem(alarmItem: AlarmItem) = deleteItem(alarmItem.id)
