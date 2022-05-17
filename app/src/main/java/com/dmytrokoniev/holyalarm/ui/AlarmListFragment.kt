@@ -9,11 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
+import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.Storage
-import com.dmytrokoniev.holyalarm.util.AlarmListFragmentEvent
+import com.dmytrokoniev.holyalarm.util.*
 import com.dmytrokoniev.holyalarm.util.AlarmListFragmentEvent.AddClicked
-import com.dmytrokoniev.holyalarm.util.EventBus
-import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -46,38 +45,38 @@ class AlarmListFragment : Fragment() {
             }
         }
 
-        val touchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
+        val touchHelper =
+            ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean = false
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val removedPosition = viewHolder.bindingAdapterPosition
-                rvAdapter?.removeAlarm(removedPosition)
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val removedAlarmPosition = viewHolder.bindingAdapterPosition
+                    val removedAlarm = rvAdapter?.getAlarm(removedAlarmPosition)
+                    rvAdapter?.removeAlarm(removedAlarmPosition)
+                    rvAdapter?.notifyItemRemoved(removedAlarmPosition)
+                    if (removedAlarm != null) {
+                        SharedPreferencesAlarmStorage.deleteItem(removedAlarm)
+                        AlarmHelper.cancelAlarm(removedAlarm)
+                    }
 
-                Snackbar.make(
-                    viewHolder.itemView,
-                    "Alarm removed",
-                    Snackbar.LENGTH_LONG).setAction("UNDO") {
-                    rvAdapter?.getAlarm(removedPosition)
-                    rvAdapter?.notifyItemInserted(removedPosition)
-
-                }.show()
-                // below line is to display our snackbar with action.
-//                Snackbar.make(courseRV, deletedCourse.getTitle(), Snackbar.LENGTH_LONG)
-//                    .setAction("Undo",
-//                        View.OnClickListener { // adding on click listener to our action of snack bar.
-//                            // below line is to add our item to array list with a position.
-//                            recyclerDataArrayList.add(position, deletedCourse)
-//
-//                            // below line is to notify item is
-//                            // added to our adapter class.
-//                            recyclerViewAdapter.notifyItemInserted(position)
-//                        }).show()
-            }
-        })
+                    Snackbar.make(
+                        viewHolder.itemView,
+                        "Alarm removed",
+                        Snackbar.LENGTH_LONG
+                    ).setAction("UNDO") {
+                        if (removedAlarm != null) {
+                            rvAdapter?.addAlarm(removedAlarmPosition, removedAlarm)
+                            rvAdapter?.notifyItemInserted(removedAlarmPosition)
+                            SharedPreferencesAlarmStorage.addItem(removedAlarm)
+                            AlarmHelper.setAlarm(removedAlarm)
+                        }
+                    }.show()
+                }
+            })
         touchHelper.attachToRecyclerView(rvAlarmList)
     }
 

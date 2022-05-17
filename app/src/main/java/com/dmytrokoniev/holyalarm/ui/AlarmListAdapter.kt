@@ -35,15 +35,18 @@ class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
         notifyDataSetChanged()
     }
 
-    fun addAlarm(inputItem: AlarmItem) {
-        alarmsList.add(inputItem)
+    fun addAlarm(position: Int, inputItem: AlarmItem) {
+        alarmsList.add(position, inputItem)
         notifyItemInserted(alarmsList.lastIndex)
     }
 
     fun getAlarm(index: Int): AlarmItem = alarmsList[index]
 
-    fun removeAlarm(position: Int/***, viewHolder: RecyclerView.ViewHolder***/) {
-        var  removedItem = alarmsList[position]
+    fun removeAlarm(
+        position: Int
+        /***, viewHolder: RecyclerView.ViewHolder***/
+    ) {
+        var removedItem = alarmsList[position]
 
         alarmsList.removeAt(position)
         notifyItemRemoved(position)

@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
+import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.ui.AlarmItem
 import com.dmytrokoniev.holyalarm.ui.AlarmItem.Companion.toMillis
 
@@ -26,3 +27,7 @@ fun AppCompatActivity.toast(
 ) = findViewById<View>(android.R.id.content)?.run { toast(text, duration) }
 
 fun AlarmHelper.setAlarm(alarmItem: AlarmItem) = setAlarm(alarmItem.toMillis(), alarmItem.id)
+
+fun AlarmHelper.cancelAlarm(alarmItem: AlarmItem) = cancelAlarm(alarmItem.id)
+
+fun SharedPreferencesAlarmStorage.deleteItem(alarmItem: AlarmItem) = deleteItem(alarmItem.id)
