@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.bus.AlarmItemBus
 import com.dmytrokoniev.holyalarm.bus.AlarmItemViewHolderEvent.*
-import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.*
+import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.AddClicked
 import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.bus.StopAlarmFragmentEvent.StopClicked
 import com.dmytrokoniev.holyalarm.storage.Storage
@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
             val alarmItem = AlarmItemBus.onReceiveAlarmItem()
             when (EventBus.onReceiveEvent()) {
                 is StopClicked -> onStopClick(alarmItem.id)
+                is AlarmSet -> onAlarmItemClickListener()
                 is AlarmOn -> onCheckedChangeListener(isChecked = true, alarmItem)
                 is AlarmOff -> onCheckedChangeListener(isChecked = false, alarmItem)
                 is AddClicked -> onAddAlarmClick()
@@ -95,6 +96,11 @@ class MainActivity : AppCompatActivity() {
         Storage.updateItemIsEnabled(alarmId, isEnabled = false)
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
         loadFragment(AlarmListFragment())
+    }
+
+    private fun onAlarmItemClickListener() {
+        ToolbarStateManager.onStateChanged(toolbar, ToolbarState.CONFIRM_CANCEL)
+        loadFragment(ExistingAlarmSetFragment())
     }
 
     private fun onCheckedChangeListener(isChecked: Boolean, alarmItem: AlarmItem) {

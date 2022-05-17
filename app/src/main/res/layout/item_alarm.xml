@@ -7,30 +7,41 @@
     android:paddingStart="@dimen/size_32"
     android:paddingEnd="@dimen/size_32">
 
-    <TextView
-        android:id="@+id/tv_alarm_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_48"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tv_day_part"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="10:00" />
-
-    <TextView
-        android:id="@+id/tv_day_part"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/size_8"
-        android:textSize="@dimen/text_size_48"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_time_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/swch_enabled"
         app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toEndOf="@+id/tv_alarm_time"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="AM" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_alarm_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_48"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_day_part"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="10:00" />
+
+        <TextView
+            android:id="@+id/tv_day_part"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/size_8"
+            android:textSize="@dimen/text_size_48"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/tv_alarm_time"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="AM" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/swch_enabled"
@@ -41,5 +52,7 @@
         android:scaleY="2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toEndOf="@+id/cl_time_layout"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

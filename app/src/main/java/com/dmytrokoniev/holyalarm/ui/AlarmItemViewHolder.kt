@@ -16,6 +16,7 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val tvAlarmTime = itemView.findViewById<TextView>(R.id.tv_alarm_time)
     private val swchEnabled = itemView.findViewById<SwitchCompat>(R.id.swch_enabled)
+    private val clTimeLayout = itemView.findViewById<View>(R.id.cl_time_layout)
 
     fun bind(alarmItem: AlarmItem, launchInFragmentScope: (suspend () -> Unit) -> Unit) {
         val context = tvAlarmTime.context
@@ -34,6 +35,9 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             launchInFragmentScope {
                 EventBus.onSendEvent(event)
             }
+        }
+        clTimeLayout.setOnClickListener {
+
         }
     }
 }

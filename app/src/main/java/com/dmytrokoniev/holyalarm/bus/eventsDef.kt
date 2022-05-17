@@ -12,6 +12,8 @@ sealed interface AlarmItemViewHolderEvent : UiEvent {
     object AlarmOn : AlarmItemViewHolderEvent
 
     object AlarmOff : AlarmItemViewHolderEvent
+
+    object AlarmSet : AlarmItemViewHolderEvent
 }
 
 sealed interface AlarmListFragmentEvent : UiEvent {
