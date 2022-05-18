@@ -1,19 +1,19 @@
 package com.dmytrokoniev.holyalarm.bus
 
 import com.dmytrokoniev.holyalarm.ui.AlarmItem
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 
 object AlarmItemBus {
 
-    private var alarmItemPipeline: Channel<AlarmItem>? = null
+    private var alarmItemPipeline: ConflatedBroadcastChannel<AlarmItem>? = null
 
     fun initialize() {
-        alarmItemPipeline = Channel()
+        alarmItemPipeline = ConflatedBroadcastChannel()
     }
 
     /**
      * Sends [AlarmItem]s only while the [AlarmItemBus] is alive. This means that you should use
-     * the [onReceiveAlarmItem] only After the [initialize] and Before the [dispose] function calls.
+     * the [onSendAlarmItem] only After the [initialize] and Before the [dispose] function calls.
      */
     suspend fun onSendAlarmItem(alarmItem: AlarmItem) {
         alarmItemPipeline?.send(alarmItem)
@@ -32,6 +32,7 @@ object AlarmItemBus {
     }
 
     private suspend fun requireReceive(): AlarmItem =
-        alarmItemPipeline?.receive()
-        ?: throw IllegalStateException("Calling onReceiveEvent outside of EventBus lifecycle")
+        alarmItemPipeline?.openSubscription()?.receive() ?: throw IllegalStateException(
+            "Calling onReceiveAlarmItem outside of AlarmItemBus lifecycle"
+        )
 }

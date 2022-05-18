@@ -1,13 +1,13 @@
 package com.dmytrokoniev.holyalarm.bus
 
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 
 object EventBus {
 
-    private var eventsPipeline: Channel<UiEvent>? = null
+    private var eventsPipeline: ConflatedBroadcastChannel<UiEvent>? = null
 
     fun initialize() {
-        eventsPipeline = Channel()
+        eventsPipeline = ConflatedBroadcastChannel()
     }
 
     /**
@@ -31,6 +31,6 @@ object EventBus {
     }
 
     private suspend fun requireReceive(): UiEvent =
-        eventsPipeline?.receive()
+        eventsPipeline?.openSubscription()?.receive()
         ?: throw IllegalStateException("Calling onReceiveEvent outside of EventBus lifecycle")
 }
