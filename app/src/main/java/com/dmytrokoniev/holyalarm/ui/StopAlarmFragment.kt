@@ -33,8 +33,8 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
         btnStop.setOnClickListener {
             alarmItem?.let { alarmItemNotNull ->
                 launchInFragmentScope {
-                    AlarmItemBus.onSendAlarmItem(alarmItemNotNull)
-                    EventBus.onSendEvent(StopClicked)
+                    AlarmItemBus.emitAlarmItem(alarmItemNotNull)
+                    EventBus.emitEvent(StopClicked)
                 }
             }
         }

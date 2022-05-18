@@ -26,7 +26,7 @@ abstract class AlarmSetFragment : Fragment(R.layout.fragment_set_alarm) {
                 isEnabled = true
             )
             launchInFragmentScope {
-                AlarmItemBus.onSendAlarmItem(newAlarm)
+                AlarmItemBus.emitAlarmItem(newAlarm)
             }
         }
     }

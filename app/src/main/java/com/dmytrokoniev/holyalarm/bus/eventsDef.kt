@@ -20,3 +20,10 @@ sealed interface AlarmListFragmentEvent : UiEvent {
 
     object AddClicked : AlarmListFragmentEvent
 }
+
+sealed interface ToolbarEvent : UiEvent {
+
+    object ConfirmClicked : ToolbarEvent
+
+    object CancelClicked : ToolbarEvent
+}
