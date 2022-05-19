@@ -37,7 +37,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
 
         btnAddAlarm.setOnClickListener {
             launchInFragmentScope {
-                EventBus.onSendEvent(AddClicked)
+                EventBus.emitEvent(AddClicked)
             }
         }
 

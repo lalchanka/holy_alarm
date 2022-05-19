@@ -7,16 +7,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.bus.AlarmItemBus
-import com.dmytrokoniev.holyalarm.bus.AlarmItemViewHolderEvent.*
-import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.AddClicked
+import com.dmytrokoniev.holyalarm.bus.AlarmItemViewHolderEvent
+import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent
 import com.dmytrokoniev.holyalarm.bus.AppState
 import com.dmytrokoniev.holyalarm.bus.AppStateBus
 import com.dmytrokoniev.holyalarm.bus.EventBus
-import com.dmytrokoniev.holyalarm.bus.StopAlarmFragmentEvent.StopClicked
+import com.dmytrokoniev.holyalarm.bus.StopAlarmFragmentEvent
+import com.dmytrokoniev.holyalarm.bus.ToolbarEvent
+import com.dmytrokoniev.holyalarm.bus.alarmItem
 import com.dmytrokoniev.holyalarm.storage.Storage
 import com.dmytrokoniev.holyalarm.storage.updateItemIsEnabled
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
-import com.dmytrokoniev.holyalarm.util.*
+import com.dmytrokoniev.holyalarm.util.AlarmManagerHelper
+import com.dmytrokoniev.holyalarm.util.ToolbarState
+import com.dmytrokoniev.holyalarm.util.ToolbarStateManager
+import com.dmytrokoniev.holyalarm.util.launchInActivityScope
+import com.dmytrokoniev.holyalarm.util.setAlarm
+import com.dmytrokoniev.holyalarm.util.toast
 
 // TODO: d.koniev 03.05.2022 alarm at same time functionality
 class MainActivity : AppCompatActivity() {
@@ -51,17 +58,11 @@ class MainActivity : AppCompatActivity() {
     private fun initSingletons() {
         AlarmManagerHelper.initialize(this)
         Storage.initialize(this)
-        EventBus.initialize()
-        AlarmItemBus.initialize()
-        AppStateBus.initialize()
     }
 
     private fun disposeSingletons() {
         AlarmManagerHelper.dispose()
         Storage.dispose()
-        EventBus.dispose()
-        AlarmItemBus.dispose()
-        AppStateBus.dispose()
     }
 
     private fun showInitialFragment() {
@@ -81,46 +82,60 @@ class MainActivity : AppCompatActivity() {
 
         btnConfirm.setOnClickListener {
             launchInActivityScope {
-                val appState = AppStateBus.onReceiveAppState()
-                val alarmItem = AlarmItemBus.onReceiveAlarmItem()
-                if (appState.isAlarmUpdateFlow) {
-                    confirmSetAlarm(alarmItem)
-                } else {
-                    confirmAddAlarm(alarmItem)
-                }
+                EventBus.emitEvent(ToolbarEvent.ConfirmClicked)
             }
         }
         btnCancel.setOnClickListener {
-            ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
-            loadFragment(AlarmListFragment())
+            launchInActivityScope {
+                EventBus.emitEvent(ToolbarEvent.CancelClicked)
+            }
         }
     }
 
     private fun startListeningUiEvents() {
         launchInActivityScope {
-            val alarmItem = AlarmItemBus.onReceiveAlarmItem()
-            when (EventBus.onReceiveEvent()) {
-                is AddClicked -> onAddAlarmClick()
-                is AlarmSet -> onAlarmSet()
-                is AlarmOn -> onCheckedChangeListener(isChecked = true, alarmItem)
-                is AlarmOff -> onCheckedChangeListener(isChecked = false, alarmItem)
-                is StopClicked -> onStopClick(alarmItem.id)
+            EventBus.eventsFlow.collect {
+                when (it) {
+                    is AlarmListFragmentEvent.AddClicked -> onAddAlarmClick()
+                    is AlarmItemViewHolderEvent.AlarmSet -> onAlarmSet()
+                    is AlarmItemViewHolderEvent.AlarmOn -> {
+                        val alarmItem = AlarmItemBus.alarmItem
+                        onCheckedChangeListener(isChecked = true, alarmItem)
+                    }
+                    is AlarmItemViewHolderEvent.AlarmOff -> {
+                        val alarmItem = AlarmItemBus.alarmItem
+                        onCheckedChangeListener(isChecked = false, alarmItem)
+                    }
+                    is StopAlarmFragmentEvent.StopClicked -> {
+                        val alarmItem = AlarmItemBus.alarmItem
+                        onStopClick(alarmItem.id)
+                    }
+                    is ToolbarEvent.ConfirmClicked -> {
+                        val appState = AppStateBus.appStateFlow.value
+                        val alarmItem = AlarmItemBus.alarmItem
+                        if (appState.isAlarmUpdateFlow) {
+                            confirmSetAlarm(alarmItem)
+                        } else {
+                            confirmAddAlarm(alarmItem)
+                        }
+                    }
+                    is ToolbarEvent.CancelClicked -> {
+                        ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
+                        loadFragment(AlarmListFragment())
+                    }
+                }
             }
         }
     }
 
     private fun onAddAlarmClick() {
-        launchInActivityScope {
-            AppStateBus.onSendAppState(AppState(isAlarmUpdateFlow = false))
-        }
+        AppStateBus.emitAppState(AppState(isAlarmUpdateFlow = false))
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.CONFIRM_CANCEL)
         loadFragment(NewAlarmSetFragment())
     }
 
     private fun onAlarmSet() {
-        launchInActivityScope {
-            AppStateBus.onSendAppState(AppState(isAlarmUpdateFlow = true))
-        }
+        AppStateBus.emitAppState(AppState(isAlarmUpdateFlow = true))
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.CONFIRM_CANCEL)
         loadFragment(ExistingAlarmSetFragment())
     }
@@ -161,18 +176,18 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    private suspend fun setAlarm(alarmItem: AlarmItem) {
+    private fun setAlarm(alarmItem: AlarmItem) {
         AlarmManagerHelper.setAlarm(alarmItem)
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
         loadFragment(AlarmListFragment())
     }
 
-    private suspend fun confirmAddAlarm(alarmItem: AlarmItem) {
+    private fun confirmAddAlarm(alarmItem: AlarmItem) {
         Storage.addItem(alarmItem)
         setAlarm(alarmItem)
     }
 
-    private suspend fun confirmSetAlarm(alarmItem: AlarmItem) {
+    private fun confirmSetAlarm(alarmItem: AlarmItem) {
         Storage.updateItem(alarmItem)
         setAlarm(alarmItem)
     }
