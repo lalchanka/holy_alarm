@@ -1,5 +1,7 @@
 package com.dmytrokoniev.holyalarm.ui
 
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -11,11 +13,7 @@ import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.AddClicked
 import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.Storage
-import com.dmytrokoniev.holyalarm.util.AlarmManagerHelper
-import com.dmytrokoniev.holyalarm.util.cancelAlarm
-import com.dmytrokoniev.holyalarm.util.deleteItem
-import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
-import com.dmytrokoniev.holyalarm.util.setAlarm
+import com.dmytrokoniev.holyalarm.util.*
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -29,6 +27,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
 
         val rvAlarmList = view.findViewById<RecyclerView>(R.id.rv_alarms_list)
         val btnAddAlarm = view.findViewById<Button>(R.id.btn_add_alarm)
+        val btnPlayRingtone = view.findViewById<Button>(R.id.btn_play_ringtone)
 
         rvAdapter = AlarmListAdapter()
         val alarms = Storage.getItems()
@@ -40,6 +39,12 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
             launchInFragmentScope {
                 EventBus.onSendEvent(AddClicked)
             }
+        }
+
+        btnPlayRingtone.setOnClickListener {
+            val notification: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+            val r = RingtoneManager.getRingtone(context, notification)
+            r.play()
         }
 
         val touchHelper =
