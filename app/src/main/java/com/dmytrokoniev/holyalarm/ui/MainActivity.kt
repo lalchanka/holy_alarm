@@ -40,6 +40,15 @@ class MainActivity : AppCompatActivity() {
         startListeningUiEvents()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        val alarmTriggeredId = intent?.getStringExtra(KEY_ALARM_ID)
+        val isAlarmTriggered = alarmTriggeredId != null
+        if (isAlarmTriggered) {
+            showStopAlarmFragment(alarmTriggeredId)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         toolbar = null
