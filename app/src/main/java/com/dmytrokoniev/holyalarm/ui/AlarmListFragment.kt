@@ -1,7 +1,5 @@
 package com.dmytrokoniev.holyalarm.ui
 
-import android.media.RingtoneManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -27,7 +25,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
 
         val rvAlarmList = view.findViewById<RecyclerView>(R.id.rv_alarms_list)
         val btnAddAlarm = view.findViewById<Button>(R.id.btn_add_alarm)
-        val btnPlayRingtone = view.findViewById<Button>(R.id.btn_play_ringtone)
+//        val btnPlayRingtone = view.findViewById<Button>(R.id.btn_play_ringtone)
 
         rvAdapter = AlarmListAdapter()
         val alarms = Storage.getItems()
@@ -41,11 +39,11 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
             }
         }
 
-        btnPlayRingtone.setOnClickListener {
-            val notification: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-            val r = RingtoneManager.getRingtone(context, notification)
-            r.play()
-        }
+//        btnPlayRingtone.setOnClickListener {
+//            val notification: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+//            val r = RingtoneManager.getRingtone(context, notification)
+//            r.play()
+//        }
 
         val touchHelper =
             ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
