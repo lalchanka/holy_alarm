@@ -190,6 +190,7 @@ class MainActivity : AppCompatActivity() {
     private fun confirmSetAlarm(alarmItem: AlarmItem) {
         Storage.updateItem(alarmItem)
         setAlarm(alarmItem)
+        toast("Alarm updated: ${alarmItem.hour}:${alarmItem.minute}")
     }
 
     companion object {
