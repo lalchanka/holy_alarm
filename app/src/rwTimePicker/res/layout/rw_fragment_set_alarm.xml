@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/navigation_set_alarm"
+    <include layout="@layout/toolbar"
         app:layout_constraintTop_toTopOf="parent" />
 
 <!--    <TextView-->
