@@ -12,6 +12,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val alarmId = intent?.getStringExtra(KEY_ALARM_ID)
         val intentForActivity = Intent(context, MainActivity::class.java)
         intentForActivity.putExtra(KEY_ALARM_ID, alarmId)
+        intentForActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context?.startActivity(intentForActivity)
     }
 }

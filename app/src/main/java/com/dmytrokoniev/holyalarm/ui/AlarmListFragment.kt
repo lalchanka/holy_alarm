@@ -6,6 +6,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.dmytrokoniev.holyalarm.BuildConfig
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.AddClicked
 import com.dmytrokoniev.holyalarm.bus.EventBus
@@ -13,6 +14,7 @@ import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.storage.Storage
 import com.dmytrokoniev.holyalarm.util.*
 import com.google.android.material.snackbar.Snackbar
+import java.util.*
 
 
 // TODO add all LC functions with Logs
@@ -25,7 +27,6 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
 
         val rvAlarmList = view.findViewById<RecyclerView>(R.id.rv_alarms_list)
         val btnAddAlarm = view.findViewById<Button>(R.id.btn_add_alarm)
-//        val btnPlayRingtone = view.findViewById<Button>(R.id.btn_play_ringtone)
 
         rvAdapter = AlarmListAdapter()
         val alarms = Storage.getItems()
@@ -34,16 +35,14 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
         rvAlarmList.adapter = rvAdapter
 
         btnAddAlarm.setOnClickListener {
-            launchInFragmentScope {
-                EventBus.emitEvent(AddClicked)
+            if (BuildConfig.BUILD_TYPE == "debug") {
+                onAddOneMinuteAlarmClicked()
+            } else if (BuildConfig.BUILD_TYPE == "release") {
+                launchInFragmentScope {
+                    EventBus.emitEvent(AddClicked)
+                }
             }
         }
-
-//        btnPlayRingtone.setOnClickListener {
-//            val notification: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-//            val r = RingtoneManager.getRingtone(context, notification)
-//            r.play()
-//        }
 
         val touchHelper =
             ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
@@ -78,6 +77,21 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
                 }
             })
         touchHelper.attachToRecyclerView(rvAlarmList)
+    }
+
+    private fun onAddOneMinuteAlarmClicked() {
+        val exactTime = Calendar.getInstance()
+        val alarmItem = AlarmItem(
+            id = Random().nextInt().toString(),
+            hour = exactTime.get(Calendar.HOUR_OF_DAY),
+            minute = exactTime.get(Calendar.MINUTE) + 1,
+            is24HourView = true,
+            isEnabled = true
+        )
+        SharedPreferencesAlarmStorage.addItem(alarmItem)
+        AlarmManagerHelper.setAlarm(alarmItem)
+        rvAdapter?.addAlarm(alarmItem)
+        rvAdapter?.notifyDataSetChanged()
     }
 
     override fun onDestroyView() {

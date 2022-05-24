@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
 import com.dmytrokoniev.holyalarm.ui.AlarmItem
 import com.dmytrokoniev.holyalarm.ui.AlarmItem.Companion.toMillis
+import com.dmytrokoniev.holyalarm.ui.AlarmListAdapter
 
 /**
  * A convenient function to show a [Toast] using any [View] and it's [Context].
@@ -31,3 +32,5 @@ fun AlarmManagerHelper.setAlarm(alarmItem: AlarmItem) = setAlarm(alarmItem.toMil
 fun AlarmManagerHelper.cancelAlarm(alarmItem: AlarmItem) = cancelAlarm(alarmItem.id)
 
 fun SharedPreferencesAlarmStorage.deleteItem(alarmItem: AlarmItem) = deleteItem(alarmItem.id)
+
+fun AlarmListAdapter.addAlarm(alarmItem: AlarmItem) = addAlarm(itemCount, alarmItem)
