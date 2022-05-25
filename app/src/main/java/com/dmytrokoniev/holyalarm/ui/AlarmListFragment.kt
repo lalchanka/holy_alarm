@@ -20,7 +20,7 @@ import java.util.*
 // TODO add all LC functions with Logs
 class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
 
-    private var rvAdapter: AlarmListAdapter? = null
+    private var adapter: AlarmListAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -28,11 +28,11 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
         val rvAlarmList = view.findViewById<RecyclerView>(R.id.rv_alarms_list)
         val btnAddAlarm = view.findViewById<Button>(R.id.btn_add_alarm)
 
-        rvAdapter = AlarmListAdapter()
+        adapter = AlarmListAdapter()
         val alarms = Storage.getItems()
-        rvAdapter?.setAlarmList(alarms)
-        rvAdapter?.setLaunchInFragmentScope(::launchInFragmentScope)
-        rvAlarmList.adapter = rvAdapter
+        adapter?.setAlarmList(alarms)
+        adapter?.setLaunchInFragmentScope(::launchInFragmentScope)
+        rvAlarmList.adapter = adapter
 
         btnAddAlarm.setOnClickListener {
             if (BuildConfig.BUILD_TYPE == "debug") {
@@ -54,26 +54,20 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     val removedAlarmPosition = viewHolder.bindingAdapterPosition
-                    val removedAlarm = rvAdapter?.getAlarm(removedAlarmPosition)
-                    rvAdapter?.removeAlarm(removedAlarmPosition)
-                    rvAdapter?.notifyItemRemoved(removedAlarmPosition)
-                    if (removedAlarm != null) {
-                        SharedPreferencesAlarmStorage.deleteItem(removedAlarm)
-                        AlarmManagerHelper.cancelAlarm(removedAlarm)
-                    }
+                    adapter?.removeAlarm(removedAlarmPosition) { alarmToRemove ->
+                        SharedPreferencesAlarmStorage.deleteItem(alarmToRemove)
+                        AlarmManagerHelper.cancelAlarm(alarmToRemove)
 
-                    Snackbar.make(
-                        viewHolder.itemView,
-                        "Alarm removed",
-                        Snackbar.LENGTH_LONG
-                    ).setAction("UNDO") {
-                        if (removedAlarm != null) {
-                            rvAdapter?.addAlarm(removedAlarmPosition, removedAlarm)
-                            rvAdapter?.notifyItemInserted(removedAlarmPosition)
-                            SharedPreferencesAlarmStorage.addItem(removedAlarm)
-                            AlarmManagerHelper.setAlarm(removedAlarm)
-                        }
-                    }.show()
+                        Snackbar.make(
+                            viewHolder.itemView,
+                            "Alarm removed",
+                            Snackbar.LENGTH_LONG
+                        ).setAction("UNDO") {
+                            adapter?.addAlarm(alarmToRemove, removedAlarmPosition)
+                            SharedPreferencesAlarmStorage.addItem(alarmToRemove)
+                            AlarmManagerHelper.setAlarm(alarmToRemove)
+                        }.show()
+                    }
                 }
             })
         touchHelper.attachToRecyclerView(rvAlarmList)
@@ -90,12 +84,12 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
         )
         SharedPreferencesAlarmStorage.addItem(alarmItem)
         AlarmManagerHelper.setAlarm(alarmItem)
-        rvAdapter?.addAlarm(alarmItem)
-        rvAdapter?.notifyDataSetChanged()
+        adapter?.addAlarm(alarmItem)
+        adapter?.notifyDataSetChanged()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        rvAdapter = null
+        adapter = null
     }
 }

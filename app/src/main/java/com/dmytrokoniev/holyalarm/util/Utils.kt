@@ -33,4 +33,4 @@ fun AlarmManagerHelper.cancelAlarm(alarmItem: AlarmItem) = cancelAlarm(alarmItem
 
 fun SharedPreferencesAlarmStorage.deleteItem(alarmItem: AlarmItem) = deleteItem(alarmItem.id)
 
-fun AlarmListAdapter.addAlarm(alarmItem: AlarmItem) = addAlarm(itemCount, alarmItem)
+fun AlarmListAdapter.addAlarm(alarmItem: AlarmItem) = addAlarm(alarmItem, itemCount)

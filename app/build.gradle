@@ -33,9 +33,9 @@ android {
         standartTimePicker {
             dimension "holyalarm"
         }
-        rwTimePicker {
-            dimension "holyalarm"
-        }
+//        rwTimePicker {
+//            dimension "holyalarm"
+//        }
     }
 
     sourceSets {
@@ -47,14 +47,14 @@ android {
                 srcDirs 'src/standartTimePicker/java'
             }
         }
-        rwTimePicker {
-            res {
-                srcDirs 'src/rwTimePicker/res'
-            }
-            java {
-                srcDirs 'src/rwTimePicker/java'
-            }
-        }
+//        rwTimePicker {
+//            res {
+//                srcDirs 'src/rwTimePicker/res'
+//            }
+//            java {
+//                srcDirs 'src/rwTimePicker/java'
+//            }
+//        }
     }
 
     compileOptions {

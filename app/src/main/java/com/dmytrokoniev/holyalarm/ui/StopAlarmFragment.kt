@@ -1,5 +1,8 @@
 package com.dmytrokoniev.holyalarm.ui
 
+import android.media.MediaPlayer
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -12,14 +15,17 @@ import com.dmytrokoniev.holyalarm.storage.Storage
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
+import kotlinx.coroutines.delay
+
 
 class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
+
+    private lateinit var mediaPlayer: MediaPlayer
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val btnStop = view.findViewById<View>(R.id.btn_stop)
         val tvAlarmTime = view.findViewById<TextView>(R.id.tv_alarm_time)
-
         val alarmId = arguments?.getString(KEY_ALARM_ID)
         val alarmItem = Storage.getItems().find { it.id == alarmId }
         val formattedHours = alarmItem?.hour?.timeHumanFormat() ?: "Time"
@@ -30,17 +36,40 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
             formattedMinutes
         )
 
+        val notification: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        mediaPlayer = MediaPlayer.create(context, notification)
+        mediaPlayer.setOnPreparedListener {
+            mediaPlayer.start()
+            launchInFragmentScope {
+                delay(ALARM_AUTOSTOP_TIME_MS)
+                alarmItem?.let {
+                    onAlarmStop(it)
+                }
+            }
+        }
+
         btnStop.setOnClickListener {
-            alarmItem?.let { alarmItemNotNull ->
+            alarmItem?.let {
                 launchInFragmentScope {
-                    AlarmItemBus.emitAlarmItem(alarmItemNotNull)
-                    EventBus.emitEvent(StopClicked)
+                    onAlarmStop(it)
                 }
             }
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mediaPlayer.release()
+    }
+
+    private suspend fun onAlarmStop(alarmItem: AlarmItem) {
+        mediaPlayer.stop()
+        AlarmItemBus.emitAlarmItem(alarmItem)
+        EventBus.emitEvent(StopClicked)
+    }
+
     companion object {
         const val ERROR_TRIGGER_TIME = "(((((:"
+        private const val ALARM_AUTOSTOP_TIME_MS = 25_000L
     }
 }

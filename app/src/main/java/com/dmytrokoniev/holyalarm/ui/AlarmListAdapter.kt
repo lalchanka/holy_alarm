@@ -35,27 +35,18 @@ class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
         notifyDataSetChanged()
     }
 
-    fun addAlarm(position: Int, inputItem: AlarmItem) {
+    fun addAlarm(inputItem: AlarmItem, position: Int) {
         alarmsList.add(position, inputItem)
         notifyItemInserted(alarmsList.lastIndex)
     }
 
     fun getAlarm(index: Int): AlarmItem = alarmsList[index]
 
-    fun removeAlarm(
-        position: Int
-        /***, viewHolder: RecyclerView.ViewHolder***/
-    ) {
-        var removedItem = alarmsList[position]
-
-        alarmsList.removeAt(position)
+    fun removeAlarm(position: Int, onRemoved: ((AlarmItem) -> Unit)? = null) {
+        val alarmToRemove = alarmsList[position]
+        alarmsList.remove(alarmToRemove)
         notifyItemRemoved(position)
-
-//        Snackbar.make(viewHolder.itemView, "${removedItem.name?.get("En")} removed", Snackbar.LENGTH_LONG).setAction("UNDO") {
-//            products.add(removedPosition, removedItem)
-//            notifyItemInserted(removedPosition)
-//
-//        }.show()
+        onRemoved?.invoke(alarmToRemove)
     }
 
     fun setLaunchInFragmentScope(launch: (suspend () -> Unit) -> Unit) {
