@@ -28,15 +28,3 @@ fun IAlarmStorage.updateItemIsEnabled(id: String, isEnabled: Boolean) {
     val alarmItem = getItem(id) ?: return
     updateItem(alarmItem.copy(isEnabled = isEnabled))
 }
-
-//fun getIdList(): List<Int> = getItems().map { it.id }.toList()
-//
-//private fun List<AlarmItem>.containsAllIdsFrom(inputItems: List<AlarmItem>): Boolean {
-//    inputItems.forEach { inputItem ->
-//        this.find { currentItem -> currentItem.id == inputItem.id } ?: return false
-//    }
-//
-//    return true
-//}
-
-//fun IAlarmStorage.updateItem(updatedItem: AlarmItem) = updateItems(listOf(updatedItem))

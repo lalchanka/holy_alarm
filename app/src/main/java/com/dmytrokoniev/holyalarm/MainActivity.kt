@@ -158,8 +158,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onStopClick(alarmId: String) {
-        AlarmManagerHelper.cancelAlarm(alarmId)
-        Storage.updateItemIsEnabled(alarmId, isEnabled = false)
+        val alarmIds = Storage.getItems().run {
+            val alarmItem = find { it.id == alarmId }
+                ?: throw IllegalStateException("Greetings!(^_^)")
+            filter {
+                it.hour == alarmItem.hour
+                        && it.minute == alarmItem.minute
+                        && it.isEnabled
+            }.map { it.id }
+        }
+
+        alarmIds.forEach { id ->
+            AlarmManagerHelper.cancelAlarm(id)
+            Storage.updateItemIsEnabled(id, isEnabled = false)
+        }
+
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
         loadFragment(AlarmListFragment())
     }
@@ -195,6 +208,17 @@ class MainActivity : AppCompatActivity() {
         Storage.updateItem(alarmItem)
         setAlarm(alarmItem)
         toast("Alarm updated: ${alarmItem.hour}:${alarmItem.minute}")
+    }
+
+    private fun findAlarmIds(hour: Int, minute: Int): List<String> {
+        val itemsList = Storage.getItems().mapNotNull { alarmItem ->
+            val isValid = alarmItem.hour == hour
+                    && alarmItem.minute == minute
+                    && alarmItem.isEnabled
+            if (isValid) alarmItem.id else null
+        }.toList()
+
+        return itemsList
     }
 
     companion object {
