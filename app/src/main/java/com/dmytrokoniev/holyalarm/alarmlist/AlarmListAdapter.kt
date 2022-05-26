@@ -1,13 +1,10 @@
-package com.dmytrokoniev.holyalarm.ui
+package com.dmytrokoniev.holyalarm.alarmlist
 
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.IntRange
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.R
-import kotlinx.parcelize.Parcelize
-import java.util.*
+import com.dmytrokoniev.holyalarm.data.AlarmItem
 
 
 class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
@@ -61,27 +58,4 @@ class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
         launchInFragmentScope ?: throw IllegalStateException(
             "Accessing launchInFragmentScope outside of Fragment lifecycle"
         )
-}
-
-@Parcelize
-data class AlarmItem(
-    val id: String,
-    @IntRange(from = 0, to = 23) val hour: Int,
-    @IntRange(from = 0, to = 59) val minute: Int,
-    val is24HourView: Boolean = true,
-    val isEnabled: Boolean = true
-) : Parcelable {
-
-    companion object {
-        fun AlarmItem.toMillis(): Long {
-            val date = Date()
-            val calendar = Calendar.getInstance()
-            calendar.time = date
-
-            calendar.set(Calendar.HOUR_OF_DAY, hour)
-            calendar.set(Calendar.MINUTE, minute)
-            calendar.set(Calendar.SECOND, 0)
-            return calendar.timeInMillis
-        }
-    }
 }

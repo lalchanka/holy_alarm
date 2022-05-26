@@ -1,4 +1,4 @@
-package com.dmytrokoniev.holyalarm.ui
+package com.dmytrokoniev.holyalarm.alarmlist
 
 import android.os.Bundle
 import android.view.View
@@ -10,8 +10,9 @@ import com.dmytrokoniev.holyalarm.BuildConfig
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.AddClicked
 import com.dmytrokoniev.holyalarm.bus.EventBus
-import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
-import com.dmytrokoniev.holyalarm.storage.Storage
+import com.dmytrokoniev.holyalarm.data.AlarmItem
+import com.dmytrokoniev.holyalarm.data.storage.SharedPreferencesAlarmStorage
+import com.dmytrokoniev.holyalarm.data.storage.Storage
 import com.dmytrokoniev.holyalarm.util.*
 import com.google.android.material.snackbar.Snackbar
 import java.util.*

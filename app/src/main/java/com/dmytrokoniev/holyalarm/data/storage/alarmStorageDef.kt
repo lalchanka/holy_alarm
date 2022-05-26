@@ -1,7 +1,7 @@
-package com.dmytrokoniev.holyalarm.storage
+package com.dmytrokoniev.holyalarm.data.storage
 
 import android.content.Context
-import com.dmytrokoniev.holyalarm.ui.AlarmItem
+import com.dmytrokoniev.holyalarm.data.AlarmItem
 
 interface IAlarmStorage {
 

@@ -1,16 +1,33 @@
-package com.dmytrokoniev.holyalarm.ui
+package com.dmytrokoniev.holyalarm
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.bus.*
-import com.dmytrokoniev.holyalarm.storage.Storage
-import com.dmytrokoniev.holyalarm.storage.updateItemIsEnabled
+import com.dmytrokoniev.holyalarm.alarmlist.AlarmListFragment
+import com.dmytrokoniev.holyalarm.bus.AlarmItemBus
+import com.dmytrokoniev.holyalarm.bus.AlarmItemViewHolderEvent
+import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent
+import com.dmytrokoniev.holyalarm.bus.AppState
+import com.dmytrokoniev.holyalarm.bus.AppStateBus
+import com.dmytrokoniev.holyalarm.bus.EventBus
+import com.dmytrokoniev.holyalarm.bus.StopAlarmFragmentEvent
+import com.dmytrokoniev.holyalarm.bus.ToolbarEvent
+import com.dmytrokoniev.holyalarm.bus.alarmItem
+import com.dmytrokoniev.holyalarm.data.AlarmItem
+import com.dmytrokoniev.holyalarm.data.storage.Storage
+import com.dmytrokoniev.holyalarm.data.storage.updateItemIsEnabled
+import com.dmytrokoniev.holyalarm.stopalarm.StopAlarmFragment
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
-import com.dmytrokoniev.holyalarm.util.*
+import com.dmytrokoniev.holyalarm.ui.ExistingAlarmSetFragment
+import com.dmytrokoniev.holyalarm.ui.NewAlarmSetFragment
+import com.dmytrokoniev.holyalarm.util.AlarmManagerHelper
+import com.dmytrokoniev.holyalarm.util.ToolbarState
+import com.dmytrokoniev.holyalarm.util.ToolbarStateManager
+import com.dmytrokoniev.holyalarm.util.launchInActivityScope
+import com.dmytrokoniev.holyalarm.util.setAlarm
+import com.dmytrokoniev.holyalarm.util.toast
 
 // TODO: d.koniev 03.05.2022 alarm at same time functionality
 class MainActivity : AppCompatActivity() {

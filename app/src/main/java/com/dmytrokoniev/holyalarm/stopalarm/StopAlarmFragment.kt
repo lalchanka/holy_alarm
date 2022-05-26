@@ -1,4 +1,4 @@
-package com.dmytrokoniev.holyalarm.ui
+package com.dmytrokoniev.holyalarm.stopalarm
 
 import android.media.MediaPlayer
 import android.media.RingtoneManager
@@ -8,10 +8,11 @@ import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
+import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.dmytrokoniev.holyalarm.bus.AlarmItemBus
 import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.bus.StopAlarmFragmentEvent.StopClicked
-import com.dmytrokoniev.holyalarm.storage.Storage
+import com.dmytrokoniev.holyalarm.data.storage.Storage
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 import com.dmytrokoniev.holyalarm.util.launchInFragmentScope

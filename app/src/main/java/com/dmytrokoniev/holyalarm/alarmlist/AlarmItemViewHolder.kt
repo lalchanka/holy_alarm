@@ -1,4 +1,4 @@
-package com.dmytrokoniev.holyalarm.ui
+package com.dmytrokoniev.holyalarm.alarmlist
 
 import android.view.View
 import android.widget.TextView
@@ -8,6 +8,7 @@ import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.bus.AlarmItemBus
 import com.dmytrokoniev.holyalarm.bus.AlarmItemViewHolderEvent
 import com.dmytrokoniev.holyalarm.bus.EventBus
+import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 
 // TODO: 12/28/2021 findView & viewHolder

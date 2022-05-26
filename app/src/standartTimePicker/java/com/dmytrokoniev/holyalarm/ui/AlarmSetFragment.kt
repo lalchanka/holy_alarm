@@ -6,6 +6,7 @@ import android.widget.TimePicker
 import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.bus.AlarmItemBus
+import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
 
 abstract class AlarmSetFragment : Fragment(R.layout.standart_fragment_set_alarm) {

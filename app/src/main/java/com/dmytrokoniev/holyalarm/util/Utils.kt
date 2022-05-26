@@ -4,10 +4,10 @@ import android.view.View
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
-import com.dmytrokoniev.holyalarm.storage.SharedPreferencesAlarmStorage
-import com.dmytrokoniev.holyalarm.ui.AlarmItem
-import com.dmytrokoniev.holyalarm.ui.AlarmItem.Companion.toMillis
-import com.dmytrokoniev.holyalarm.ui.AlarmListAdapter
+import com.dmytrokoniev.holyalarm.alarmlist.AlarmListAdapter
+import com.dmytrokoniev.holyalarm.data.AlarmItem
+import com.dmytrokoniev.holyalarm.data.AlarmItem.Companion.toMillis
+import com.dmytrokoniev.holyalarm.data.storage.SharedPreferencesAlarmStorage
 
 /**
  * A convenient function to show a [Toast] using any [View] and it's [Context].

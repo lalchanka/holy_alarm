@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
-import com.dmytrokoniev.holyalarm.ui.MainActivity
+import com.dmytrokoniev.holyalarm.MainActivity
 
 class AlarmReceiver : BroadcastReceiver() {
 

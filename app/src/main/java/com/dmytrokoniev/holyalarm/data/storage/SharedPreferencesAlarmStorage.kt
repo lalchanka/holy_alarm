@@ -1,10 +1,10 @@
-package com.dmytrokoniev.holyalarm.storage
+package com.dmytrokoniev.holyalarm.data.storage
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import com.dmytrokoniev.holyalarm.ui.AlarmItem
+import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.google.gson.Gson
 
 typealias Storage = SharedPreferencesAlarmStorage

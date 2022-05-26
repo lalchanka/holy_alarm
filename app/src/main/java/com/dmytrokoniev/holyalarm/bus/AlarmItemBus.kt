@@ -1,6 +1,6 @@
 package com.dmytrokoniev.holyalarm.bus
 
-import com.dmytrokoniev.holyalarm.ui.AlarmItem
+import com.dmytrokoniev.holyalarm.data.AlarmItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
