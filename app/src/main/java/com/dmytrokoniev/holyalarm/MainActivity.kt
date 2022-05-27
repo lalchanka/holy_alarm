@@ -17,6 +17,7 @@ import com.dmytrokoniev.holyalarm.bus.ToolbarEvent
 import com.dmytrokoniev.holyalarm.bus.alarmItem
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.dmytrokoniev.holyalarm.data.storage.Storage
+import com.dmytrokoniev.holyalarm.data.storage.findAlarmIds
 import com.dmytrokoniev.holyalarm.data.storage.updateItemIsEnabled
 import com.dmytrokoniev.holyalarm.stopalarm.StopAlarmFragment
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
@@ -158,15 +159,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onStopClick(alarmId: String) {
-        val alarmIds = Storage.getItems().run {
-            val alarmItem = find { it.id == alarmId }
-                ?: throw IllegalStateException("Greetings!(^_^)")
-            filter {
-                it.hour == alarmItem.hour
-                        && it.minute == alarmItem.minute
-                        && it.isEnabled
-            }.map { it.id }
-        }
+        val alarmItem = Storage.getItem(alarmId)
+        val alarmIds = Storage.findAlarmIds(
+            hour = alarmItem?.hour,
+            minute = alarmItem?.minute
+        )
 
         alarmIds.forEach { id ->
             AlarmManagerHelper.cancelAlarm(id)
@@ -208,17 +205,6 @@ class MainActivity : AppCompatActivity() {
         Storage.updateItem(alarmItem)
         setAlarm(alarmItem)
         toast("Alarm updated: ${alarmItem.hour}:${alarmItem.minute}")
-    }
-
-    private fun findAlarmIds(hour: Int, minute: Int): List<String> {
-        val itemsList = Storage.getItems().mapNotNull { alarmItem ->
-            val isValid = alarmItem.hour == hour
-                    && alarmItem.minute == minute
-                    && alarmItem.isEnabled
-            if (isValid) alarmItem.id else null
-        }.toList()
-
-        return itemsList
     }
 
     companion object {
