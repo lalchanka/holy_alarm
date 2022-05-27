@@ -74,6 +74,9 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
         touchHelper.attachToRecyclerView(rvAlarmList)
     }
 
+    // TODO: 5/27/2022 Dima Koniev:
+    //  Change adapter?.notifyDataSetChanged
+    //  with more specific function
     private fun onAddOneMinuteAlarmClicked() {
         val exactTime = Calendar.getInstance()
         val alarmItem = AlarmItem(
