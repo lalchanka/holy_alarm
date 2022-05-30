@@ -13,6 +13,7 @@ typealias Storage = SharedPreferencesAlarmStorage
 object SharedPreferencesAlarmStorage : IAlarmStorage {
 
     private const val SP_FILE_NAME = "alarms_data"
+    private const val LAST_ALARM_ID_FIELD = "last_id"
     private val gson = Gson()
     private var context: Context? = null
     private var sharedPreference: SharedPreferences? = null
@@ -62,6 +63,18 @@ object SharedPreferencesAlarmStorage : IAlarmStorage {
             ?.remove(idToDelete)
             ?.apply()
         return true
+    }
+
+    fun getLastId(): Int {
+        val lastId = sharedPreference?.getInt(LAST_ALARM_ID_FIELD, 0)
+        return lastId ?: 0
+    }
+
+    fun setLastId(newId: Int) {
+        deleteItem(LAST_ALARM_ID_FIELD)
+        sharedPreference?.edit()
+            ?.putInt(LAST_ALARM_ID_FIELD, newId)
+            ?.apply()
     }
 
     override fun clear() {

@@ -1,9 +1,11 @@
 package com.dmytrokoniev.holyalarm.ui
 
-import kotlin.random.Random
+import com.dmytrokoniev.holyalarm.data.storage.Storage
 
 class NewAlarmSetFragment : AlarmSetFragment() {
 
     override val alarmIdProvider: () -> String
-        get() = { Random.nextInt().toString() }
+        get() = {
+            (Storage.getLastId() + 1).toString()
+        }
 }
