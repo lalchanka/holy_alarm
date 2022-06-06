@@ -1,10 +1,6 @@
 package com.dmytrokoniev.holyalarm.data.storage
 
-class SpLastAlarmIdStorage : ISpStorage<Int> {
-
-    override fun initialize() {
-        TODO("Not yet implemented")
-    }
+class SpLastAlarmIdStorage : SpStorage<Int> {
 
     override fun addItem(item: Int) {
         TODO("Not yet implemented")
@@ -22,7 +18,7 @@ class SpLastAlarmIdStorage : ISpStorage<Int> {
         TODO("Not yet implemented")
     }
 
-    override fun dispose() {
-        TODO("Not yet implemented")
+    companion object {
+        private const val LAST_ALARM_ID_FIELD = "last_id"
     }
 }

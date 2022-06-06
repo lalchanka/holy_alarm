@@ -2,11 +2,7 @@ package com.dmytrokoniev.holyalarm.data.storage
 
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 
-class SpAlarmStorage : ISpStorage<AlarmItem> {
-
-    override fun initialize() {
-        TODO("Not yet implemented")
-    }
+class SpAlarmStorage : SpStorage<AlarmItem> {
 
     override fun addItem(item: AlarmItem) {
         TODO("Not yet implemented")
@@ -21,10 +17,6 @@ class SpAlarmStorage : ISpStorage<AlarmItem> {
     }
 
     override fun deleteItem(item: AlarmItem): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun dispose() {
         TODO("Not yet implemented")
     }
 }
