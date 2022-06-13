@@ -27,3 +27,8 @@ abstract class SpStorage<T> : ISpStorage<T> {
         private const val SP_FILE_NAME = "alarms_data"
     }
 }
+
+enum class StorageType {
+    ALARM_ITEM_STORAGE,
+    LAST_ALARM_ID_STORAGE
+}

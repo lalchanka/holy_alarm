@@ -10,7 +10,3 @@ interface IStorage<T> {
 
     fun deleteItem(item: T): Boolean
 }
-
-fun <T> IStorage<T>.getItem(id: String): T {
-    TODO()
-}

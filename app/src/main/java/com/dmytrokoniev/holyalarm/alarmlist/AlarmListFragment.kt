@@ -1,6 +1,8 @@
 package com.dmytrokoniev.holyalarm.alarmlist
 
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
@@ -19,9 +21,10 @@ import java.util.*
 
 
 // TODO add all LC functions with Logs
-class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
+class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.OnInitListener {
 
     private var adapter: AlarmListAdapter? = null
+    private var tts: TextToSpeech? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,13 +38,16 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
         adapter?.setLaunchInFragmentScope(::launchInFragmentScope)
         rvAlarmList.adapter = adapter
 
+        tts = TextToSpeech(context, this)
+
         btnAddAlarm.setOnClickListener {
             if (BuildConfig.BUILD_TYPE == "debug") {
                 onAddOneMinuteAlarmClicked()
             } else if (BuildConfig.BUILD_TYPE == "release") {
-                launchInFragmentScope {
-                    EventBus.emitEvent(AddClicked)
-                }
+                    tts!!.speak("darova chuvaachok", TextToSpeech.QUEUE_FLUSH, null,"")
+//                launchInFragmentScope {
+//                    EventBus.emitEvent(AddClicked)
+//                }
             }
         }
 
@@ -95,5 +101,17 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list) {
     override fun onDestroyView() {
         super.onDestroyView()
         adapter = null
+    }
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            val result = tts!!.setLanguage(Locale.US)
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS","The Language not supported!")
+            }
+        } else {
+
+        }
     }
 }

@@ -6,7 +6,7 @@ import com.dmytrokoniev.holyalarm.data.AlarmItem
     Class to work with AlarmItem DTO`s storage.
     TODO: Implement member functions (konevdmytro)
  */
-class SpAlarmStorage : SpStorage<AlarmItem>() {
+class SpAlarmItemStorage : SpStorage<AlarmItem>() {
 
     override fun addItem(item: AlarmItem) {
         TODO("Not yet implemented")
