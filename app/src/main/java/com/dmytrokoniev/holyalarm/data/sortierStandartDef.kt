@@ -6,5 +6,9 @@ interface LeSortierStandart<T> {
 }
 
 class SortierStandart : LeSortierStandart<AlarmItem> {
-    
+
+    override fun sortAscending(items: Iterable<AlarmItem>): Iterable<AlarmItem> {
+        TODO("Not yet implemented")
+    }
+
 }

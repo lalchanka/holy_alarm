@@ -1,7 +1,5 @@
 package com.dmytrokoniev.holyalarm.data.storage
 
-import com.dmytrokoniev.holyalarm.data.AlarmItem
-
 interface IStorage<T> {
 
     fun addItem(item: T)

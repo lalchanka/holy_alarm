@@ -1,6 +1,10 @@
 package com.dmytrokoniev.holyalarm.data.storage
 
-class SpLastAlarmIdStorage : SpStorage<Int> {
+/*
+    Class to work with Int values storage.
+    TODO: Implement member functions (konevdmytro)
+ */
+class SpLastAlarmIdStorage : SpStorage<Int>() {
 
     override fun addItem(item: Int) {
         TODO("Not yet implemented")
