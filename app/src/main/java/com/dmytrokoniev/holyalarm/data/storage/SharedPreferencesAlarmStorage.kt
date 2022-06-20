@@ -7,7 +7,7 @@ import android.content.SharedPreferences
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.google.gson.Gson
 
-typealias Storage = SharedPreferencesAlarmStorage
+//typealias Storage = SharedPreferencesAlarmStorage
 
 @SuppressLint("StaticFieldLeak")
 object SharedPreferencesAlarmStorage : IAlarmStorage {
@@ -45,7 +45,7 @@ object SharedPreferencesAlarmStorage : IAlarmStorage {
             emptyList()
         } else {
             strings.map {
-                gson.fromJson(it.value, AlarmItem::class.java)
+                 gson.fromJson(it.value, AlarmItem::class.java)
             }
         }
     }

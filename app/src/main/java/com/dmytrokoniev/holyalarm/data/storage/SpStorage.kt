@@ -6,8 +6,8 @@ import com.google.gson.Gson
 
 abstract class SpStorage<T> : ISpStorage<T> {
 
-    private val gson = Gson()
     private var context: Context? = null
+    protected val gson = Gson()
     protected var sharedPreference: SharedPreferences? = null
 
     override fun initialize(context: Context) {

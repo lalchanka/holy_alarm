@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.dmytrokoniev.holyalarm.alarmlist.AlarmListAdapter
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.dmytrokoniev.holyalarm.data.AlarmItem.Companion.toMillis
-import com.dmytrokoniev.holyalarm.data.storage.SharedPreferencesAlarmStorage
 
 /**
  * A convenient function to show a [Toast] using any [View] and it's [Context].
@@ -30,7 +29,5 @@ fun AppCompatActivity.toast(
 fun AlarmManagerHelper.setAlarm(alarmItem: AlarmItem) = setAlarm(alarmItem.toMillis(), alarmItem.id)
 
 fun AlarmManagerHelper.cancelAlarm(alarmItem: AlarmItem) = cancelAlarm(alarmItem.id)
-
-fun SharedPreferencesAlarmStorage.deleteItem(alarmItem: AlarmItem) = deleteItem(alarmItem.id)
 
 fun AlarmListAdapter.addAlarm(alarmItem: AlarmItem) = addAlarm(alarmItem, itemCount)

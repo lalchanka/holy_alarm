@@ -13,7 +13,7 @@ import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.AddClicked
 import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.data.AlarmItem
-import com.dmytrokoniev.holyalarm.data.storage.SharedPreferencesAlarmStorage
+import com.dmytrokoniev.holyalarm.data.storage.SpAlarmItemStorage
 import com.dmytrokoniev.holyalarm.data.storage.Storage
 import com.dmytrokoniev.holyalarm.util.*
 import com.google.android.material.snackbar.Snackbar
@@ -44,10 +44,10 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
             if (BuildConfig.BUILD_TYPE == "debug") {
                 onAddOneMinuteAlarmClicked()
             } else if (BuildConfig.BUILD_TYPE == "release") {
-                    tts!!.speak("darova chuvaachok", TextToSpeech.QUEUE_FLUSH, null,"")
-//                launchInFragmentScope {
-//                    EventBus.emitEvent(AddClicked)
-//                }
+//                    tts!!.speak("darova chuvaachok", TextToSpeech.QUEUE_FLUSH, null,"")
+                launchInFragmentScope {
+                    EventBus.emitEvent(AddClicked)
+                }
             }
         }
 
@@ -62,7 +62,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     val removedAlarmPosition = viewHolder.bindingAdapterPosition
                     adapter?.removeAlarm(removedAlarmPosition) { alarmToRemove ->
-                        SharedPreferencesAlarmStorage.deleteItem(alarmToRemove)
+                        SpAlarmItemStorage.deleteItem(alarmToRemove)
                         AlarmManagerHelper.cancelAlarm(alarmToRemove)
 
                         Snackbar.make(
@@ -71,7 +71,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
                             Snackbar.LENGTH_LONG
                         ).setAction("UNDO") {
                             adapter?.addAlarm(alarmToRemove, removedAlarmPosition)
-                            SharedPreferencesAlarmStorage.addItem(alarmToRemove)
+                            SpAlarmItemStorage.addItem(alarmToRemove)
                             AlarmManagerHelper.setAlarm(alarmToRemove)
                         }.show()
                     }
@@ -92,7 +92,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
             is24HourView = true,
             isEnabled = true
         )
-        SharedPreferencesAlarmStorage.addItem(alarmItem)
+        SpAlarmItemStorage.addItem(alarmItem)
         AlarmManagerHelper.setAlarm(alarmItem)
         adapter?.addAlarm(alarmItem)
         adapter?.notifyDataSetChanged()

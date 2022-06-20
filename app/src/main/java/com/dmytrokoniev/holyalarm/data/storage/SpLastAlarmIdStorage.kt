@@ -1,10 +1,15 @@
 package com.dmytrokoniev.holyalarm.data.storage
 
-/*
-    Class to work with Int values storage.
-    TODO: Implement member functions (konevdmytro)
+import android.annotation.SuppressLint
+
+// TODO: Implement member functions (konevdmytro)
+/**
+ * Class to work with Int values storage.
  */
-class SpLastAlarmIdStorage : SpStorage<Int>() {
+@SuppressLint("StaticFieldLeak")
+object SpLastAlarmIdStorage : SpStorage<Int>() {
+
+    private const val LAST_ALARM_ID_FIELD = "last_id"
 
     override fun addItem(item: Int) {
         TODO("Not yet implemented")
@@ -21,8 +26,21 @@ class SpLastAlarmIdStorage : SpStorage<Int>() {
     override fun deleteItem(item: Int): Boolean {
         TODO("Not yet implemented")
     }
+}
 
-    companion object {
-        private const val LAST_ALARM_ID_FIELD = "last_id"
-    }
+// TODO Put this code to getItems function (konevdmytro)
+fun SpLastAlarmIdStorage.getLastId(): Int {
+    TODO()
+//    val lastId = SharedPreferencesAlarmStorage.sharedPreference?.getInt(
+//        SharedPreferencesAlarmStorage.LAST_ALARM_ID_FIELD, 0)
+//    return lastId ?: 0
+}
+
+// TODO Put this code to updateItems function (konevdmytro)
+fun SpLastAlarmIdStorage.setLastId(newId: Int) {
+    TODO()
+//    SharedPreferencesAlarmStorage.deleteItem(SharedPreferencesAlarmStorage.LAST_ALARM_ID_FIELD)
+//    SharedPreferencesAlarmStorage.sharedPreference?.edit()
+//        ?.putInt(SharedPreferencesAlarmStorage.LAST_ALARM_ID_FIELD, newId)
+//        ?.apply()
 }

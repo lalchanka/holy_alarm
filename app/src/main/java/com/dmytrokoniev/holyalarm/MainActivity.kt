@@ -8,9 +8,7 @@ import androidx.fragment.app.Fragment
 import com.dmytrokoniev.holyalarm.alarmlist.AlarmListFragment
 import com.dmytrokoniev.holyalarm.bus.*
 import com.dmytrokoniev.holyalarm.data.AlarmItem
-import com.dmytrokoniev.holyalarm.data.storage.Storage
-import com.dmytrokoniev.holyalarm.data.storage.findAlarmIds
-import com.dmytrokoniev.holyalarm.data.storage.updateItemIsEnabled
+import com.dmytrokoniev.holyalarm.data.storage.*
 import com.dmytrokoniev.holyalarm.stopalarm.StopAlarmFragment
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 import com.dmytrokoniev.holyalarm.ui.ExistingAlarmSetFragment
@@ -21,6 +19,8 @@ import com.dmytrokoniev.holyalarm.util.*
 class MainActivity : AppCompatActivity() {
 
     private var toolbar: View? = null
+    private var spAlarmStorage: SpAlarmItemStorage? = null
+    private var spLastAlarmIdStorage: SpLastAlarmIdStorage? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,12 +49,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun initSingletons() {
         AlarmManagerHelper.initialize(this)
-        Storage.initialize(this)
+        spAlarmStorage?.initialize(this)
+        spLastAlarmIdStorage?.initialize(this)
     }
 
     private fun disposeSingletons() {
         AlarmManagerHelper.dispose()
-        Storage.dispose()
+        spAlarmStorage?.dispose()
+        spLastAlarmIdStorage?.dispose()
     }
 
     private fun showInitialFragment() {
@@ -134,27 +136,28 @@ class MainActivity : AppCompatActivity() {
 
     private fun onCheckedChangeListener(isChecked: Boolean, alarmItem: AlarmItem) {
         val alarmId = alarmItem.id
+
         if (isChecked) {
             AlarmManagerHelper.setAlarm(alarmItem)
-            Storage.updateItemIsEnabled(alarmId, isEnabled = true)
+            spAlarmStorage?.updateItemIsEnabled(alarmId, isEnabled = true)
             toast("Alarm set for: ${alarmItem.hour}:${alarmItem.minute}")
         } else {
             AlarmManagerHelper.cancelAlarm(alarmId)
-            Storage.updateItemIsEnabled(alarmId, isEnabled = false)
+            spAlarmStorage?.updateItemIsEnabled(alarmId, isEnabled = false)
             toast("Cancelled alarm: ${alarmItem.hour}:${alarmItem.minute}")
         }
     }
 
     private fun onStopClick(alarmId: String) {
-        val alarmItem = Storage.getItem(alarmId)
-        val alarmIds = Storage.findAlarmIds(
+        val alarmItem = spAlarmStorage?.getItem(alarmId)
+        val alarmIds = spAlarmStorage?.findAlarmIds(
             hour = alarmItem?.hour,
             minute = alarmItem?.minute
         )
 
-        alarmIds.forEach { id ->
+        alarmIds?.forEach { id ->
             AlarmManagerHelper.cancelAlarm(id)
-            Storage.updateItemIsEnabled(id, isEnabled = false)
+            spAlarmStorage?.updateItemIsEnabled(id, isEnabled = false)
         }
 
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
@@ -184,13 +187,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun confirmAddAlarm(alarmItem: AlarmItem) {
-        Storage.addItem(alarmItem)
-        Storage.setLastId(alarmItem.id.toInt())
+        spAlarmStorage?.addItem(alarmItem)
+        spLastAlarmIdStorage?.setLastId(alarmItem.id.toInt())
         setAlarm(alarmItem)
     }
 
     private fun confirmSetAlarm(alarmItem: AlarmItem) {
-        Storage.updateItem(alarmItem)
+        spAlarmStorage?.updateItem(alarmItem)
         setAlarm(alarmItem)
         toast("Alarm updated: ${alarmItem.hour}:${alarmItem.minute}")
     }

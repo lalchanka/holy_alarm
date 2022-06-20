@@ -26,6 +26,7 @@ class AlarmListAdapter : RecyclerView.Adapter<AlarmItemViewHolder>() {
 
     override fun getItemCount(): Int = alarmsList.size
 
+    // TODO Use more specific function than notifyDataSetChanged()
     fun setAlarmList(inputList: List<AlarmItem>) {
         alarmsList.clear()
         alarmsList.addAll(inputList)
