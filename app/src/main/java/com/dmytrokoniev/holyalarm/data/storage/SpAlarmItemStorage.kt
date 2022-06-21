@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 
 typealias Storage = SpAlarmItemStorage
+
 /*
     Class to work with AlarmItem DTO`s storage.
-    TODO: Implement member functions (konevdmytro)
  */
 @SuppressLint("StaticFieldLeak")
 object SpAlarmItemStorage : SpStorage<AlarmItem>() {
@@ -45,21 +45,16 @@ object SpAlarmItemStorage : SpStorage<AlarmItem>() {
     }
 }
 
+fun SpAlarmItemStorage.getItem(id: String): AlarmItem? {
+    val alarmItems = getItems()
+    return alarmItems.find { it.id == id }
+}
+
 fun SpAlarmItemStorage.addItems(items: List<AlarmItem>) = items.forEach { addItem(it) }
 
 fun SpAlarmItemStorage.updateItemIsEnabled(id: String, isEnabled: Boolean) {
     val alarmItem = getItem(id) ?: return
     updateItem(alarmItem.copy(isEnabled = isEnabled))
-}
-
-fun SpAlarmItemStorage.getItem(id: String): AlarmItem? {
-    TODO()
-//    val serializedItem = sharedPreference?.getString(id, null)
-//    return if (serializedItem != null) {
-//        gson?.fromJson(serializedItem, AlarmItem::class.java)
-//    } else {
-//        null
-//    }
 }
 
 fun SpAlarmItemStorage.findAlarmIds(
@@ -68,14 +63,13 @@ fun SpAlarmItemStorage.findAlarmIds(
     is24HourView: Boolean? = null,
     isEnabled: Boolean? = null
 ): List<String> {
-    TODO()
-//    val itemsList = Storage.getItems().mapNotNull { alarmItem ->
-//        val isValid = if (hour != null) alarmItem.hour == hour else true
-//                && if (minute != null) alarmItem.minute == minute else true
-//                && if (is24HourView != null) alarmItem.is24HourView == is24HourView else true
-//                && if (isEnabled != null) alarmItem.isEnabled == isEnabled else true
-//        if (isValid) alarmItem.id else null
-//    }.toList()
-//
-//    return itemsList
+    val itemsList = getItems().mapNotNull { alarmItem ->
+        val isValid = if (hour != null) alarmItem.hour == hour else true
+                && if (minute != null) alarmItem.minute == minute else true
+                && if (is24HourView != null) alarmItem.is24HourView == is24HourView else true
+                && if (isEnabled != null) alarmItem.isEnabled == isEnabled else true
+        if (isValid) alarmItem.id else null
+    }.toList()
+
+    return itemsList
 }
