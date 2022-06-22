@@ -13,7 +13,6 @@ import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.AddClicked
 import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.data.AlarmItem
-import com.dmytrokoniev.holyalarm.data.storage.SpAlarmItemStorage
 import com.dmytrokoniev.holyalarm.data.storage.Storage
 import com.dmytrokoniev.holyalarm.util.*
 import com.google.android.material.snackbar.Snackbar
@@ -62,7 +61,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     val removedAlarmPosition = viewHolder.bindingAdapterPosition
                     adapter?.removeAlarm(removedAlarmPosition) { alarmToRemove ->
-                        SpAlarmItemStorage.deleteItem(alarmToRemove)
+                        Storage.deleteItem(alarmToRemove)
                         AlarmManagerHelper.cancelAlarm(alarmToRemove)
 
                         Snackbar.make(
@@ -71,7 +70,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
                             Snackbar.LENGTH_LONG
                         ).setAction("UNDO") {
                             adapter?.addAlarm(alarmToRemove, removedAlarmPosition)
-                            SpAlarmItemStorage.addItem(alarmToRemove)
+                            Storage.addItem(alarmToRemove)
                             AlarmManagerHelper.setAlarm(alarmToRemove)
                         }.show()
                     }
@@ -92,7 +91,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
             is24HourView = true,
             isEnabled = true
         )
-        SpAlarmItemStorage.addItem(alarmItem)
+        Storage.addItem(alarmItem)
         AlarmManagerHelper.setAlarm(alarmItem)
         adapter?.addAlarm(alarmItem)
         adapter?.notifyDataSetChanged()
@@ -103,6 +102,8 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
         adapter = null
     }
 
+    // TODO: 22/06/2022 Dima Koniev:
+    //  TTS function realisation
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
             val result = tts!!.setLanguage(Locale.US)

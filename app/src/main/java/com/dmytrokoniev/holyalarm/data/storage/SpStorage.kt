@@ -9,6 +9,7 @@ abstract class SpStorage<T> : ISpStorage<T> {
     private var context: Context? = null
     protected val gson = Gson()
     protected var sharedPreference: SharedPreferences? = null
+    protected val spFileNameProvider
 
     override fun initialize(context: Context) {
         this.context = context

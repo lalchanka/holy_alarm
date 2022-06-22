@@ -13,6 +13,7 @@ import com.dmytrokoniev.holyalarm.bus.AlarmItemBus
 import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.bus.StopAlarmFragmentEvent.StopClicked
 import com.dmytrokoniev.holyalarm.data.storage.Storage
+import com.dmytrokoniev.holyalarm.data.storage.getItem
 import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
@@ -28,7 +29,7 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
         val btnStop = view.findViewById<View>(R.id.btn_stop)
         val tvAlarmTime = view.findViewById<TextView>(R.id.tv_alarm_time)
         val alarmId = arguments?.getString(KEY_ALARM_ID)
-        val alarmItem = Storage.getItems().find { it.id == alarmId }
+        val alarmItem = alarmId?.let { Storage.getItem(it) }
         val formattedHours = alarmItem?.hour?.timeHumanFormat() ?: "Time"
         val formattedMinutes = alarmItem?.minute?.timeHumanFormat() ?: "Error $ERROR_TRIGGER_TIME"
         tvAlarmTime.text = view.context.getString(

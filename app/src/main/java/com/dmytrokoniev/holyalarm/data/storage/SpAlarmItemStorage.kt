@@ -45,10 +45,7 @@ object SpAlarmItemStorage : SpStorage<AlarmItem>() {
     }
 }
 
-fun SpAlarmItemStorage.getItem(id: String): AlarmItem? {
-    val alarmItems = getItems()
-    return alarmItems.find { it.id == id }
-}
+fun SpAlarmItemStorage.getItem(id: String): AlarmItem?  = getItems().find { it.id == id }
 
 fun SpAlarmItemStorage.addItems(items: List<AlarmItem>) = items.forEach { addItem(it) }
 

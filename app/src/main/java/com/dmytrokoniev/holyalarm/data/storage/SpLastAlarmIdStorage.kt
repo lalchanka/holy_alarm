@@ -1,6 +1,7 @@
 package com.dmytrokoniev.holyalarm.data.storage
 
 import android.annotation.SuppressLint
+import com.dmytrokoniev.holyalarm.data.AlarmItem
 
 // TODO: Implement member functions (konevdmytro)
 /**
@@ -12,19 +13,26 @@ object SpLastAlarmIdStorage : SpStorage<Int>() {
     private const val LAST_ALARM_ID_FIELD = "last_id"
 
     override fun addItem(item: Int) {
-        TODO("Not yet implemented")
+        sharedPreference?.edit()
+            ?.putInt(LAST_ALARM_ID_FIELD, item)
+            ?.apply()
     }
 
     override fun getItems(): List<Int> {
-        TODO("Not yet implemented")
+        val int = sharedPreference?.getInt(LAST_ALARM_ID_FIELD, 0)
     }
 
     override fun updateItem(item: Int): Boolean {
-        TODO("Not yet implemented")
+        getItems().find { it.id == item.id } ?: return false
+        deleteItem(item)
+        addItem(item)
+        return true
     }
 
     override fun deleteItem(item: Int): Boolean {
-        TODO("Not yet implemented")
+        sharedPreference?.edit()
+            ?.remove(LAST_ALARM_ID_FIELD)
+            ?.apply()
     }
 }
 
