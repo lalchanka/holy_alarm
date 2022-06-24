@@ -1,11 +1,12 @@
 package com.dmytrokoniev.holyalarm.ui
 
-import com.dmytrokoniev.holyalarm.data.storage.Storage
+import com.dmytrokoniev.holyalarm.data.storage.LastIdStorage
+import com.dmytrokoniev.holyalarm.data.storage.getLastId
 
 class NewAlarmSetFragment : AlarmSetFragment() {
 
     override val alarmIdProvider: () -> String
         get() = {
-            (Storage.getLastId() + 1).toString()
+            (LastIdStorage.getLastId() + 1).toString()
         }
 }

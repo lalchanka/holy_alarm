@@ -9,12 +9,12 @@ abstract class SpStorage<T> : ISpStorage<T> {
     private var context: Context? = null
     protected val gson = Gson()
     protected var sharedPreference: SharedPreferences? = null
-    protected val spFileNameProvider
+    protected abstract val spFileNameProvider: () -> String
 
     override fun initialize(context: Context) {
         this.context = context
         this.sharedPreference = context.getSharedPreferences(
-            SP_FILE_NAME,
+            spFileNameProvider(),
             Context.MODE_PRIVATE
         )
     }
@@ -22,10 +22,6 @@ abstract class SpStorage<T> : ISpStorage<T> {
     override fun dispose() {
         context = null
         sharedPreference = null
-    }
-
-    companion object {
-        private const val SP_FILE_NAME = "alarms_data"
     }
 }
 

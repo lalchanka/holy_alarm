@@ -1,15 +1,19 @@
 package com.dmytrokoniev.holyalarm.data.storage
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 
-typealias Storage = SpAlarmItemStorage
+typealias AlarmStorage = SpAlarmItemStorage
 
 /*
     Class to work with AlarmItem DTO`s storage.
  */
 @SuppressLint("StaticFieldLeak")
 object SpAlarmItemStorage : SpStorage<AlarmItem>() {
+
+    override val spFileNameProvider: () -> String
+        get() = { "alarms_data" }
 
     override fun addItem(item: AlarmItem) {
         val serializedItem = gson.toJson(item)
@@ -43,9 +47,13 @@ object SpAlarmItemStorage : SpStorage<AlarmItem>() {
             ?.apply()
         return true
     }
+
+    fun getStorage(): SharedPreferences? {
+        return sharedPreference
+    }
 }
 
-fun SpAlarmItemStorage.getItem(id: String): AlarmItem?  = getItems().find { it.id == id }
+fun SpAlarmItemStorage.getItem(id: String): AlarmItem? = getItems().find { it.id == id }
 
 fun SpAlarmItemStorage.addItems(items: List<AlarmItem>) = items.forEach { addItem(it) }
 

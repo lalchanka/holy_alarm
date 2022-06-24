@@ -13,7 +13,7 @@ import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.AddClicked
 import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.data.AlarmItem
-import com.dmytrokoniev.holyalarm.data.storage.Storage
+import com.dmytrokoniev.holyalarm.data.storage.AlarmStorage
 import com.dmytrokoniev.holyalarm.util.*
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
@@ -32,7 +32,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
         val btnAddAlarm = view.findViewById<Button>(R.id.btn_add_alarm)
 
         adapter = AlarmListAdapter()
-        val alarms = Storage.getItems()
+        val alarms = AlarmStorage.getItems()
         adapter?.setAlarmList(alarms)
         adapter?.setLaunchInFragmentScope(::launchInFragmentScope)
         rvAlarmList.adapter = adapter
@@ -61,7 +61,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     val removedAlarmPosition = viewHolder.bindingAdapterPosition
                     adapter?.removeAlarm(removedAlarmPosition) { alarmToRemove ->
-                        Storage.deleteItem(alarmToRemove)
+                        AlarmStorage.deleteItem(alarmToRemove)
                         AlarmManagerHelper.cancelAlarm(alarmToRemove)
 
                         Snackbar.make(
@@ -70,7 +70,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
                             Snackbar.LENGTH_LONG
                         ).setAction("UNDO") {
                             adapter?.addAlarm(alarmToRemove, removedAlarmPosition)
-                            Storage.addItem(alarmToRemove)
+                            AlarmStorage.addItem(alarmToRemove)
                             AlarmManagerHelper.setAlarm(alarmToRemove)
                         }.show()
                     }
@@ -91,7 +91,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
             is24HourView = true,
             isEnabled = true
         )
-        Storage.addItem(alarmItem)
+        AlarmStorage.addItem(alarmItem)
         AlarmManagerHelper.setAlarm(alarmItem)
         adapter?.addAlarm(alarmItem)
         adapter?.notifyDataSetChanged()
@@ -109,7 +109,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
             val result = tts!!.setLanguage(Locale.US)
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS","The Language not supported!")
+                Log.e("TTS", "The Language not supported!")
             }
         } else {
 

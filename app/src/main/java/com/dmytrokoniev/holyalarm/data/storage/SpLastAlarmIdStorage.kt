@@ -1,16 +1,19 @@
 package com.dmytrokoniev.holyalarm.data.storage
 
 import android.annotation.SuppressLint
-import com.dmytrokoniev.holyalarm.data.AlarmItem
+import android.content.SharedPreferences
 
-// TODO: Implement member functions (konevdmytro)
+typealias LastIdStorage = SpLastAlarmIdStorage
+
 /**
- * Class to work with Int values storage.
+ * Class to work with LastAlarmId storage.
  */
 @SuppressLint("StaticFieldLeak")
 object SpLastAlarmIdStorage : SpStorage<Int>() {
 
     private const val LAST_ALARM_ID_FIELD = "last_id"
+    override val spFileNameProvider: () -> String
+        get() = { "lastAlarmId_data" }
 
     override fun addItem(item: Int) {
         sharedPreference?.edit()
@@ -19,36 +22,44 @@ object SpLastAlarmIdStorage : SpStorage<Int>() {
     }
 
     override fun getItems(): List<Int> {
-        val int = sharedPreference?.getInt(LAST_ALARM_ID_FIELD, 0)
+        val lastId = sharedPreference?.getInt(LAST_ALARM_ID_FIELD, 0)
+        return if (lastId == null) {
+            emptyList()
+        } else {
+            listOf(lastId)
+        }
     }
 
     override fun updateItem(item: Int): Boolean {
-        getItems().find { it.id == item.id } ?: return false
-        deleteItem(item)
-        addItem(item)
-        return true
+        val lastId = getItems()
+        return if (lastId.isEmpty()) {
+            false
+        } else {
+            addItem(item)
+            true
+        }
     }
 
     override fun deleteItem(item: Int): Boolean {
-        sharedPreference?.edit()
-            ?.remove(LAST_ALARM_ID_FIELD)
-            ?.apply()
+//        sharedPreference?.edit()
+//            ?.remove(LAST_ALARM_ID_FIELD)
+//            ?.apply()
+        return true
+    }
+
+    fun getStorage(): SharedPreferences? {
+        return sharedPreference
     }
 }
 
-// TODO Put this code to getItems function (konevdmytro)
 fun SpLastAlarmIdStorage.getLastId(): Int {
-    TODO()
-//    val lastId = SharedPreferencesAlarmStorage.sharedPreference?.getInt(
-//        SharedPreferencesAlarmStorage.LAST_ALARM_ID_FIELD, 0)
-//    return lastId ?: 0
+    val listId = getItems()
+    return if (listId.isEmpty()) {
+        addItem(item = 0)
+        0
+    } else {
+        listId[0]
+    }
 }
 
-// TODO Put this code to updateItems function (konevdmytro)
-fun SpLastAlarmIdStorage.setLastId(newId: Int) {
-    TODO()
-//    SharedPreferencesAlarmStorage.deleteItem(SharedPreferencesAlarmStorage.LAST_ALARM_ID_FIELD)
-//    SharedPreferencesAlarmStorage.sharedPreference?.edit()
-//        ?.putInt(SharedPreferencesAlarmStorage.LAST_ALARM_ID_FIELD, newId)
-//        ?.apply()
-}
+fun SpLastAlarmIdStorage.setLastId(newId: Int) = addItem(newId)

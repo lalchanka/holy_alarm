@@ -49,12 +49,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun initSingletons() {
         AlarmManagerHelper.initialize(this)
-        spAlarmStorage?.initialize(this)
-        spLastAlarmIdStorage?.initialize(this)
+        AlarmStorage.initialize(this)
+        LastIdStorage.initialize(this)
+        spAlarmStorage = AlarmStorage
+        spLastAlarmIdStorage = LastIdStorage
     }
 
     private fun disposeSingletons() {
         AlarmManagerHelper.dispose()
+        AlarmStorage.dispose()
+        LastIdStorage.dispose()
         spAlarmStorage?.dispose()
         spLastAlarmIdStorage?.dispose()
     }

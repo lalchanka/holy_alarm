@@ -16,11 +16,13 @@ abstract class AlarmSetFragment : Fragment(R.layout.standart_fragment_set_alarm)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val newAlarmId = alarmIdProvider()
         tpAlarmTime = view.findViewById(R.id.tp_alarm_time)
         tpAlarmTime?.setIs24HourView(IS_24_FORMAT_ENABLED)
         tpAlarmTime?.setOnTimeChangedListener { _, hourOfDay, minute ->
             val newAlarm = AlarmItem(
-                id = alarmIdProvider(),
+                id = newAlarmId,
                 hour = hourOfDay,
                 minute = minute,
                 is24HourView = IS_24_FORMAT_ENABLED,
