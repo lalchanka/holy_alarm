@@ -5,9 +5,8 @@ interface LeSortierStandart<T> {
     fun sortAscending(items: Iterable<T>): Iterable<T> 
 }
 
-class SortierStandart : LeSortierStandart<AlarmItem> {
+object SortierStandart : LeSortierStandart<AlarmItem> {
 
-    override fun sortAscending(items: Iterable<AlarmItem>): Iterable<AlarmItem> {
-        TODO("Not yet implemented")
-    }
+    override fun sortAscending(items: Iterable<AlarmItem>): Iterable<AlarmItem> =
+        items.sortedBy { it.id.toInt() }
 }

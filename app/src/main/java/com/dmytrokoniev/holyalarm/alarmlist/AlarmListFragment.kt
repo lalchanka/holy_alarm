@@ -5,6 +5,7 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,7 @@ import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.AddClicked
 import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.data.AlarmItem
+import com.dmytrokoniev.holyalarm.data.SortierStandart
 import com.dmytrokoniev.holyalarm.data.storage.AlarmStorage
 import com.dmytrokoniev.holyalarm.util.*
 import com.google.android.material.snackbar.Snackbar
@@ -33,7 +35,8 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
 
         adapter = AlarmListAdapter()
         val alarms = AlarmStorage.getItems()
-        adapter?.setAlarmList(alarms)
+        val sortedAlarms = SortierStandart.sortAscending(alarms).toList()
+        adapter?.setAlarmList(sortedAlarms)
         adapter?.setLaunchInFragmentScope(::launchInFragmentScope)
         rvAlarmList.adapter = adapter
 
@@ -43,10 +46,10 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
             if (BuildConfig.BUILD_TYPE == "debug") {
                 onAddOneMinuteAlarmClicked()
             } else if (BuildConfig.BUILD_TYPE == "release") {
-//                    tts!!.speak("darova chuvaachok", TextToSpeech.QUEUE_FLUSH, null,"")
-                launchInFragmentScope {
-                    EventBus.emitEvent(AddClicked)
-                }
+                tts!!.speak("da rova, chuva choook", TextToSpeech.QUEUE_FLUSH, null,"")
+//                launchInFragmentScope {
+//                    EventBus.emitEvent(AddClicked)
+//                }
             }
         }
 
@@ -112,7 +115,15 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
                 Log.e("TTS", "The Language not supported!")
             }
         } else {
-
+            Toast.makeText(this.context, "tts not inited", Toast.LENGTH_SHORT)
         }
+    }
+
+    override fun onDestroy() {
+        if (tts != null) {
+            tts!!.stop()
+            tts!!.shutdown()
+        }
+        super.onDestroy()
     }
 }

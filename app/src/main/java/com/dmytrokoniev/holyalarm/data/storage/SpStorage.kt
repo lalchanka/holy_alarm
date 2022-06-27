@@ -24,8 +24,3 @@ abstract class SpStorage<T> : ISpStorage<T> {
         sharedPreference = null
     }
 }
-
-enum class StorageType {
-    ALARM_ITEM_STORAGE,
-    LAST_ALARM_ID_STORAGE
-}
