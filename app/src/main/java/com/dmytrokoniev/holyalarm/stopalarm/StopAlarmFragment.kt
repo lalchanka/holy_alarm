@@ -20,9 +20,9 @@ import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
 import kotlinx.coroutines.delay
 
 
-class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
+class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm), IStopAlarmFragment {
 
-    private lateinit var mediaPlayer: MediaPlayer
+    private val stopAlarmPresenter: IStopAlarmPresenter = StopAlarmPresenter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,8 +38,8 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm) {
             formattedMinutes
         )
 
-        val notification: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        mediaPlayer = MediaPlayer.create(context, notification)
+        context?.let { stopAlarmPresenter.initialize(it) }
+
         mediaPlayer.setOnPreparedListener {
             mediaPlayer.start()
             launchInFragmentScope {

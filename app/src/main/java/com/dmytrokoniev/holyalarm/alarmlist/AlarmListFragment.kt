@@ -1,5 +1,6 @@
 package com.dmytrokoniev.holyalarm.alarmlist
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
@@ -18,6 +19,9 @@ import com.dmytrokoniev.holyalarm.data.SortierStandart
 import com.dmytrokoniev.holyalarm.data.storage.AlarmStorage
 import com.dmytrokoniev.holyalarm.util.*
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 
@@ -26,6 +30,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
 
     private var adapter: AlarmListAdapter? = null
     private var tts: TextToSpeech? = null
+    private var disposable: Disposable? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -40,13 +45,21 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
         adapter?.setLaunchInFragmentScope(::launchInFragmentScope)
         rvAlarmList.adapter = adapter
 
+        val textProvider = TextProvider()
         tts = TextToSpeech(context, this)
 
         btnAddAlarm.setOnClickListener {
             if (BuildConfig.BUILD_TYPE == "debug") {
                 onAddOneMinuteAlarmClicked()
             } else if (BuildConfig.BUILD_TYPE == "release") {
-                tts!!.speak("da rova, chuva choook", TextToSpeech.QUEUE_FLUSH, null,"")
+                val singleTextProvier = textProvider.provideText(1, 1)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                disposable = singleTextProvier.subscribe { text ->
+                    tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null,"")
+                }
+                val alertDialogBuilder = AlertDialog.Builder(context)
+                alertDialogBuilder
 //                launchInFragmentScope {
 //                    EventBus.emitEvent(AddClicked)
 //                }
@@ -103,6 +116,8 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
     override fun onDestroyView() {
         super.onDestroyView()
         adapter = null
+        disposable?.dispose()
+        disposable = null
     }
 
     // TODO: 22/06/2022 Dima Koniev:
