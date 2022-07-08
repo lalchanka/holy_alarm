@@ -52,17 +52,15 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), TextToSpeech.O
             if (BuildConfig.BUILD_TYPE == "debug") {
                 onAddOneMinuteAlarmClicked()
             } else if (BuildConfig.BUILD_TYPE == "release") {
-                val singleTextProvier = textProvider.provideText(1, 1)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                disposable = singleTextProvier.subscribe { text ->
-                    tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null,"")
-                }
-                val alertDialogBuilder = AlertDialog.Builder(context)
-                alertDialogBuilder
-//                launchInFragmentScope {
-//                    EventBus.emitEvent(AddClicked)
+//                val singleTextProvier = textProvider.provideText(1, 1)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                disposable = singleTextProvier.subscribe { text ->
+//                    tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null,"")
 //                }
+                launchInFragmentScope {
+                    EventBus.emitEvent(AddClicked)
+                }
             }
         }
 
