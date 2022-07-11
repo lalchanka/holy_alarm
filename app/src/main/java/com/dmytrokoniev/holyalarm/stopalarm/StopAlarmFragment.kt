@@ -41,9 +41,6 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm), IStopAlarmFrag
         }
     }
 
-    private fun setAlarmTimeText() {
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         stopAlarmPresenter.dispose()

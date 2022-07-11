@@ -10,11 +10,12 @@ import com.dmytrokoniev.holyalarm.bus.StopAlarmFragmentEvent
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.dmytrokoniev.holyalarm.data.storage.AlarmStorage
 import com.dmytrokoniev.holyalarm.data.storage.getItem
+import com.dmytrokoniev.holyalarm.util.ITextProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class StopAlarmPresenter() : IStopAlarmPresenter {
+class StopAlarmPresenter : IStopAlarmPresenter {
 
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var alarmId: String
@@ -50,6 +51,7 @@ class StopAlarmPresenter() : IStopAlarmPresenter {
             alarmItem?.let {
                 AlarmItemBus.emitAlarmItem(alarmItem)
                 EventBus.emitEvent(StopAlarmFragmentEvent.StopClicked)
+                stopRingtone()
             }
         }
 
