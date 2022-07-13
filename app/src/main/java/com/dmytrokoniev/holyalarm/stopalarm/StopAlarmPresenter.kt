@@ -4,49 +4,54 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.net.Uri
-import com.dmytrokoniev.holyalarm.bus.AlarmItemBus
-import com.dmytrokoniev.holyalarm.bus.EventBus
-import com.dmytrokoniev.holyalarm.bus.StopAlarmFragmentEvent
+import com.dmytrokoniev.holyalarm.bus.*
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.dmytrokoniev.holyalarm.data.storage.AlarmStorage
 import com.dmytrokoniev.holyalarm.data.storage.getItem
-import com.dmytrokoniev.holyalarm.util.ITextProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class StopAlarmPresenter : IStopAlarmPresenter {
+class StopAlarmPresenter(
+    private val view: IStopAlarmFragment
+) : IStopAlarmPresenter {
 
     private lateinit var mediaPlayer: MediaPlayer
-    private lateinit var alarmId: String
     private var coroutineScope: CoroutineScope? = null
 
-    override fun initialize(context: Context, coroutineScope: CoroutineScope?, alarmId: String) {
+    override fun initialize(context: Context, coroutineScope: CoroutineScope?) {
         val notification: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         mediaPlayer = MediaPlayer.create(context, notification)
-        this.alarmId = alarmId
         this.coroutineScope = coroutineScope
-
-        playRingtone()
     }
 
-    override fun playRingtone() {
+    override fun playRingtone(alarmItem: AlarmItem?) {
         mediaPlayer.setOnPreparedListener {
             mediaPlayer.start()
 
             coroutineScope?.launch {
                 delay(ALARM_AUTOSTOP_TIME_MS)
-                onStopAlarmClick()
+                onStopAlarmClick(alarmItem)
             }
         }
     }
 
     override fun stopRingtone() = mediaPlayer.stop()
 
-    override fun getAlarmItem() : AlarmItem?  = AlarmStorage.getItem(alarmId)
+    override fun validateData(alarmId: String?) {
+        coroutineScope?.launch {
+            if (alarmId != null) {
+                ViewCreatedStateBus.emitViewCreatedState(ViewCreatedState.OnSuccess(ViewType.STOP_ALARM))
+                val alarmItem = AlarmStorage.getItem(alarmId)
+                view.onShowSuccess(alarmItem)
+            } else {
+                ViewCreatedStateBus.emitViewCreatedState(ViewCreatedState.OnError(ViewType.STOP_ALARM))
+                view.onShowError()
+            }
+        }
+    }
 
-    override fun onStopAlarmClick() {
-        val alarmItem = getAlarmItem()
+    override fun onStopAlarmClick(alarmItem: AlarmItem?) {
         coroutineScope?.launch {
             alarmItem?.let {
                 AlarmItemBus.emitAlarmItem(alarmItem)

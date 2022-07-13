@@ -6,15 +6,15 @@ import kotlinx.coroutines.CoroutineScope
 
 interface IStopAlarmPresenter {
 
-    fun initialize(context: Context, coroutineScope: CoroutineScope?, alarmId: String)
+    fun initialize(context: Context, coroutineScope: CoroutineScope?)
 
-    fun playRingtone()
+    fun validateData(alarmId: String?)
+
+    fun playRingtone(alarmItem: AlarmItem?)
 
     fun stopRingtone()
 
-    fun getAlarmItem() : AlarmItem?
-
-    fun onStopAlarmClick()
+    fun onStopAlarmClick(alarmItem: AlarmItem?)
 
     fun dispose()
 }

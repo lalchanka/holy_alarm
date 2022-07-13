@@ -26,10 +26,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         toolbar = findViewById(R.id.toolbar)
+        ViewCreatedStateBus.initialState = ViewCreatedState.OnSuccess(ViewType.TEMP)
         initSingletons()
         showInitialFragment()
         initClickListeners()
         startListeningUiEvents()
+        startListeningViewCreatedState()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         AlarmManagerHelper.initialize(this)
         AlarmStorage.initialize(this)
         LastIdStorage.initialize(this)
+        ViewCreatedStateBus.initialize()
         spAlarmStorage = AlarmStorage
         spLastAlarmIdStorage = LastIdStorage
     }
@@ -123,6 +126,31 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun startListeningViewCreatedState() {
+        launchInActivityScope {
+            ViewCreatedStateBus.viewCreatedStateFlow.collect {
+                when(it) {
+                    is ViewCreatedState.OnSuccess -> handleSuccess(it.view)
+                    is ViewCreatedState.OnError -> handleError(it.view)
+                }
+            }
+        }
+    }
+
+    private fun handleSuccess(view: ViewType) {
+        when(view) {
+            ViewType.TEMP -> {}
+            ViewType.STOP_ALARM -> {}
+        }
+    }
+
+    private fun handleError(view: ViewType) {
+        when(view) {
+            ViewType.TEMP -> {}
+            ViewType.STOP_ALARM -> {}
         }
     }
 
