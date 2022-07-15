@@ -54,12 +54,11 @@ class StopAlarmPresenter(
     override fun onStopAlarmClick(alarmItem: AlarmItem?) {
         coroutineScope?.launch {
             alarmItem?.let {
+                stopRingtone()
                 AlarmItemBus.emitAlarmItem(alarmItem)
                 EventBus.emitEvent(StopAlarmFragmentEvent.StopClicked)
-                stopRingtone()
             }
         }
-
     }
 
     override fun dispose() {

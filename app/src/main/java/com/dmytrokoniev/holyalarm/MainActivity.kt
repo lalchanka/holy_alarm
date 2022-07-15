@@ -10,10 +10,10 @@ import com.dmytrokoniev.holyalarm.bus.*
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.dmytrokoniev.holyalarm.data.storage.*
 import com.dmytrokoniev.holyalarm.stopalarm.StopAlarmFragment
-import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 import com.dmytrokoniev.holyalarm.ui.ExistingAlarmSetFragment
 import com.dmytrokoniev.holyalarm.ui.NewAlarmSetFragment
 import com.dmytrokoniev.holyalarm.util.*
+import com.dmytrokoniev.holyalarm.util.AlarmManagerHelper.KEY_ALARM_ID
 
 // TODO: d.koniev 03.05.2022 alarm at same time functionality
 class MainActivity : AppCompatActivity() {
@@ -186,12 +186,10 @@ class MainActivity : AppCompatActivity() {
             hour = alarmItem?.hour,
             minute = alarmItem?.minute
         )
-
         alarmIds?.forEach { id ->
             AlarmManagerHelper.cancelAlarm(id)
             spAlarmStorage?.updateItemIsEnabled(id, isEnabled = false)
         }
-
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
         loadFragment(AlarmListFragment())
     }

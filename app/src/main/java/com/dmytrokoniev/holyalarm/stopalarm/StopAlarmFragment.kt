@@ -7,22 +7,23 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.data.AlarmItem
-import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
+import com.dmytrokoniev.holyalarm.util.AlarmManagerHelper.KEY_ALARM_ID
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 
 
 class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm), IStopAlarmFragment {
 
     private val stopAlarmPresenter: IStopAlarmPresenter = StopAlarmPresenter(this)
+    private var btnStop: View? = null
+    private var tvAlarmTime: TextView? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val btnStop = view.findViewById<View>(R.id.btn_stop)
-        val tvAlarmTime = view.findViewById<TextView>(R.id.tv_alarm_time)
+        btnStop = view.findViewById(R.id.btn_stop)
+        tvAlarmTime = view.findViewById(R.id.tv_alarm_time)
         val alarmId = arguments?.getString(KEY_ALARM_ID)
         stopAlarmPresenter.initialize(view.context, this.lifecycleScope)
         stopAlarmPresenter.validateData(alarmId)
-
     }
 
     override fun onDestroyView() {
@@ -35,15 +36,13 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm), IStopAlarmFrag
         val formattedMinutes = alarmItem?.minute?.timeHumanFormat() ?: "Error $ERROR_TRIGGER_TIME"
 
         stopAlarmPresenter.playRingtone(alarmItem)
-        tvAlarmTime.text = view.context.getString(
-                R.string.alarm_time,
-                formattedHours,
-                formattedMinutes
-            )
-        btnStop.setOnClickListener {
-            alarmId?.let {
-                stopAlarmPresenter.onStopAlarmClick(alarmItem)
-            }
+        tvAlarmTime?.text = getString(
+            R.string.alarm_time,
+            formattedHours,
+            formattedMinutes
+        )
+        btnStop?.setOnClickListener {
+            stopAlarmPresenter.onStopAlarmClick(alarmItem)
         }
     }
 

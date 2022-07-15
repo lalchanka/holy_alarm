@@ -5,7 +5,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 
 /**
  * [AlarmManagerHelper] encapsulates tasks related to Alarm and creates a convenient API to simplify
@@ -15,6 +14,7 @@ import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 @SuppressLint("StaticFieldLeak")
 object AlarmManagerHelper {
 
+    const val KEY_ALARM_ID = "TRIGGER_ALARM_TIME_KEY"
     private var context: Context? = null
     private var alarmManager: AlarmManager? = null
 
