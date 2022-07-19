@@ -6,7 +6,9 @@ import com.dmytrokoniev.holyalarm.data.AlarmItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class ExistingAlarmSetPresenter : AlarmSetPresenter() {
+class ExistingAlarmSetPresenter(
+    private val view: ExistingAlarmSetFragment
+) : AlarmSetPresenter() {
 
     private lateinit var alarmItem: AlarmItem
     override val alarmIdProvider: () -> String

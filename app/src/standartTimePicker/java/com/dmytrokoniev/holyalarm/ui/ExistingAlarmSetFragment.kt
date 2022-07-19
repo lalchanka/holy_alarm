@@ -11,6 +11,7 @@ import kotlinx.coroutines.withContext
 
 class ExistingAlarmSetFragment : AlarmSetFragment() {
 
+    private val existingAlarmSetPresenter = ExistingAlarmSetPresenter(this)
     private lateinit var alarmItem: AlarmItem
     override val alarmIdProvider: () -> String
         get() = { alarmItem.id }
