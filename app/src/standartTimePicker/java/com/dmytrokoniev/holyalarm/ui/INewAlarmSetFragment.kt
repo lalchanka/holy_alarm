@@ -1,4 +1,4 @@
 package com.dmytrokoniev.holyalarm.ui
 
-interface INewAlarmSetFragment {
+interface INewAlarmSetFragment : IAlarmSetFragment {
 }
