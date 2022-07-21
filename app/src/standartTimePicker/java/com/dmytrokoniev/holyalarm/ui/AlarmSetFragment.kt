@@ -16,7 +16,6 @@ abstract class AlarmSetFragment : Fragment(R.layout.standart_fragment_set_alarm)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         tpAlarmTime = view.findViewById(R.id.tp_alarm_time)
         tpAlarmTime?.setIs24HourView(IS_24_FORMAT_ENABLED)
     }

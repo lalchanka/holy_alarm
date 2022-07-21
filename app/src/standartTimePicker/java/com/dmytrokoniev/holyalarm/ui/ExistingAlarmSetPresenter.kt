@@ -20,7 +20,6 @@ class ExistingAlarmSetPresenter(
 
     override fun initialize(coroutineScope: CoroutineScope) {
         super.initialize(coroutineScope)
-
         coroutineScope.launch {
             alarmItem = AlarmItemBus.alarmItem
             withContext(Dispatchers.Main) {
@@ -28,9 +27,5 @@ class ExistingAlarmSetPresenter(
                 view.tpAlarmTime?.minute = alarmItem.minute
             }
         }
-    }
-
-    override fun onTimeChanged(hour: Int, minute: Int) {
-        super.onTimeChanged(hour, minute)
     }
 }

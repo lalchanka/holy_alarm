@@ -2,6 +2,7 @@ package com.dmytrokoniev.holyalarm.ui
 
 import com.dmytrokoniev.holyalarm.data.storage.LastIdStorage
 import com.dmytrokoniev.holyalarm.data.storage.getLastId
+import kotlinx.coroutines.CoroutineScope
 
 class NewAlarmSetPresenter(
     private val view: INewAlarmSetFragment

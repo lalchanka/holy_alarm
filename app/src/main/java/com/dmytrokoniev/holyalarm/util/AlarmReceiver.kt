@@ -3,8 +3,8 @@ package com.dmytrokoniev.holyalarm.util
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.dmytrokoniev.holyalarm.ui.AlarmSetFragment.Companion.KEY_ALARM_ID
 import com.dmytrokoniev.holyalarm.MainActivity
+import com.dmytrokoniev.holyalarm.util.AlarmManagerHelper.KEY_ALARM_ID
 
 class AlarmReceiver : BroadcastReceiver() {
 

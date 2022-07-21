@@ -11,7 +11,6 @@ class ExistingAlarmSetFragment : IExistingAlarmSetFragment, AlarmSetFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         alarmSetPresenter.initialize(this.lifecycleScope)
-
         tpAlarmTime?.setOnTimeChangedListener { _, hourOfDay, minute ->
             alarmSetPresenter.onTimeChanged(hourOfDay, minute)
         }

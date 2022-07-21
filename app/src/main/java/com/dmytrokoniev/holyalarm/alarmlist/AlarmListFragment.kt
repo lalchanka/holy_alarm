@@ -1,6 +1,5 @@
 package com.dmytrokoniev.holyalarm.alarmlist
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
@@ -19,9 +18,7 @@ import com.dmytrokoniev.holyalarm.data.SortierStandart
 import com.dmytrokoniev.holyalarm.data.storage.AlarmStorage
 import com.dmytrokoniev.holyalarm.util.*
 import com.google.android.material.snackbar.Snackbar
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import java.util.*
 
 
