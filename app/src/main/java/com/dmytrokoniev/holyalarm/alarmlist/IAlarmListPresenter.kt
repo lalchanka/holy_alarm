@@ -1,5 +1,6 @@
 package com.dmytrokoniev.holyalarm.alarmlist
 
+import androidx.recyclerview.widget.ItemTouchHelper
 import kotlinx.coroutines.CoroutineScope
 
 interface IAlarmListPresenter {
@@ -8,5 +9,5 @@ interface IAlarmListPresenter {
 
     fun onAddOneMinuteAlarmClicked()
 
-    fun createTouchHelper()
+    fun createTouchHelper(): ItemTouchHelper
 }

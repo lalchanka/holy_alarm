@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 
 interface IAlarmListFragment {
 
-    fun setAlarmListAdapter(adapter: AlarmListAdapter)
+    fun onAdapterInitialized(adapter: AlarmListAdapter)
 
     fun attachTouchHelper(touchHelper: ItemTouchHelper)
 }

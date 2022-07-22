@@ -10,15 +10,14 @@ import com.dmytrokoniev.holyalarm.util.addAlarm
 import com.dmytrokoniev.holyalarm.util.setAlarm
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import java.util.*
 
 class AlarmListPresenter(
     private val view: IAlarmListFragment
 ) : IAlarmListPresenter {
 
+    // TODO: Move adapter + data + logic to View
     private lateinit var adapter: AlarmListAdapter
-    private var touchHelper: ItemTouchHelper? = null
 
     override fun initialize(coroutineScope: CoroutineScope) {
         val alarms = AlarmStorage.getItems()
@@ -26,9 +25,9 @@ class AlarmListPresenter(
         adapter = AlarmListAdapter()
         adapter.setAlarmList(sortedAlarms)
         adapter.setLaunchInFragmentScope(::coroutineScope)
-        view.setAlarmListAdapter(adapter)
+        view.onAdapterInitialized(adapter)
 
-        createTouchHelper()
+        val touchHelper = createTouchHelper()
         view.attachTouchHelper(touchHelper)
     }
 
@@ -44,11 +43,13 @@ class AlarmListPresenter(
         AlarmStorage.addItem(alarmItem)
         AlarmManagerHelper.setAlarm(alarmItem)
         adapter.addAlarm(alarmItem)
+
+        // TODO: Move it to Adapter
         adapter.notifyDataSetChanged()
     }
 
-    override fun createTouchHelper() {
-        touchHelper =
+    override fun createTouchHelper(): ItemTouchHelper {
+        val touchHelper =
             ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
                 override fun onMove(
                     recyclerView: RecyclerView,
@@ -62,6 +63,7 @@ class AlarmListPresenter(
                         AlarmStorage.deleteItem(alarmToRemove)
                         AlarmManagerHelper.cancelAlarm(alarmToRemove.id)
 
+                        // TODO: Move Snackbar to View, and leave setAction logic here in Presenter
                         Snackbar.make(
                             viewHolder.itemView,
                             "Alarm removed",
@@ -74,5 +76,7 @@ class AlarmListPresenter(
                     }
                 }
             })
+
+        return touchHelper
     }
 }
