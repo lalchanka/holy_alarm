@@ -1,12 +1,11 @@
 package com.dmytrokoniev.holyalarm.stopalarm
 
 import android.content.Context
+import com.dmytrokoniev.holyalarm.IBasePresenter
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 import kotlinx.coroutines.CoroutineScope
 
-interface IStopAlarmPresenter {
-
-    fun initialize(context: Context, coroutineScope: CoroutineScope?)
+interface IStopAlarmPresenter : IBasePresenter {
 
     fun validateData(alarmId: String?)
 
@@ -15,6 +14,4 @@ interface IStopAlarmPresenter {
     fun stopRingtone()
 
     fun onStopAlarmClick(alarmItem: AlarmItem?)
-
-    fun dispose()
 }

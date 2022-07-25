@@ -13,7 +13,7 @@ import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 
 class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm), IStopAlarmFragment {
 
-    private val stopAlarmPresenter: IStopAlarmPresenter = StopAlarmPresenter(this)
+    private var stopAlarmPresenter: IStopAlarmPresenter? = null
     private var btnStop: View? = null
     private var tvAlarmTime: TextView? = null
 
@@ -22,27 +22,32 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm), IStopAlarmFrag
         btnStop = view.findViewById(R.id.btn_stop)
         tvAlarmTime = view.findViewById(R.id.tv_alarm_time)
         val alarmId = arguments?.getString(KEY_ALARM_ID)
-        stopAlarmPresenter.initialize(view.context, this.lifecycleScope)
-        stopAlarmPresenter.validateData(alarmId)
+        stopAlarmPresenter = StopAlarmPresenter(
+            this,
+            view.context,
+            this.lifecycleScope
+        )
+        stopAlarmPresenter?.initialize()
+        stopAlarmPresenter?.validateData(alarmId)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        stopAlarmPresenter.dispose()
+        stopAlarmPresenter?.dispose()
     }
 
     override fun onShowSuccess(alarmItem: AlarmItem?) {
         val formattedHours = alarmItem?.hour?.timeHumanFormat() ?: "Time"
         val formattedMinutes = alarmItem?.minute?.timeHumanFormat() ?: "Error $ERROR_TRIGGER_TIME"
 
-        stopAlarmPresenter.playRingtone(alarmItem)
+        stopAlarmPresenter?.playRingtone(alarmItem)
         tvAlarmTime?.text = getString(
             R.string.alarm_time,
             formattedHours,
             formattedMinutes
         )
         btnStop?.setOnClickListener {
-            stopAlarmPresenter.onStopAlarmClick(alarmItem)
+            stopAlarmPresenter?.onStopAlarmClick(alarmItem)
         }
     }
 
