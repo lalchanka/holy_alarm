@@ -37,11 +37,13 @@ class MainActivity : AppCompatActivity(), IMainView {
 
         showInitialFragment()
         initClickListeners()
+
         // to Presenter
         startListeningUiEvents()
         startListeningViewCreatedState()
     }
 
+    // LEAVE IT HERE
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         val alarmTriggeredId = intent?.getStringExtra(KEY_ALARM_ID)
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity(), IMainView {
         }
     }
 
+    // LEAVE IT HERE
     override fun onDestroy() {
         super.onDestroy()
         toolbar = null
@@ -149,6 +152,7 @@ class MainActivity : AppCompatActivity(), IMainView {
         }
     }
 
+    // MOVED TO MainPresenter
     private fun startListeningViewCreatedState() {
         launchInActivityScope {
             ViewCreatedStateBus.viewCreatedStateFlow.collect {
@@ -160,6 +164,7 @@ class MainActivity : AppCompatActivity(), IMainView {
         }
     }
 
+    // MOVED TO MainPresenter
     private fun handleSuccess(view: ViewType) {
         when (view) {
             ViewType.TEMP -> {
@@ -169,6 +174,7 @@ class MainActivity : AppCompatActivity(), IMainView {
         }
     }
 
+    // MOVED TO MainPresenter
     private fun handleError(view: ViewType) {
         when (view) {
             ViewType.TEMP -> {
@@ -240,21 +246,21 @@ class MainActivity : AppCompatActivity(), IMainView {
         loadFragment(AlarmListFragment())
     }
 
-    // to presenter
+    // MOVED TO MainPresenter
     private fun setAlarm(alarmItem: AlarmItem) {
         AlarmManagerHelper.setAlarm(alarmItem)
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
         loadFragment(AlarmListFragment())
     }
 
-    // to presenter
+    // MOVED TO MainPresenter
     private fun confirmAddAlarm(alarmItem: AlarmItem) {
         spAlarmStorage?.addItem(alarmItem)
         spLastAlarmIdStorage?.setLastId(alarmItem.id.toInt())
         setAlarm(alarmItem)
     }
 
-    // to presenter
+    // MOVED TO MainPresenter
     private fun confirmSetAlarm(alarmItem: AlarmItem) {
         spAlarmStorage?.updateItem(alarmItem)
         setAlarm(alarmItem)

@@ -1,8 +1,6 @@
 package com.dmytrokoniev.holyalarm
 
 import android.content.Context
-import androidx.fragment.app.Fragment
-import com.dmytrokoniev.holyalarm.MainActivity.Companion.onStateChanged
 import com.dmytrokoniev.holyalarm.alarmlist.AlarmListFragment
 import com.dmytrokoniev.holyalarm.bus.*
 import com.dmytrokoniev.holyalarm.data.AlarmItem
@@ -10,7 +8,6 @@ import com.dmytrokoniev.holyalarm.data.storage.*
 import com.dmytrokoniev.holyalarm.ui.ExistingAlarmSetFragment
 import com.dmytrokoniev.holyalarm.ui.NewAlarmSetFragment
 import com.dmytrokoniev.holyalarm.util.*
-import com.dmytrokoniev.holyalarm.util.AlarmManagerHelper.setAlarm
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -28,6 +25,8 @@ class MainPresenter(
         initSingletones()
 
         ViewCreatedStateBus.initialState = ViewCreatedState.OnSuccess(ViewType.TEMP)
+        startListeningUiEvents()
+
     }
 
     override fun initSingletones() {
@@ -52,7 +51,7 @@ class MainPresenter(
             EventBus.eventsFlow.collect {
                 when (it) {
                     is AlarmListFragmentEvent.AddClicked -> onAddAlarmClick()
-                    is AlarmItemViewHolderEvent.AlarmSet -> onAlarmSet()
+                    is AlarmItemViewHolderEvent.AlarmSet -> onAlarmItemClick()
                     is AlarmItemViewHolderEvent.AlarmOn -> {
                         val alarmItem = AlarmItemBus.alarmItem
                         onCheckedChangeListener(isChecked = true, alarmItem)
@@ -69,13 +68,13 @@ class MainPresenter(
                         val appState = AppStateBus.appStateFlow.value
                         val alarmItem = AlarmItemBus.alarmItem
                         if (appState.isAlarmUpdateFlow) {
-                            confirmSetAlarm(alarmItem)
+                            onSetNewAlarm(alarmItem)
                         } else {
-                            confirmAddAlarm(alarmItem)
+                            onSetExistingAlarm(alarmItem)
                         }
                     }
                     is ToolbarEvent.CancelClicked -> {
-                        ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
+                        view.changeToolbarState(ToolbarState.ICON_CLEAN)
                         view.loadFragment(AlarmListFragment())
                     }
                 }
@@ -89,7 +88,7 @@ class MainPresenter(
         view.loadFragment(NewAlarmSetFragment())
     }
 
-    private fun onAlarmSet() {
+    private fun onAlarmItemClick() {
         AppStateBus.emitAppState(AppState(isAlarmUpdateFlow = true))
         view.changeToolbarState(ToolbarState.CONFIRM_CANCEL)
         view.loadFragment(ExistingAlarmSetFragment())
@@ -123,6 +122,24 @@ class MainPresenter(
         view.loadFragment(AlarmListFragment())
     }
 
+    override fun setAlarm(alarmItem: AlarmItem) {
+        AlarmManagerHelper.setAlarm(alarmItem)
+        view.changeToolbarState(ToolbarState.ICON_CLEAN)
+        view.loadFragment(AlarmListFragment())
+    }
+
+    override fun onSetNewAlarm(alarmItem: AlarmItem) {
+        spAlarmStorage?.addItem(alarmItem)
+        spLastAlarmIdStorage?.setLastId(alarmItem.id.toInt())
+        setAlarm(alarmItem)
+    }
+
+    override fun onSetExistingAlarm(alarmItem: AlarmItem) {
+        spAlarmStorage?.updateItem(alarmItem)
+        setAlarm(alarmItem)
+        view.showToast("Alarm updated: ${alarmItem.hour}:${alarmItem.minute}")
+    }
+
     override fun onConfirmToolbarClick() {
         coroutineScope?.launch {
             EventBus.emitEvent(ToolbarEvent.ConfirmClicked)
@@ -132,6 +149,35 @@ class MainPresenter(
     override fun onCancelToolbarClick() {
         coroutineScope?.launch {
             EventBus.emitEvent(ToolbarEvent.CancelClicked)
+        }
+    }
+
+    override fun startListeningViewCreatedState() {
+        coroutineScope?.launch {
+            ViewCreatedStateBus.viewCreatedStateFlow.collect {
+                when (it) {
+                    is ViewCreatedState.OnSuccess -> handleSuccess(it.view)
+                    is ViewCreatedState.OnError -> handleError(it.view)
+                }
+            }
+        }
+    }
+
+    override fun handleSuccess(view: ViewType) {
+        when (view) {
+            ViewType.TEMP -> {
+            }
+            ViewType.STOP_ALARM -> {
+            }
+        }
+    }
+
+    override fun handleError(view: ViewType) {
+        when (view) {
+            ViewType.TEMP -> {
+            }
+            ViewType.STOP_ALARM -> {
+            }
         }
     }
 
