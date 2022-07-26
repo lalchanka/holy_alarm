@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 
 interface IBasePresenter {
 
-    fun initialize(coroutineScope: CoroutineScope)
+    fun initialize(scope: CoroutineScope)
 
     fun dispose()
 }

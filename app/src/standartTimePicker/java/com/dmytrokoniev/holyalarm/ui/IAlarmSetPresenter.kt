@@ -1,13 +1,8 @@
 package com.dmytrokoniev.holyalarm.ui
 
-import kotlinx.coroutines.CoroutineScope
+import com.dmytrokoniev.holyalarm.IBasePresenter
 
-interface IAlarmSetPresenter {
-
-    // TODO: Move initialize and dispose to IBasePresenter
-    fun initialize(scope: CoroutineScope)
+interface IAlarmSetPresenter : IBasePresenter {
 
     fun onTimeChanged(hour: Int, minute: Int)
-
-    fun dispose()
 }
