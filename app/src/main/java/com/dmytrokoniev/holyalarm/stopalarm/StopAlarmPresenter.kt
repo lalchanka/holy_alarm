@@ -14,22 +14,23 @@ import kotlinx.coroutines.launch
 
 class StopAlarmPresenter(
     private val view: IStopAlarmFragment,
-    private val context: Context,
-    private val coroutineScope: CoroutineScope
+    private val context: Context
 ) : IStopAlarmPresenter {
 
     private lateinit var mediaPlayer: MediaPlayer
+    private var coroutineScope: CoroutineScope? = null
 
-    override fun initialize() {
+    override fun initialize(coroutineScope: CoroutineScope) {
         val notification: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         mediaPlayer = MediaPlayer.create(context, notification)
+        this.coroutineScope = coroutineScope
     }
 
     override fun playRingtone(alarmItem: AlarmItem?) {
         mediaPlayer.setOnPreparedListener {
             mediaPlayer.start()
 
-            coroutineScope.launch {
+            coroutineScope?.launch {
                 delay(ALARM_AUTOSTOP_TIME_MS)
                 onStopAlarmClick(alarmItem)
             }
@@ -39,7 +40,7 @@ class StopAlarmPresenter(
     override fun stopRingtone() = mediaPlayer.stop()
 
     override fun validateData(alarmId: String?) {
-        coroutineScope.launch {
+        coroutineScope?.launch {
             if (alarmId != null) {
                 ViewCreatedStateBus.emitViewCreatedState(ViewCreatedState.OnSuccess(ViewType.STOP_ALARM))
                 val alarmItem = AlarmStorage.getItem(alarmId)
@@ -52,7 +53,7 @@ class StopAlarmPresenter(
     }
 
     override fun onStopAlarmClick(alarmItem: AlarmItem?) {
-        coroutineScope.launch {
+        coroutineScope?.launch {
             alarmItem?.let {
                 stopRingtone()
                 AlarmItemBus.emitAlarmItem(alarmItem)

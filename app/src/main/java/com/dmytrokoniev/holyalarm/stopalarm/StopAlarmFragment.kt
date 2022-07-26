@@ -24,10 +24,9 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm), IStopAlarmFrag
         val alarmId = arguments?.getString(KEY_ALARM_ID)
         stopAlarmPresenter = StopAlarmPresenter(
             this,
-            view.context,
-            this.lifecycleScope
+            view.context
         )
-        stopAlarmPresenter?.initialize()
+        stopAlarmPresenter?.initialize(this.lifecycleScope)
         stopAlarmPresenter?.validateData(alarmId)
     }
 

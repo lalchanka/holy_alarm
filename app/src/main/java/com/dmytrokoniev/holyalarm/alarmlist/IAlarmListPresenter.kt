@@ -1,14 +1,17 @@
 package com.dmytrokoniev.holyalarm.alarmlist
 
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.dmytrokoniev.holyalarm.IBasePresenter
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 import kotlinx.coroutines.CoroutineScope
 
-interface IAlarmListPresenter {
+interface IAlarmListPresenter : IBasePresenter {
 
     fun onAddOneMinuteAlarmClicked()
 
-    fun onAddAlarm(alarmItem: AlarmItem)
+    fun onAddAlarmClicked()
+
+    fun addAlarm(alarmItem: AlarmItem)
 
     fun onRemoveAlarm(alarmItem: AlarmItem)
 

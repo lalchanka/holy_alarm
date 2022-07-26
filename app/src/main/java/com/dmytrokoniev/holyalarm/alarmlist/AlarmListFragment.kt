@@ -4,15 +4,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.BuildConfig
 import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent.AddClicked
-import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.data.AlarmItem
-import com.dmytrokoniev.holyalarm.data.SortierStandart
-import com.dmytrokoniev.holyalarm.data.storage.AlarmStorage
 import com.dmytrokoniev.holyalarm.util.*
 import com.google.android.material.snackbar.Snackbar
 
@@ -27,16 +24,14 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), IAlarmListFrag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        presenter.initialize(this.lifecycleScope)
         rvAlarmList = view.findViewById(R.id.rv_alarms_list)
         btnAddAlarm = view.findViewById(R.id.btn_add_alarm)
         btnAddAlarm?.setOnClickListener {
             if (BuildConfig.DEBUG) {
                 presenter.onAddOneMinuteAlarmClicked()
             } else {
-                // TODO: Move to presenter
-                launchInFragmentScope {
-                    EventBus.emitEvent(AddClicked)
-                }
+                presenter.onAddAlarmClicked()
             }
         }
 
@@ -45,42 +40,35 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), IAlarmListFrag
         adapter.setAlarmList(sortedAlarms)
         adapter.setLaunchInFragmentScope(::launchInFragmentScope)
         rvAlarmList?.adapter = adapter
+        createAttachTouchHelper()
     }
 
     override fun onAddAlarmToAdapter(alarmItem: AlarmItem) {
         adapter.addAlarm(alarmItem)
     }
 
-    override fun attachTouchHelper(touchHelper: ItemTouchHelper) {
-        touchHelper.attachToRecyclerView(rvAlarmList)
-    }
-
-    // TODO: Move ItemTouchHelper to separate class with lambda functions as parametrs
-    override fun createTouchHelper(): ItemTouchHelper {
-        val touchHelper =
-            ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-                override fun onMove(
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    target: RecyclerView.ViewHolder
-                ): Boolean = false
-
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    val removedAlarmPosition = viewHolder.bindingAdapterPosition
-                    adapter.removeAlarm(removedAlarmPosition) { alarmToRemove ->
-                        presenter.onRemoveAlarm(alarmToRemove)
-                        Snackbar.make(
-                            viewHolder.itemView,
-                            "Alarm removed",
-                            Snackbar.LENGTH_LONG
-                        ).setAction("UNDO") {
-                            adapter.addAlarm(alarmToRemove, removedAlarmPosition)
-                            presenter.onAddAlarm(alarmToRemove)
-                        }.show()
-                    }
+    override fun createAttachTouchHelper() {
+        val touchHelper = ItemTouchHelper(
+            AlarmListOnDeleteTouchHelper { viewHolder, _ ->
+                val removedAlarmPosition = viewHolder.bindingAdapterPosition
+                adapter.removeAlarm(removedAlarmPosition) { alarmToRemove ->
+                    presenter.onRemoveAlarm(alarmToRemove)
+                    Snackbar.make(
+                        viewHolder.itemView,
+                        "Alarm removed",
+                        Snackbar.LENGTH_LONG
+                    ).setAction("UNDO") {
+                        adapter.addAlarm(alarmToRemove, removedAlarmPosition)
+                        presenter.addAlarm(alarmToRemove)
+                    }.show()
                 }
             })
 
-        return touchHelper
+        touchHelper.attachToRecyclerView(rvAlarmList)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.dispose()
     }
 }

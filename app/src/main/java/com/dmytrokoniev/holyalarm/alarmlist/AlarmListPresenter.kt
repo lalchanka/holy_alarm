@@ -1,7 +1,8 @@
 package com.dmytrokoniev.holyalarm.alarmlist
 
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent
+import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.dmytrokoniev.holyalarm.data.SortierStandart
 import com.dmytrokoniev.holyalarm.data.storage.AlarmStorage
@@ -10,11 +11,18 @@ import com.dmytrokoniev.holyalarm.util.addAlarm
 import com.dmytrokoniev.holyalarm.util.setAlarm
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 class AlarmListPresenter(
     private val view: IAlarmListFragment
 ) : IAlarmListPresenter {
+
+    private var coroutineScope: CoroutineScope? = null
+
+    override fun initialize(coroutineScope: CoroutineScope) {
+        this.coroutineScope = coroutineScope
+    }
 
     override fun onAddOneMinuteAlarmClicked() {
         val exactTime = Calendar.getInstance()
@@ -25,13 +33,19 @@ class AlarmListPresenter(
             is24HourView = true,
             isEnabled = true
         )
-        onAddAlarm(alarmItem)
+        addAlarm(alarmItem)
         view.onAddAlarmToAdapter(alarmItem)
     }
 
-    override fun onAddAlarm(alarmItem: AlarmItem) {
+    override fun onAddAlarmClicked() {
+        coroutineScope?.launch {
+            EventBus.emitEvent(AlarmListFragmentEvent.AddClicked)
+        }
+    }
+
+    override fun addAlarm(alarmItem: AlarmItem) {
         AlarmStorage.addItem(alarmItem)
-        AlarmManagerHelper.setAlarm(alarmItem)
+        if (alarmItem.isEnabled) AlarmManagerHelper.setAlarm(alarmItem)
     }
 
     override fun onRemoveAlarm(alarmItem: AlarmItem) {
@@ -42,5 +56,9 @@ class AlarmListPresenter(
     override fun getAlarmList() : List<AlarmItem> {
         val alarms = AlarmStorage.getItems()
         return SortierStandart.sortAscending(alarms).toList()
+    }
+
+    override fun dispose() {
+        coroutineScope = null
     }
 }
