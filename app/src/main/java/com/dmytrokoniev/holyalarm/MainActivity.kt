@@ -16,9 +16,12 @@ import com.dmytrokoniev.holyalarm.util.*
 import com.dmytrokoniev.holyalarm.util.AlarmManagerHelper.KEY_ALARM_ID
 
 // TODO: d.koniev 03.05.2022 alarm at same time functionality
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), IMainView {
 
+    private var presenter: IMainPresenter? = null
     private var toolbar: View? = null
+
+    // to Presenter
     private var spAlarmStorage: SpAlarmItemStorage? = null
     private var spLastAlarmIdStorage: SpLastAlarmIdStorage? = null
 
@@ -26,10 +29,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         toolbar = findViewById(R.id.toolbar)
-        ViewCreatedStateBus.initialState = ViewCreatedState.OnSuccess(ViewType.TEMP)
+        presenter = MainPresenter(this, this.baseContext)
+
+        // MOVED TO MainPresenter
         initSingletons()
+        ViewCreatedStateBus.initialState = ViewCreatedState.OnSuccess(ViewType.TEMP)
+
         showInitialFragment()
         initClickListeners()
+        // to Presenter
         startListeningUiEvents()
         startListeningViewCreatedState()
     }
@@ -46,9 +54,12 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         toolbar = null
+
+        //MOVED TO Main
         disposeSingletons()
     }
 
+    // MOVED TO MainPresenter
     private fun initSingletons() {
         AlarmManagerHelper.initialize(this)
         AlarmStorage.initialize(this)
@@ -58,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         spLastAlarmIdStorage = LastIdStorage
     }
 
+    // MOVED TO MainPresenter
     private fun disposeSingletons() {
         AlarmManagerHelper.dispose()
         AlarmStorage.dispose()
@@ -66,33 +78,41 @@ class MainActivity : AppCompatActivity() {
         spLastAlarmIdStorage?.dispose()
     }
 
+    // LEVE IT HERE
     private fun showInitialFragment() {
         val alarmTriggeredId = intent?.getStringExtra(KEY_ALARM_ID)
         val isAlarmTriggered = alarmTriggeredId != null
         if (!isAlarmTriggered) {
-            ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
+            changeToolbarState(ToolbarState.ICON_CLEAN)
             loadFragment(AlarmListFragment())
         } else {
             showStopAlarmFragment(alarmTriggeredId)
         }
     }
 
+    // LEAVE IT HERE
+    private fun showStopAlarmFragment(alarmTriggeredId: String?) {
+        val stopAlarmFragment = StopAlarmFragment()
+        val arguments = Bundle()
+        arguments.putString(KEY_ALARM_ID, alarmTriggeredId)
+        stopAlarmFragment.arguments = arguments
+        changeToolbarState(ToolbarState.CONFIRM_CANCEL)
+        loadFragment(stopAlarmFragment)
+    }
+
+    // LEAVE IT HERE
     private fun initClickListeners() {
         val btnCancel = findViewById<View>(R.id.btn_cancel)
         val btnConfirm = findViewById<View>(R.id.btn_confirm)
-
         btnConfirm.setOnClickListener {
-            launchInActivityScope {
-                EventBus.emitEvent(ToolbarEvent.ConfirmClicked)
-            }
+            presenter?.onConfirmToolbarClick()
         }
         btnCancel.setOnClickListener {
-            launchInActivityScope {
-                EventBus.emitEvent(ToolbarEvent.CancelClicked)
-            }
+            presenter?.onCancelToolbarClick()
         }
     }
 
+    // MOVED TO MainPresenter
     private fun startListeningUiEvents() {
         launchInActivityScope {
             EventBus.eventsFlow.collect {
@@ -132,7 +152,7 @@ class MainActivity : AppCompatActivity() {
     private fun startListeningViewCreatedState() {
         launchInActivityScope {
             ViewCreatedStateBus.viewCreatedStateFlow.collect {
-                when(it) {
+                when (it) {
                     is ViewCreatedState.OnSuccess -> handleSuccess(it.view)
                     is ViewCreatedState.OnError -> handleError(it.view)
                 }
@@ -141,31 +161,38 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleSuccess(view: ViewType) {
-        when(view) {
-            ViewType.TEMP -> {}
-            ViewType.STOP_ALARM -> {}
+        when (view) {
+            ViewType.TEMP -> {
+            }
+            ViewType.STOP_ALARM -> {
+            }
         }
     }
 
     private fun handleError(view: ViewType) {
-        when(view) {
-            ViewType.TEMP -> {}
-            ViewType.STOP_ALARM -> {}
+        when (view) {
+            ViewType.TEMP -> {
+            }
+            ViewType.STOP_ALARM -> {
+            }
         }
     }
 
+    // MOVED TO MainPresenter
     private fun onAddAlarmClick() {
         AppStateBus.emitAppState(AppState(isAlarmUpdateFlow = false))
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.CONFIRM_CANCEL)
         loadFragment(NewAlarmSetFragment())
     }
 
+    // MOVED TO MainPresenter
     private fun onAlarmSet() {
         AppStateBus.emitAppState(AppState(isAlarmUpdateFlow = true))
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.CONFIRM_CANCEL)
         loadFragment(ExistingAlarmSetFragment())
     }
 
+    // MOVED TO MainPresenter
     private fun onCheckedChangeListener(isChecked: Boolean, alarmItem: AlarmItem) {
         val alarmId = alarmItem.id
 
@@ -180,6 +207,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // LEAVE IT HERE
+    override fun showToast(message: String) {
+        toast(message)
+    }
+
+    // LEAVE IT HERE
+    override fun changeToolbarState(state: ToolbarState) {
+        ToolbarStateManager.onStateChanged(toolbar, state)
+    }
+
+    // LEAVE IT HERE
+    override fun loadFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container_view, fragment)
+            .commit()
+    }
+
+    // MOVED TO MainPresenter
     private fun onStopClick(alarmId: String) {
         val alarmItem = spAlarmStorage?.getItem(alarmId)
         val alarmIds = spAlarmStorage?.findAlarmIds(
@@ -194,34 +240,21 @@ class MainActivity : AppCompatActivity() {
         loadFragment(AlarmListFragment())
     }
 
-    private fun showStopAlarmFragment(alarmTriggeredId: String?) {
-        val stopAlarmFragment = StopAlarmFragment()
-        val arguments = Bundle()
-        arguments.putString(KEY_ALARM_ID, alarmTriggeredId)
-        stopAlarmFragment.arguments = arguments
-        ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
-        loadFragment(stopAlarmFragment)
-    }
-
-    private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.container_view, fragment)
-            .commit()
-    }
-
+    // to presenter
     private fun setAlarm(alarmItem: AlarmItem) {
         AlarmManagerHelper.setAlarm(alarmItem)
         ToolbarStateManager.onStateChanged(toolbar, ToolbarState.ICON_CLEAN)
         loadFragment(AlarmListFragment())
     }
 
+    // to presenter
     private fun confirmAddAlarm(alarmItem: AlarmItem) {
         spAlarmStorage?.addItem(alarmItem)
         spLastAlarmIdStorage?.setLastId(alarmItem.id.toInt())
         setAlarm(alarmItem)
     }
 
+    // to presenter
     private fun confirmSetAlarm(alarmItem: AlarmItem) {
         spAlarmStorage?.updateItem(alarmItem)
         setAlarm(alarmItem)
