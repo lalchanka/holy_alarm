@@ -1,15 +1,12 @@
 package com.dmytrokoniev.holyalarm.alarmlist
 
-import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.bus.AlarmListFragmentEvent
 import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.dmytrokoniev.holyalarm.data.SortierStandart
 import com.dmytrokoniev.holyalarm.data.storage.AlarmStorage
 import com.dmytrokoniev.holyalarm.util.AlarmManagerHelper
-import com.dmytrokoniev.holyalarm.util.addAlarm
 import com.dmytrokoniev.holyalarm.util.setAlarm
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -48,12 +45,12 @@ class AlarmListPresenter(
         if (alarmItem.isEnabled) AlarmManagerHelper.setAlarm(alarmItem)
     }
 
-    override fun onRemoveAlarm(alarmItem: AlarmItem) {
+    override fun removeAlarm(alarmItem: AlarmItem) {
         AlarmStorage.deleteItem(alarmItem)
         AlarmManagerHelper.cancelAlarm(alarmItem.id)
     }
 
-    override fun getAlarmList() : List<AlarmItem> {
+    override fun getAlarmList(): List<AlarmItem> {
         val alarms = AlarmStorage.getItems()
         return SortierStandart.sortAscending(alarms).toList()
     }

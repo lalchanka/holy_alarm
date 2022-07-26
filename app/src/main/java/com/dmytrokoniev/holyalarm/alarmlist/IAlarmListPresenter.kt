@@ -13,7 +13,7 @@ interface IAlarmListPresenter : IBasePresenter {
 
     fun addAlarm(alarmItem: AlarmItem)
 
-    fun onRemoveAlarm(alarmItem: AlarmItem)
+    fun removeAlarm(alarmItem: AlarmItem)
 
     fun getAlarmList() : List<AlarmItem>
 }

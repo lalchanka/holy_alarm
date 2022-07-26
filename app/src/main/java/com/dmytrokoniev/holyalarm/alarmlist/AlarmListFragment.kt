@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dmytrokoniev.holyalarm.BuildConfig
 import com.dmytrokoniev.holyalarm.R
 import com.dmytrokoniev.holyalarm.data.AlarmItem
-import com.dmytrokoniev.holyalarm.util.*
+import com.dmytrokoniev.holyalarm.util.AlarmListOnDeleteTouchHelper
+import com.dmytrokoniev.holyalarm.util.addAlarm
+import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -28,7 +30,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), IAlarmListFrag
         rvAlarmList = view.findViewById(R.id.rv_alarms_list)
         btnAddAlarm = view.findViewById(R.id.btn_add_alarm)
         btnAddAlarm?.setOnClickListener {
-            if (BuildConfig.DEBUG) {
+            if (BuildConfig.BUILD_TYPE == "debug") {
                 presenter.onAddOneMinuteAlarmClicked()
             } else {
                 presenter.onAddAlarmClicked()
@@ -52,7 +54,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), IAlarmListFrag
             AlarmListOnDeleteTouchHelper { viewHolder, _ ->
                 val removedAlarmPosition = viewHolder.bindingAdapterPosition
                 adapter.removeAlarm(removedAlarmPosition) { alarmToRemove ->
-                    presenter.onRemoveAlarm(alarmToRemove)
+                    presenter.removeAlarm(alarmToRemove)
                     Snackbar.make(
                         viewHolder.itemView,
                         "Alarm removed",
