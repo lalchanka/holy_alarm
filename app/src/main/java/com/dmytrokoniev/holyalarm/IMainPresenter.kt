@@ -8,15 +8,19 @@ interface IMainPresenter : IBasePresenter {
 
     fun initSingletones()
 
+    fun disposeSingletons()
+
     fun startListeningUiEvents()
+
+    fun onAddAlarmClick()
+
+    fun onAlarmItemClick()
 
     fun startListeningViewCreatedState()
 
     fun handleSuccess(view: ViewType)
 
     fun handleError(view: ViewType)
-
-    fun onAddAlarmClick()
 
     fun onCheckedChangeListener(isChecked: Boolean, alarmItem: AlarmItem)
 
@@ -25,8 +29,6 @@ interface IMainPresenter : IBasePresenter {
     fun onConfirmToolbarClick()
 
     fun onCancelToolbarClick()
-
-    fun disposeSingletons()
 
     fun onSetNewAlarm(alarmItem: AlarmItem)
 

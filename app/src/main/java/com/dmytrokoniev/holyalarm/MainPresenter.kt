@@ -26,7 +26,7 @@ class MainPresenter(
 
         ViewCreatedStateBus.initialState = ViewCreatedState.OnSuccess(ViewType.TEMP)
         startListeningUiEvents()
-
+        startListeningViewCreatedState()
     }
 
     override fun initSingletones() {
@@ -49,35 +49,40 @@ class MainPresenter(
     override fun startListeningUiEvents() {
         coroutineScope?.launch {
             EventBus.eventsFlow.collect {
-                when (it) {
-                    is AlarmListFragmentEvent.AddClicked -> onAddAlarmClick()
-                    is AlarmItemViewHolderEvent.AlarmSet -> onAlarmItemClick()
-                    is AlarmItemViewHolderEvent.AlarmOn -> {
-                        val alarmItem = AlarmItemBus.alarmItem
-                        onCheckedChangeListener(isChecked = true, alarmItem)
-                    }
-                    is AlarmItemViewHolderEvent.AlarmOff -> {
-                        val alarmItem = AlarmItemBus.alarmItem
-                        onCheckedChangeListener(isChecked = false, alarmItem)
-                    }
-                    is StopAlarmFragmentEvent.StopClicked -> {
-                        val alarmItem = AlarmItemBus.alarmItem
-                        onStopClick(alarmItem.id)
-                    }
-                    is ToolbarEvent.ConfirmClicked -> {
-                        val appState = AppStateBus.appStateFlow.value
-                        val alarmItem = AlarmItemBus.alarmItem
-                        if (appState.isAlarmUpdateFlow) {
-                            onSetNewAlarm(alarmItem)
-                        } else {
-                            onSetExistingAlarm(alarmItem)
-                        }
-                    }
-                    is ToolbarEvent.CancelClicked -> {
-                        view.changeToolbarState(ToolbarState.ICON_CLEAN)
-                        view.loadFragment(AlarmListFragment())
-                    }
+                processUiEvent(it)
+                view.onUiEventProcessed(it)
+            }
+        }
+    }
+
+    private fun processUiEvent(event: UiEvent) {
+        when (event) {
+            is AlarmListFragmentEvent.AddClicked -> onAddAlarmClick()
+            is AlarmItemViewHolderEvent.AlarmSet -> onAlarmItemClick()
+            is AlarmItemViewHolderEvent.AlarmOn -> {
+                val alarmItem = AlarmItemBus.alarmItem
+                onCheckedChangeListener(isChecked = true, alarmItem)
+            }
+            is AlarmItemViewHolderEvent.AlarmOff -> {
+                val alarmItem = AlarmItemBus.alarmItem
+                onCheckedChangeListener(isChecked = false, alarmItem)
+            }
+            is StopAlarmFragmentEvent.StopClicked -> {
+                val alarmItem = AlarmItemBus.alarmItem
+                onStopClick(alarmItem.id)
+            }
+            is ToolbarEvent.ConfirmClicked -> {
+                val appState = AppStateBus.appStateFlow.value
+                val alarmItem = AlarmItemBus.alarmItem
+                if (appState.isAlarmUpdateFlow) {
+                    onSetNewAlarm(alarmItem)
+                } else {
+                    onSetExistingAlarm(alarmItem)
                 }
+            }
+            is ToolbarEvent.CancelClicked -> {
+                view.changeToolbarState(ToolbarState.ICON_CLEAN)
+                view.loadFragment(AlarmListFragment())
             }
         }
     }
@@ -88,7 +93,7 @@ class MainPresenter(
         view.loadFragment(NewAlarmSetFragment())
     }
 
-    private fun onAlarmItemClick() {
+    override fun onAlarmItemClick() {
         AppStateBus.emitAppState(AppState(isAlarmUpdateFlow = true))
         view.changeToolbarState(ToolbarState.CONFIRM_CANCEL)
         view.loadFragment(ExistingAlarmSetFragment())
