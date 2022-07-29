@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.dmytrokoniev.holyalarm.alarmlist.AlarmListFragment
 import com.dmytrokoniev.holyalarm.bus.UiEvent
 import com.dmytrokoniev.holyalarm.stopalarm.StopAlarmFragment
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity(), IMainView {
         setContentView(R.layout.activity_main)
         toolbar = findViewById(R.id.toolbar)
         presenter = MainPresenter(this, this.baseContext)
+        presenter?.initialize(lifecycleScope)
 
         showInitialFragment()
         initClickListeners()

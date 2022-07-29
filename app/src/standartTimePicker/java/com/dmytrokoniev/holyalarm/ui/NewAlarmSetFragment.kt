@@ -6,7 +6,7 @@ import androidx.lifecycle.lifecycleScope
 
 class NewAlarmSetFragment : INewAlarmSetFragment, AlarmSetFragment() {
 
-    override val presenter: INewAlarmSetPresenter = NewAlarmSetPresenter(this)
+    override val presenter: INewAlarmSetPresenter = NewAlarmSetPresenter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

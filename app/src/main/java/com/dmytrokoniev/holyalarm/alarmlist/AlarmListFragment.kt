@@ -26,7 +26,7 @@ class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), IAlarmListFrag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.initialize(this.lifecycleScope)
+        presenter.initialize(lifecycleScope)
         rvAlarmList = view.findViewById(R.id.rv_alarms_list)
         btnAddAlarm = view.findViewById(R.id.btn_add_alarm)
         btnAddAlarm?.setOnClickListener {

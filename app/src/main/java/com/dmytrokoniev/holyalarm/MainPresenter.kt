@@ -22,9 +22,8 @@ class MainPresenter(
 
     override fun initialize(scope: CoroutineScope) {
         this.coroutineScope = scope
-        initSingletones()
-
         ViewCreatedStateBus.initialState = ViewCreatedState.OnSuccess(ViewType.TEMP)
+        initSingletones()
         startListeningUiEvents()
         startListeningViewCreatedState()
     }

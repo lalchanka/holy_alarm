@@ -44,6 +44,7 @@ class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
         clTimeLayout.setOnClickListener {
             launchInFragmentScope {
+                AlarmItemBus.emitAlarmItem(alarmItem)
                 EventBus.emitEvent(AlarmItemViewHolderEvent.AlarmSet)
             }
         }
