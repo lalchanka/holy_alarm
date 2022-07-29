@@ -12,8 +12,8 @@ abstract class AlarmSetPresenter : IAlarmSetPresenter {
     private var coroutineScope: CoroutineScope? = null
     protected abstract val alarmIdProvider: () -> String
 
-    override fun initialize(coroutineScope: CoroutineScope) {
-        this.coroutineScope = coroutineScope
+    override fun initialize(scope: CoroutineScope) {
+        this.coroutineScope = scope
     }
 
     override fun onTimeChanged(hour: Int, minute: Int) {

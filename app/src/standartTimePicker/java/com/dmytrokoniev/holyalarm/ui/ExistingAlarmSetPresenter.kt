@@ -18,9 +18,9 @@ class ExistingAlarmSetPresenter(
     override val alarmIdProvider: () -> String
         get() = { alarmItem.id }
 
-    override fun initialize(coroutineScope: CoroutineScope) {
-        super.initialize(coroutineScope)
-        coroutineScope.launch {
+    override fun initialize(scope: CoroutineScope) {
+        super.initialize(scope)
+        scope.launch {
             alarmItem = AlarmItemBus.alarmItem
             withContext(Dispatchers.Main) {
                 view.tpAlarmTime?.hour = alarmItem.hour

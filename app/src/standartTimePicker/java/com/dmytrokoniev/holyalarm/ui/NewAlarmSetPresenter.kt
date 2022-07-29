@@ -4,9 +4,7 @@ import com.dmytrokoniev.holyalarm.data.storage.LastIdStorage
 import com.dmytrokoniev.holyalarm.data.storage.getLastId
 import kotlinx.coroutines.CoroutineScope
 
-class NewAlarmSetPresenter(
-    private val view: INewAlarmSetFragment
-) : INewAlarmSetPresenter, AlarmSetPresenter() {
+class NewAlarmSetPresenter : INewAlarmSetPresenter, AlarmSetPresenter() {
 
     override val alarmIdProvider: () -> String
         get() = {

@@ -6,18 +6,12 @@ import androidx.lifecycle.lifecycleScope
 
 class ExistingAlarmSetFragment : IExistingAlarmSetFragment, AlarmSetFragment() {
 
-    private val alarmSetPresenter: IExistingAlarmSetPresenter = ExistingAlarmSetPresenter(this)
+    override val presenter: IExistingAlarmSetPresenter = ExistingAlarmSetPresenter(this)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        alarmSetPresenter.initialize(this.lifecycleScope)
         tpAlarmTime?.setOnTimeChangedListener { _, hourOfDay, minute ->
-            alarmSetPresenter.onTimeChanged(hourOfDay, minute)
+            presenter.onTimeChanged(hourOfDay, minute)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        alarmSetPresenter.dispose()
     }
 }
