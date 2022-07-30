@@ -36,8 +36,9 @@ object AlarmManagerHelper {
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
         )
+        val settedTime = timeSetHelper(time)
         val alarmClockInfo = AlarmManager.AlarmClockInfo(
-            time,
+            settedTime,
             pendingIntent
         )
         alarmManager?.setAlarmClock(alarmClockInfo, pendingIntent)
@@ -52,6 +53,21 @@ object AlarmManagerHelper {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
         )
         alarmManager?.cancel(pendingIntent)
+    }
+
+    // TODO: 7/30/2022 Convert it to class or move this function in another place.
+    //  Depends on logic it implements
+    private fun timeSetHelper(time: Long) : Long {
+        val currentTime = TimeUtils.getCurrentTimeInMillis()
+        val currentDayTime = TimeUtils.getCurrentDayInMillis()
+        val alarmTime = currentDayTime + time
+
+        return if (alarmTime < currentTime) {
+            val nextDayTime = currentDayTime + TimeUtils.ONE_DAY_IN_MILLIS
+            nextDayTime + time
+        } else {
+            alarmTime
+        }
     }
 
     /**

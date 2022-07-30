@@ -16,15 +16,15 @@ data class AlarmItem(
 ) : Parcelable {
 
     companion object {
-        fun AlarmItem.toMillis(): Long {
-            val date = Date()
-            val calendar = Calendar.getInstance()
-            calendar.time = date
-
-            calendar.set(Calendar.HOUR_OF_DAY, hour)
-            calendar.set(Calendar.MINUTE, minute)
-            calendar.set(Calendar.SECOND, 0)
-            return calendar.timeInMillis
+        fun AlarmItem.timeToMillis(): Long {
+//            val date = Date()
+//            val calendar = Calendar.getInstance()
+//            calendar.time = date
+//            calendar.set(Calendar.HOUR_OF_DAY, hour)
+//            calendar.set(Calendar.MINUTE, minute)
+//            calendar.set(Calendar.SECOND, 0)
+//            return calendar.timeInMillis
+            return (hour * 60 * 60 * 1000 + minute * 60 * 1000).toLong()
         }
     }
 }

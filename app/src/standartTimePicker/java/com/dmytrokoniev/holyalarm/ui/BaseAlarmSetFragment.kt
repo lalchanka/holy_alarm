@@ -6,14 +6,11 @@ import android.widget.TimePicker
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.dmytrokoniev.holyalarm.R
-import com.dmytrokoniev.holyalarm.bus.AlarmItemBus
-import com.dmytrokoniev.holyalarm.data.AlarmItem
-import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
 
-// TODO: danylooliinyk@pluto.tv 29.07.2022 add `Base` to the name of Fragment
-abstract class AlarmSetFragment : Fragment(R.layout.standart_fragment_set_alarm), IAlarmSetFragment {
+abstract class BaseAlarmSetFragment : Fragment(R.layout.standart_fragment_set_alarm),
+    IBaseAlarmSetFragment {
 
-    abstract val presenter: IAlarmSetPresenter
+    abstract val presenter: IBaseAlarmSetPresenter
     override var tpAlarmTime: TimePicker? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

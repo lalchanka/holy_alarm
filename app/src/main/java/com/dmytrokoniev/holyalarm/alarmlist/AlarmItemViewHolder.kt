@@ -11,8 +11,6 @@ import com.dmytrokoniev.holyalarm.bus.EventBus
 import com.dmytrokoniev.holyalarm.data.AlarmItem
 import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 
-// TODO: 12/28/2021 findView & viewHolder
-// TODO: danylo.oliinyk@pluto.tv 26.04.2022 add swipe to delete or long press
 class AlarmItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val tvAlarmTime = itemView.findViewById<TextView>(R.id.tv_alarm_time)

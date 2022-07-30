@@ -2,9 +2,8 @@ package com.dmytrokoniev.holyalarm.ui
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.lifecycleScope
 
-class NewAlarmSetFragment : INewAlarmSetFragment, AlarmSetFragment() {
+class NewAlarmSetFragment : INewAlarmSetFragment, BaseAlarmSetFragment() {
 
     override val presenter: INewAlarmSetPresenter = NewAlarmSetPresenter()
 

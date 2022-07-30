@@ -15,8 +15,6 @@ import com.dmytrokoniev.holyalarm.util.addAlarm
 import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
 import com.google.android.material.snackbar.Snackbar
 
-
-// TODO add all LC functions with Logs
 class AlarmListFragment : Fragment(R.layout.fragment_alarm_list), IAlarmListFragment {
 
     private val presenter: IAlarmListPresenter = AlarmListPresenter(this)

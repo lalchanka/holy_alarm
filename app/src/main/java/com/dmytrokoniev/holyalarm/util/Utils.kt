@@ -6,7 +6,7 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
 import com.dmytrokoniev.holyalarm.alarmlist.AlarmListAdapter
 import com.dmytrokoniev.holyalarm.data.AlarmItem
-import com.dmytrokoniev.holyalarm.data.AlarmItem.Companion.toMillis
+import com.dmytrokoniev.holyalarm.data.AlarmItem.Companion.timeToMillis
 
 /**
  * A convenient function to show a [Toast] using any [View] and it's [Context].
@@ -26,7 +26,8 @@ fun AppCompatActivity.toast(
     duration: Int = LENGTH_SHORT
 ) = findViewById<View>(android.R.id.content)?.run { toast(text, duration) }
 
-fun AlarmManagerHelper.setAlarm(alarmItem: AlarmItem) = setAlarm(alarmItem.toMillis(), alarmItem.id)
+fun AlarmManagerHelper.setAlarm(alarmItem: AlarmItem) =
+    setAlarm(alarmItem.timeToMillis(), alarmItem.id)
 
 fun AlarmManagerHelper.cancelAlarm(alarmItem: AlarmItem) = cancelAlarm(alarmItem.id)
 

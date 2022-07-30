@@ -2,18 +2,16 @@ package com.dmytrokoniev.holyalarm.ui
 
 import com.dmytrokoniev.holyalarm.bus.AlarmItemBus
 import com.dmytrokoniev.holyalarm.data.AlarmItem
-import com.dmytrokoniev.holyalarm.stopalarm.IStopAlarmFragment
-import com.dmytrokoniev.holyalarm.util.launchInFragmentScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-abstract class AlarmSetPresenter : IAlarmSetPresenter {
+abstract class BaseAlarmSetPresenter : IBaseAlarmSetPresenter {
 
-    private var coroutineScope: CoroutineScope? = null
+    protected var scope: CoroutineScope? = null
     protected abstract val alarmIdProvider: () -> String
 
     override fun initialize(scope: CoroutineScope) {
-        this.coroutineScope = scope
+        this.scope = scope
     }
 
     override fun onTimeChanged(hour: Int, minute: Int) {
@@ -22,15 +20,15 @@ abstract class AlarmSetPresenter : IAlarmSetPresenter {
             id = newAlarmId,
             hour = hour,
             minute = minute,
-            is24HourView = AlarmSetFragment.IS_24_FORMAT_ENABLED,
+            is24HourView = BaseAlarmSetFragment.IS_24_FORMAT_ENABLED,
             isEnabled = true
         )
-        coroutineScope?.launch {
+        scope?.launch {
             AlarmItemBus.emitAlarmItem(newAlarm)
         }
     }
 
     override fun dispose() {
-        coroutineScope = null
+        scope = null
     }
 }

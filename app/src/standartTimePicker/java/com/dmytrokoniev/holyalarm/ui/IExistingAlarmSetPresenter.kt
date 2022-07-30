@@ -1,3 +1,8 @@
 package com.dmytrokoniev.holyalarm.ui
 
-interface IExistingAlarmSetPresenter : IAlarmSetPresenter
+import com.dmytrokoniev.holyalarm.data.AlarmItem
+
+interface IExistingAlarmSetPresenter : IBaseAlarmSetPresenter {
+
+    fun getExistingAlarmItem(): AlarmItem
+}

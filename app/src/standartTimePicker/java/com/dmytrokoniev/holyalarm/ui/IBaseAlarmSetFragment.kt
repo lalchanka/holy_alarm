@@ -2,7 +2,7 @@ package com.dmytrokoniev.holyalarm.ui
 
 import android.widget.TimePicker
 
-interface IAlarmSetFragment {
+interface IBaseAlarmSetFragment {
 
     var tpAlarmTime: TimePicker?
 }
