@@ -12,27 +12,13 @@ interface IMainPresenter : IBasePresenter {
 
     fun startListeningUiEvents()
 
-    fun onAddAlarmClick()
+    fun onConfirmToolbarClick()
 
-    fun onAlarmItemClick()
+    fun onCancelToolbarClick()
 
     fun startListeningViewCreatedState()
 
     fun handleSuccess(view: ViewType)
 
     fun handleError(view: ViewType)
-
-    fun onCheckedChangeListener(isChecked: Boolean, alarmItem: AlarmItem)
-
-    fun onStopClick(alarmId: String)
-
-    fun onConfirmToolbarClick()
-
-    fun onCancelToolbarClick()
-
-    fun onSetNewAlarm(alarmItem: AlarmItem)
-
-    fun onSetExistingAlarm(alarmItem: AlarmItem)
-
-    fun setAlarm(alarmItem: AlarmItem)
 }

@@ -2,6 +2,8 @@ package com.dmytrokoniev.holyalarm.data
 
 import android.os.Parcelable
 import androidx.annotation.IntRange
+import com.dmytrokoniev.holyalarm.util.TimeUtils
+import com.dmytrokoniev.holyalarm.util.TimeUtils.timeHumanFormat
 import kotlinx.parcelize.Parcelize
 import java.util.Calendar
 import java.util.Date
@@ -16,15 +18,11 @@ data class AlarmItem(
 ) : Parcelable {
 
     companion object {
-        fun AlarmItem.timeToMillis(): Long {
-//            val date = Date()
-//            val calendar = Calendar.getInstance()
-//            calendar.time = date
-//            calendar.set(Calendar.HOUR_OF_DAY, hour)
-//            calendar.set(Calendar.MINUTE, minute)
-//            calendar.set(Calendar.SECOND, 0)
-//            return calendar.timeInMillis
-            return (hour * 60 * 60 * 1000 + minute * 60 * 1000).toLong()
-        }
+        fun AlarmItem.timeToMillis(): Long =
+            hour * TimeUtils.ONE_HOUR_IN_MILLIS +
+                    minute * TimeUtils.ONE_MIN_IN_MILLIS
+
+        fun AlarmItem.timeToHumanFormat(): String =
+            hour.timeHumanFormat() + ":" + minute.timeHumanFormat()
     }
 }

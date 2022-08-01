@@ -6,6 +6,8 @@ import java.util.*
 object TimeUtils {
 
     const val ONE_DAY_IN_MILLIS: Long = 86_400_000
+    const val ONE_HOUR_IN_MILLIS: Long = 3_600_000
+    const val ONE_MIN_IN_MILLIS: Long = 60_000
 
     fun millisToDate(millis: Long): String {
         val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS", Locale.getDefault())

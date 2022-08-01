@@ -54,96 +54,6 @@ class MainPresenter(
         }
     }
 
-    private fun processUiEvent(event: UiEvent) {
-        when (event) {
-            is AlarmListFragmentEvent.AddClicked -> onAddAlarmClick()
-            is AlarmItemViewHolderEvent.AlarmSet -> onAlarmItemClick()
-            is AlarmItemViewHolderEvent.AlarmOn -> {
-                val alarmItem = AlarmItemBus.alarmItem
-                onCheckedChangeListener(isChecked = true, alarmItem)
-            }
-            is AlarmItemViewHolderEvent.AlarmOff -> {
-                val alarmItem = AlarmItemBus.alarmItem
-                onCheckedChangeListener(isChecked = false, alarmItem)
-            }
-            is StopAlarmFragmentEvent.StopClicked -> {
-                val alarmItem = AlarmItemBus.alarmItem
-                onStopClick(alarmItem.id)
-            }
-            is ToolbarEvent.ConfirmClicked -> {
-                val appState = AppStateBus.appStateFlow.value
-                val alarmItem = AlarmItemBus.alarmItem
-                if (appState.isAlarmUpdateFlow) {
-                    onSetNewAlarm(alarmItem)
-                } else {
-                    onSetExistingAlarm(alarmItem)
-                }
-            }
-            is ToolbarEvent.CancelClicked -> {
-                view.changeToolbarState(ToolbarState.ICON_CLEAN)
-                view.loadFragment(AlarmListFragment())
-            }
-        }
-    }
-
-    override fun onAddAlarmClick() {
-        AppStateBus.emitAppState(AppState(isAlarmUpdateFlow = false))
-        view.changeToolbarState(ToolbarState.CONFIRM_CANCEL)
-        view.loadFragment(NewAlarmSetFragment())
-    }
-
-    override fun onAlarmItemClick() {
-        AppStateBus.emitAppState(AppState(isAlarmUpdateFlow = true))
-        view.changeToolbarState(ToolbarState.CONFIRM_CANCEL)
-        view.loadFragment(ExistingAlarmSetFragment())
-    }
-
-    override fun onCheckedChangeListener(isChecked: Boolean, alarmItem: AlarmItem) {
-        val alarmId = alarmItem.id
-
-        if (isChecked) {
-            AlarmManagerHelper.setAlarm(alarmItem)
-            spAlarmStorage?.updateItemIsEnabled(alarmId, isEnabled = true)
-            view.showToast("Alarm set for: ${alarmItem.hour}:${alarmItem.minute}")
-        } else {
-            AlarmManagerHelper.cancelAlarm(alarmId)
-            spAlarmStorage?.updateItemIsEnabled(alarmId, isEnabled = false)
-            view.showToast("Cancelled alarm: ${alarmItem.hour}:${alarmItem.minute}")
-        }
-    }
-
-    override fun onStopClick(alarmId: String) {
-        val alarmItem = spAlarmStorage?.getItem(alarmId)
-        val alarmIds = spAlarmStorage?.findAlarmIds(
-            hour = alarmItem?.hour,
-            minute = alarmItem?.minute
-        )
-        alarmIds?.forEach { id ->
-            AlarmManagerHelper.cancelAlarm(id)
-            spAlarmStorage?.updateItemIsEnabled(id, isEnabled = false)
-        }
-        view.changeToolbarState(ToolbarState.ICON_CLEAN)
-        view.loadFragment(AlarmListFragment())
-    }
-
-    override fun setAlarm(alarmItem: AlarmItem) {
-        AlarmManagerHelper.setAlarm(alarmItem)
-        view.changeToolbarState(ToolbarState.ICON_CLEAN)
-        view.loadFragment(AlarmListFragment())
-    }
-
-    override fun onSetNewAlarm(alarmItem: AlarmItem) {
-        spAlarmStorage?.addItem(alarmItem)
-        spLastAlarmIdStorage?.setLastId(alarmItem.id.toInt())
-        setAlarm(alarmItem)
-    }
-
-    override fun onSetExistingAlarm(alarmItem: AlarmItem) {
-        spAlarmStorage?.updateItem(alarmItem)
-        setAlarm(alarmItem)
-        view.showToast("Alarm updated: ${alarmItem.hour}:${alarmItem.minute}")
-    }
-
     override fun onConfirmToolbarClick() {
         coroutineScope?.launch {
             EventBus.emitEvent(ToolbarEvent.ConfirmClicked)
@@ -187,5 +97,79 @@ class MainPresenter(
 
     override fun dispose() {
         coroutineScope = null
+    }
+
+    private fun processUiEvent(event: UiEvent) {
+        when (event) {
+            is AlarmListFragmentEvent.AddClicked -> onAddAlarmClick()
+            is AlarmItemViewHolderEvent.AlarmSet -> onAlarmItemClick()
+            is AlarmItemViewHolderEvent.AlarmOn -> {
+                val alarmItem = AlarmItemBus.alarmItem
+                onCheckedChangeListener(isChecked = true, alarmItem)
+            }
+            is AlarmItemViewHolderEvent.AlarmOff -> {
+                val alarmItem = AlarmItemBus.alarmItem
+                onCheckedChangeListener(isChecked = false, alarmItem)
+            }
+            is StopAlarmFragmentEvent.StopClicked -> {
+                val alarmItem = AlarmItemBus.alarmItem
+                onStopClick(alarmItem.id)
+            }
+            is ToolbarEvent.ConfirmClicked -> {
+                val appState = AppStateBus.appStateFlow.value
+                val alarmItem = AlarmItemBus.alarmItem
+                if (appState.isAlarmUpdateFlow) {
+                    onSetExistingAlarm(alarmItem)
+                } else {
+                    onSetNewAlarm(alarmItem)
+                }
+            }
+        }
+    }
+
+    private fun onAddAlarmClick() {
+        AppStateBus.emitAppState(AppState(isAlarmUpdateFlow = false))
+    }
+
+    private fun onAlarmItemClick() {
+        AppStateBus.emitAppState(AppState(isAlarmUpdateFlow = true))
+    }
+
+    private fun onCheckedChangeListener(isChecked: Boolean, alarmItem: AlarmItem) {
+        val alarmId = alarmItem.id
+        if (isChecked) {
+            AlarmManagerHelper.setAlarm(alarmItem)
+            spAlarmStorage?.updateItemIsEnabled(alarmId, isEnabled = true)
+        } else {
+            AlarmManagerHelper.cancelAlarm(alarmId)
+            spAlarmStorage?.updateItemIsEnabled(alarmId, isEnabled = false)
+        }
+    }
+
+    private fun onStopClick(alarmId: String) {
+        val alarmItem = spAlarmStorage?.getItem(alarmId)
+        val alarmIds = spAlarmStorage?.findAlarmIds(
+            hour = alarmItem?.hour,
+            minute = alarmItem?.minute
+        )
+        alarmIds?.forEach { id ->
+            AlarmManagerHelper.cancelAlarm(id)
+            spAlarmStorage?.updateItemIsEnabled(id, isEnabled = false)
+        }
+    }
+
+    private fun setAlarm(alarmItem: AlarmItem) {
+        AlarmManagerHelper.setAlarm(alarmItem)
+    }
+
+    private fun onSetNewAlarm(alarmItem: AlarmItem) {
+        spAlarmStorage?.addItem(alarmItem)
+        spLastAlarmIdStorage?.setLastId(alarmItem.id.toInt())
+        setAlarm(alarmItem)
+    }
+
+    private fun onSetExistingAlarm(alarmItem: AlarmItem) {
+        spAlarmStorage?.updateItem(alarmItem)
+        setAlarm(alarmItem)
     }
 }
