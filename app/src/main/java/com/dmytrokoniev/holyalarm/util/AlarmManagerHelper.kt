@@ -5,6 +5,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 
 /**
  * [AlarmManagerHelper] encapsulates tasks related to Alarm and creates a convenient API to simplify
@@ -30,12 +31,21 @@ object AlarmManagerHelper {
     fun setAlarm(time: Long, id: String) {
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.putExtra(KEY_ALARM_ID, id)
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            id.toInt(),
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
-        )
+        val pendingIntent = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            PendingIntent.getBroadcast(
+                context,
+                id.toInt(),
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+            )
+        } else {
+            PendingIntent.getActivity(
+                context,
+                id.toInt(),
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+            )
+        }
         val settedTime = timeSetHelper(time)
         val alarmClockInfo = AlarmManager.AlarmClockInfo(
             settedTime,
@@ -57,7 +67,7 @@ object AlarmManagerHelper {
 
     // TODO: 7/30/2022 Convert it to class or move this function in another place.
     //  Depends on logic it implements
-    private fun timeSetHelper(time: Long) : Long {
+    private fun timeSetHelper(time: Long): Long {
         val currentTime = TimeUtils.getCurrentTimeInMillis()
         val currentDayTime = TimeUtils.getCurrentDayInMillis()
         val alarmTime = currentDayTime + time

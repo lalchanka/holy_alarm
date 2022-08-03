@@ -2,6 +2,7 @@ package com.dmytrokoniev.holyalarm
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity(), IMainView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("AlarmTriggeredFlow", "onCreate")
         setContentView(R.layout.activity_main)
         toolbar = findViewById(R.id.toolbar)
         presenter = MainPresenter(this, this.baseContext)
@@ -51,9 +53,11 @@ class MainActivity : AppCompatActivity(), IMainView {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        Log.d("AlarmTriggeredFlow", "onNewIntent")
         val alarmTriggeredId = intent?.getStringExtra(KEY_ALARM_ID)
         val isAlarmTriggered = alarmTriggeredId != null
         if (isAlarmTriggered) {
+            Log.d("AlarmTriggeredFlow", "onNewIntent -> isAlarmTriggered")
             showStopAlarmFragment(alarmTriggeredId)
         }
     }
@@ -148,6 +152,7 @@ class MainActivity : AppCompatActivity(), IMainView {
     }
 
     private fun showInitialFragment() {
+        Log.d(MainActivity::class.simpleName, "showInitialFragment")
         val alarmTriggeredId = intent?.getStringExtra(KEY_ALARM_ID)
         val isAlarmTriggered = alarmTriggeredId != null
         if (!isAlarmTriggered) {
@@ -159,6 +164,7 @@ class MainActivity : AppCompatActivity(), IMainView {
     }
 
     private fun showStopAlarmFragment(alarmTriggeredId: String?) {
+        Log.d(MainActivity::class.simpleName, "showStopAlarmFragment")
         val stopAlarmFragment = StopAlarmFragment()
         val arguments = Bundle()
         arguments.putString(KEY_ALARM_ID, alarmTriggeredId)

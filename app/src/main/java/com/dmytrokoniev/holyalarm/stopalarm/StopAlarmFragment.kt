@@ -1,6 +1,7 @@
 package com.dmytrokoniev.holyalarm.stopalarm
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -19,6 +20,7 @@ class StopAlarmFragment : Fragment(R.layout.fragment_stop_alarm), IStopAlarmFrag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("AlarmTriggeredFlow", "onViewCreated")
         btnStop = view.findViewById(R.id.btn_stop)
         tvAlarmTime = view.findViewById(R.id.tv_alarm_time)
         val alarmId = arguments?.getString(KEY_ALARM_ID)
